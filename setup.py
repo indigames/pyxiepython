@@ -27,11 +27,28 @@ tools_module = Extension('pyxietools',
 			           libraries=['pyxtools','pyxcore'])
 
 setup(name='pyxie', version='0.1.0',
-      description='pyxie game engine core module',
-      ext_modules=[pyxie_module, tools_module],
-      data_files = {
-      'pyxie/win32/pyxcore.dll':['pyxie/win32/pyxcore.dll'],
-      'pyxie/win32/pyxtools.dll':['pyxie/win32/pyxtools.dll'],
-      'pyxie/win32/PVRTexLib.dll':['pyxie/win32/PVRTexLib.dll']
-      }
+		description='pyxie game engine module',
+		author=u'Kiharu Shishikura',
+		author_email='shishi@indigames.net',
+		ext_modules=[pyxie_module, tools_module],
+		long_description=open('README.md').read(),
+		license='MIT',
+		install_requires=[
+			'pyvmath', 
+			'requests'
+			],
+		classifiers=[
+			'Intended Audience :: Developers',
+			'License :: OSI Approved :: MIT License',
+			'Programming Language :: Python :: 3',
+			#'Operating System :: MacOS :: MacOS X',
+			#'Operating System :: POSIX :: Linux',
+			'Operating System :: Microsoft :: Windows',
+			'Topic :: Games/Entertainment',
+		],
+		data_files = {
+		'pyxie/win32/pyxcore.dll':['pyxie/win32/pyxcore.dll'],
+		'pyxie/win32/pyxtools.dll':['pyxie/win32/pyxtools.dll'],
+		'pyxie/win32/PVRTexLib.dll':['pyxie/win32/PVRTexLib.dll']
+		}
       )
