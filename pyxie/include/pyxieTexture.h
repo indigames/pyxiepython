@@ -10,6 +10,8 @@
 
 namespace pyxie
 {
+	constexpr uint8_t KtxIdentifier[12] = { 0xAB, 0x4B, 0x54, 0x58, 0x20, 0x31, 0x31, 0xBB, 0x0D, 0x0A, 0x1A, 0x0A };
+
 	typedef unsigned int TextureHandle;
 
 	struct ktxheader {
@@ -42,6 +44,7 @@ namespace pyxie
 		SamplerState		currentState;
 
 	public:
+
 		pyxieTexture(const char* path);
 		pyxieTexture(uint32_t w, uint32_t h, bool usealpha, uint32_t col);
 		pyxieTexture(uint8_t* img, const char* name);

@@ -22,6 +22,7 @@ namespace pyxie {
 		pyxieCamera* NewCamera(const char* name, pyxieFigure* parent);
 		pyxieEnvironmentSet* NewEnvironmentSet(pyxieFigure* parent);
 		pyxieTexture* NewTexture(const char* path);
+		pyxieTexture* NewTexture(const char* name, const char* pixels, int w, int h, bool alpha);
 		pyxieShowcase* NewShowcase();
 
 		pyxieShaderDescriptor* NewShaderDescriptor();
