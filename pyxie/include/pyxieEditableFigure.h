@@ -237,6 +237,7 @@ namespace pyxie
 		uint32_t numTransforms;
 		int32_t* GPUTransformIndexes;
 		uint32_t maxSkinWeightsPerVertex;
+		bool outsource;
 	};
 
 	typedef void(*CustomDataCallback) (pyxieMemoryWriter& writer, void* customData);
@@ -276,6 +277,7 @@ namespace pyxie
 
 		void AddMaterial(const char* materialName, pyxieShaderDescriptor& desc);
 		void AddMesh(const char* nodeName, const char* materialName);
+		void SetVertexPointer(const char* nodeName, void* ptr, uint32_t numVerts);
 		void SetVertexValues(const char* nodeName, AttributeID attr, uint32_t startPosition, float* value, uint32_t numVerts, uint32_t align = 16);
 		void SetTriangles(const char* nodeName, uint32_t startPosition, uint32_t* triangles, uint32_t numTriangles, uint32_t align = 16);
 		void AddJoint(int parentIndex, Joint& pose, bool scaleCompensate, const char* jointName);
