@@ -69,7 +69,7 @@ void pyxieShowWindow(bool show, int cx, int cy) {
 }
 
 void CreateApprication() {
-	pyxie::pyxieShader::AutoSaveShader("shaders");
+	//pyxie::pyxieShader::AutoSaveShader("shaders");
 	//pyxie::pyxieShader::AutoReadShader("shaders");
 
 	mainWindow_th = new std::thread(CreateMyWindow);
