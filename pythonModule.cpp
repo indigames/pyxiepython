@@ -5,6 +5,7 @@
 #include "Backyard.h"
 
 #include "pyxieTouchManager.h"
+#include "pyxieSystemInfo.h"
 
 #include <vector>
 #include <algorithm>
@@ -57,7 +58,7 @@ namespace pyxie
 			if (fingerEvent->id == fingerID) {
 				PyObject *_res =
 					Py_BuildValue(
-						"{s:i,s:b,s:h,s:h,s:h,s:h,s:h,s:h,s:L,s:L,s:b,s:b,s:b,s:b,s:b,s:b,s:b,s:b}",
+						"{s:i,s:b,s:h,s:h,s:h,s:h,s:h,s:h,s:L,s:L,s:b,s:b,s:b,s:b,s:b,s:b,s:b,s:b,s:b,s:b,s:b,s:b}",
 						"state", fingerEvent->state,
 						"id", fingerEvent->id,
 						"org_x", fingerEvent->org_x,
@@ -70,6 +71,10 @@ namespace pyxie
 						"elapsed_t", fingerEvent->elapsed_t,
 						"fast_motion_t", fingerEvent->fast_motion_t,
 						"num_tap", fingerEvent->num_tap,
+						"is_press", fingerEvent->state& TOUCH_STATE_PRESS?1:0,
+						"is_hold", fingerEvent->state& TOUCH_STATE_HOLD ? 1 : 0,
+						"is_move", fingerEvent->state& TOUCH_STATE_MOVE ? 1 : 0,
+						"is_release", fingerEvent->state& TOUCH_STATE_RELEASE ? 1 : 0,
 						"is_tapped", fingerEvent->is_tapped,
 						"is_longpressed", fingerEvent->is_longpressed,
 						"is_tap_candidate", fingerEvent->is_tap_candidate,
@@ -78,6 +83,7 @@ namespace pyxie
 						"is_moved", fingerEvent->is_moved,
 						"num_tap", fingerEvent->num_tap,
 						"fast_motion_t", fingerEvent->fast_motion_t);
+
 				return _res;
 			}
 			fingerEvent = fingerEvent->pNext;
@@ -86,11 +92,42 @@ namespace pyxie
 		return Py_None;
 	}
 
+	static PyObject* pyxie_viewSize(PyObject* self)
+	{
+		pyxieSystemInfo& sysinfo = pyxieSystemInfo::Instance();
+		float w = sysinfo.GetGameW();
+		float h = sysinfo.GetGameH();
+
+		PyObject* retval = NULL;
+		PyObject* v = NULL;
+		retval = PyTuple_New(2);
+		if (!retval)
+			return NULL;
+
+		v = PyFloat_FromDouble((double)w);
+		if (v == NULL) {
+			Py_DECREF(retval);
+			return NULL;
+		}
+		PyTuple_SET_ITEM(retval, 0, v);
+
+		v = PyFloat_FromDouble((double)h);
+		if (v == NULL) {
+			Py_DECREF(retval);
+			return NULL;
+		}
+		PyTuple_SET_ITEM(retval, 1, v);
+
+		return retval;
+	}
+
 	static PyMethodDef pyxie_methods[] = {
 		{ "swap", (PyCFunction)pyxie_sync, METH_NOARGS },
 		{ "window", (PyCFunction)pyxie_window, METH_VARARGS },
 		{ "singleTouch", (PyCFunction)pyxie_singleTouch, METH_VARARGS },
-		{ nullptr, nullptr, 0, nullptr }
+		{ "viewSize", (PyCFunction)pyxie_viewSize, METH_NOARGS },
+
+	{ nullptr, nullptr, 0, nullptr }
 	};
 
 	static PyModuleDef pyxie_module = {
@@ -114,7 +151,7 @@ namespace pyxie
 		if (PyType_Ready(&EnvironmentType) < 0) return NULL;
 		if (PyType_Ready(&ShowcaseType) < 0) return NULL;
 		if (PyType_Ready(&EditableFigureType) < 0) return NULL;
-		if (PyType_Ready(&PlatformType) < 0) return NULL;
+		if (PyType_Ready(&StaticsType) < 0) return NULL;
 		if (PyType_Ready(&ShaderGeneratorType) < 0) return NULL;
 
 		Py_INCREF(&FigureType);
@@ -135,8 +172,8 @@ namespace pyxie
 		Py_INCREF(&ShowcaseType);
 		PyModule_AddObject(module, "showcase", (PyObject *)&ShowcaseType);
 
-		Py_INCREF(&PlatformType);
-		PyModule_AddObject(module, "platform", (PyObject*)& PlatformType);
+		Py_INCREF(&StaticsType);
+		PyModule_AddObject(module, "statics", (PyObject*)& StaticsType);
 
 		Py_INCREF(&ShaderGeneratorType);
 		PyModule_AddObject(module, "shaderGenerator", (PyObject*)& ShaderGeneratorType);

@@ -102,8 +102,6 @@ namespace pyxie
 		return 0;
 	}
 
-
-
 	static PyObject* editablefigure_AddMaterial(editablefigure_obj* self, PyObject* args)
 	{
 		char* name;
@@ -130,7 +128,6 @@ namespace pyxie
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
-
 
 	int GetVertexAttribureSize(AttributeID id) {
 		static int attrsize[] = { 0,3,3,3,3,2,2,2,2,4,4,4,1 };
@@ -258,7 +255,7 @@ namespace pyxie
 					bufferPtr++;
 				}
 			}
-			self->editablefigure->SetTriangles(meshName, offset, buffer, numTris);
+			self->editablefigure->SetIndexValues(meshName, offset, buffer, numTris);
 		}
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -352,34 +349,48 @@ namespace pyxie
 
 	static PyObject* editablefigure_SetMaterialParamTexture(editablefigure_obj* self, PyObject* args, PyObject* kwargs)
 	{
-		static char* kwlist[] = { "materialName","samplerName","texturePath","wrap_s","wrap_t","minfilter","magfilter","mipfilter", NULL };
+		static char* kwlist[] = { "materialName","samplerName","textureName","pixel","width","height","wrap_s","wrap_t","minfilter","magfilter","mipfilter", NULL };
 
-		char* materialName;
-		char* samplerName;
-		char* texturePath;
+		char* materialName = nullptr;
+		char* samplerName = nullptr;
+		char* textureName = nullptr;
+		PyObject* pixel = nullptr;
+		int w = 0;
+		int h = 0;
 		int wrap_s = SamplerState::WRAP;
 		int wrap_t = SamplerState::WRAP;
 		int minfilter = SamplerState::LINEAR_MIPMAP_LINEAR;
 		int magfilter = SamplerState::LINEAR;
 		int mipfilter = SamplerState::LINEAR_MIPMAP_LINEAR;
 
-		if (!PyArg_ParseTupleAndKeywords(args, kwargs, "sss|iiiii", kwlist,
-			&materialName, &samplerName, &texturePath, &wrap_s, &wrap_t, &minfilter, &magfilter, &mipfilter)) return NULL;
+		if (!PyArg_ParseTupleAndKeywords(args, kwargs, "sss|Oiiiiiii", kwlist,
+			&materialName, &samplerName, &textureName,
+			&pixel, &w, &h,
+			&wrap_s, &wrap_t, &minfilter, &magfilter, &mipfilter)) return NULL;
 
 		Sampler sampler;
-		sampler.tex = pyxieResourceCreator::Instance().NewTexture(texturePath);
-
+		if (pixel) {
+			if (!PyBytes_Check(pixel) || w == 0 || h == 0) {
+				PyErr_SetString(PyExc_TypeError, "parameter error");
+				return NULL;
+			}
+			char* pix = PyBytes_AsString(pixel);
+			sampler.tex = pyxieResourceCreator::Instance().NewTexture(textureName, pix,w,h,true);
+		}
+		else {
+			sampler.tex = pyxieResourceCreator::Instance().NewTexture(textureName);
+		}
 		TextureSource texsrc;
-		pyxie_strncpy(texsrc.path, texturePath, MAX_PATH);
+		pyxie_strncpy(texsrc.path, textureName, MAX_PATH);
 		texsrc.normal = false;
 		texsrc.wrap = false;
 		sampler.textureNameIndex = self->editablefigure->SetTextureSource(texsrc);
 		sampler.samplerSlot = 0;
-		sampler.samplerState.wrap_s = SamplerState::WRAP;
-		sampler.samplerState.wrap_t = SamplerState::WRAP;
-		sampler.samplerState.minfilter = SamplerState::LINEAR_MIPMAP_LINEAR;
-		sampler.samplerState.magfilter = SamplerState::LINEAR;
-		sampler.samplerState.mipfilter = SamplerState::LINEAR_MIPMAP_LINEAR;
+		sampler.samplerState.wrap_s = wrap_s;
+		sampler.samplerState.wrap_t = wrap_t;
+		sampler.samplerState.minfilter = minfilter;
+		sampler.samplerState.magfilter = magfilter;
+		sampler.samplerState.mipfilter = mipfilter;
 
 		if(!self->editablefigure->SetMaterialParam(materialName, samplerName, &sampler)) {
 			PyErr_SetString(PyExc_TypeError, "parameter error.");
@@ -396,10 +407,30 @@ namespace pyxie
 		return Py_None;
 	}
 
-	static PyObject* editablefigure_SetMaterialRenderState(editablefigure_obj* self, PyObject* args)
+	static PyObject* editablefigure_SetMaterialRenderState(editablefigure_obj* self, PyObject* args, PyObject* kwargs)
 	{
-		//int val = 1;
-		//fig->SetMaterialState("mate01", Key_blend_enable, &val);
+		static char* kwlist[] = { "materialName","paramName","value1","value2","value3","value4", NULL };
+		char* mateName = nullptr;
+		char* paramName = nullptr;
+		PyObject* values[4] = {0,0,0,0};
+		if (!PyArg_ParseTupleAndKeywords(args, kwargs, "ssO|OOO", kwlist,
+			&mateName, &paramName, &values[0], &values[1], &values[2], &values[3] )) return NULL;
+
+		RenderStateInfo* stateInfo = nullptr;
+		const ShaderParameterInfo* paramInfo = pyxieRenderContext::Instance().GetShaderParameterInfoByName(paramName);
+		if(paramInfo) stateInfo = pyxieRenderContext::Instance().GetRenderStateInfo((ShaderParameterKey)paramInfo->key);
+		if (!stateInfo) {
+			PyErr_SetString(PyExc_ValueError, "unsupported render states");
+			return NULL;
+		}
+		uint32_t val[4] = { 0,0,0,0 };
+		for (int i = 0; i < 4; i++) {
+			if (values) {
+				if (stateInfo->valueTypes[i] == Int) val[i] = (uint32_t)PyLong_AsLong(values[i]);
+				else if (stateInfo->valueTypes[i] == Float)  ((float*)val)[i] = (float)PyFloat_AsDouble(values[i]);
+			}
+		}
+		self->editablefigure->SetMaterialState(mateName, (ShaderParameterKey)paramInfo->key, val);
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -512,24 +543,162 @@ namespace pyxie
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
+	static PyObject* editablefigure_ClearMesh(editablefigure_obj* self)
+	{
+		self->editablefigure->ClearAllMeshes();
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	static PyObject* editablefigure_setVertexPtr(editablefigure_obj* self, PyObject* args) {
+
+		char* nodename = nullptr;
+		PyObject* ptr = nullptr;
+		uint32_t numVerts = 0;
+		PyObject* attr= nullptr;
+		if (!PyArg_ParseTuple(args, "sOiO", &nodename, &ptr, &numVerts, &attr)) {
+			return NULL;
+		}
+		if (!PyLong_Check(ptr)){
+			PyErr_SetString(PyExc_TypeError, "parameter error");
+			return NULL;
+		}
+
+		uint32_t numAttr = 0;
+		VertexAttribute attribute[NUM_ATTRIBUTE_ID];
+		if (PyTuple_Check(attr)) {
+			numAttr = (uint32_t)PyTuple_Size(attr);
+			for (uint32_t i = 0; i < numAttr; i++) {
+				PyObject* v = PyTuple_GET_ITEM(attr, i);
+				if (PyTuple_Check(v)) {
+					int n = (int)PyTuple_Size(v);
+					if (n != 4) { numAttr = 0; break;}
+					PyObject* tmp;
+					tmp = PyTuple_GET_ITEM(v, 0);
+					if(!PyLong_Check(tmp)) { numAttr = 0; break; }
+					attribute[i].id = PyLong_AsLong(tmp);
+					tmp = PyTuple_GET_ITEM(v, 1);
+					if (!PyLong_Check(tmp)) { numAttr = 0; break; }
+					attribute[i].size = PyLong_AsLong(tmp);
+					tmp = PyTuple_GET_ITEM(v, 2);
+					if (!PyLong_Check(tmp)) { numAttr = 0; break; }
+					attribute[i].normalize = PyLong_AsLong(tmp);
+					tmp = PyTuple_GET_ITEM(v, 3);
+					if (!PyLong_Check(tmp)) { numAttr = 0; break; }
+					attribute[i].type = PyLong_AsLong(tmp);
+				}
+				else { numAttr = 0; break; }
+			}
+		}
+		if (numAttr == 0) {
+			PyErr_SetString(PyExc_TypeError, "attribute param error ((id,size,nom,type),(),()...)");
+			return NULL;
+		}
+
+		void* vrts = (void*)PyLong_AsLong(ptr);
+		if (!self->editablefigure->SetVertexPointer(nodename, vrts, numVerts, attribute, numAttr)) {
+			PyErr_SetString(PyExc_TypeError, "parameter error.");
+			return NULL;
+		}
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	static PyObject* editablefigure_setTrianglePtr(editablefigure_obj* self, PyObject* args) {
+
+		char* nodename = nullptr;
+		PyObject* ptr = nullptr;
+		uint32_t numTriangles = 0;
+		uint32_t size = 2;
+
+		if (!PyArg_ParseTuple(args, "sOi|i", &nodename, &ptr, &numTriangles, &size)) {
+			return NULL;
+		}
+		if (!PyLong_Check(ptr)) {
+			PyErr_SetString(PyExc_TypeError, "parameter error");
+			return NULL;
+		}
+		void* triangles = (void*)PyLong_AsLong(ptr);
+		if (!self->editablefigure->SetIndexPointer(nodename, triangles, numTriangles, size)) {
+			PyErr_SetString(PyExc_TypeError, "parameter error.");
+			return NULL;
+		}
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	static PyObject* editablefigure_addDrawSet(editablefigure_obj* self, PyObject* args) {
+		char* nodename = nullptr;
+		uint32_t offset = 0;
+		uint32_t size = 0;
+
+		if (!PyArg_ParseTuple(args, "sii", &nodename, &offset, &size)) {
+			return NULL;
+		}
+		if (!self->editablefigure->AddDrawSet(nodename, offset, size)) {
+			PyErr_SetString(PyExc_TypeError, "parameter error.");
+			return NULL;
+		}
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	static PyObject* editablefigure_setDrawSetRenderState(editablefigure_obj* self, PyObject* args, PyObject* kwargs) {
+
+		static char* kwlist[] = { "nodeName","drawSetNo","paramName","value1","value2","value3","value4", NULL };
+		char* nodeName = nullptr;
+		char* paramName = nullptr;
+		int setNo = 0;
+		PyObject* values[4] = { 0,0,0,0 };
+
+		if (!PyArg_ParseTupleAndKeywords(args, kwargs, "sisO|OOO", kwlist,
+			&nodeName, &setNo, &paramName, &values[0], &values[1], &values[2], &values[3])) return NULL;
+
+		RenderStateInfo* stateInfo = nullptr;
+		const ShaderParameterInfo* paramInfo = pyxieRenderContext::Instance().GetShaderParameterInfoByName(paramName);
+		if (paramInfo) stateInfo = pyxieRenderContext::Instance().GetRenderStateInfo((ShaderParameterKey)paramInfo->key);
+		if (!stateInfo) {
+			PyErr_SetString(PyExc_ValueError, "unsupported render states");
+			return NULL;
+		}
+		uint32_t val[4] = { 0,0,0,0 };
+		for (int i = 0; i < 4; i++) {
+			if (values) {
+				if (stateInfo->valueTypes[i] == Int) val[i] = (uint32_t)PyLong_AsLong(values[i]);
+				else if (stateInfo->valueTypes[i] == Float)  ((float*)val)[i] = (float)PyFloat_AsDouble(values[i]);
+			}
+		}
+		if (!self->editablefigure->AddDrawSetState(nodeName, setNo, (ShaderParameterKey)paramInfo->key, val)) {
+			PyErr_SetString(PyExc_TypeError, "parameter error.");
+			return NULL;
+		}
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
 
 	PyMethodDef editablefigure_methods[] = {
-
 		{ "addMaterial", (PyCFunction)editablefigure_AddMaterial, METH_VARARGS },
 		{ "addMesh", (PyCFunction)editablefigure_AddMesh, METH_VARARGS },
 		{ "setVertexElements", (PyCFunction)editablefigure_SetVertexElements, METH_VARARGS },
 		{ "setTriangles", (PyCFunction)editablefigure_SetTriangles, METH_VARARGS },
 		{ "addJoint", (PyCFunction)editablefigure_addJoint, METH_VARARGS | METH_KEYWORDS },
+		{ "setVertexPtr", (PyCFunction)editablefigure_setVertexPtr, METH_VARARGS },
+		{ "setTrianglePtr", (PyCFunction)editablefigure_setTrianglePtr, METH_VARARGS},
+		{ "addDrawSet", (PyCFunction)editablefigure_addDrawSet, METH_VARARGS },
+		{ "setDrawSetRenderState", (PyCFunction)editablefigure_setDrawSetRenderState, METH_VARARGS | METH_KEYWORDS},
 		{ "setMaterialParam", (PyCFunction)editablefigure_SetMaterialParam, METH_VARARGS },
 		{ "setMaterialParamTexture", (PyCFunction)editablefigure_SetMaterialParamTexture, METH_VARARGS | METH_KEYWORDS },
 		{ "getMaterialParam", (PyCFunction)editablefigure_GetMaterialParam, METH_VARARGS },
-		{ "setMaterialRenderState", (PyCFunction)editablefigure_SetMaterialRenderState, METH_VARARGS },
+		{ "setMaterialRenderState", (PyCFunction)editablefigure_SetMaterialRenderState, METH_VARARGS | METH_KEYWORDS},
 		{ "saveFigure", (PyCFunction)editablefigure_SaveFigure, METH_VARARGS },
 		{ "getTextureSource", (PyCFunction)editablefigure_GetTextureSource, METH_NOARGS },
 		{ "replaceTextureSource", (PyCFunction)editablefigure_ReplaceTextureSource, METH_VARARGS },
 		{ "convertTextureToPlatform", (PyCFunction)editablefigure_ConvertTextureToPlatform, METH_VARARGS },
 		{ "compressFolder", (PyCFunction)editablefigure_CompressFolder, METH_VARARGS },
 		{ "clear", (PyCFunction)editablefigure_Clear, METH_NOARGS },
+		{ "clearMesh", (PyCFunction)editablefigure_ClearMesh, METH_NOARGS },
 		{ NULL,	NULL }
 	};
 

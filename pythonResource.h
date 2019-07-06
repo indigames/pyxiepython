@@ -59,13 +59,6 @@ namespace pyxie {
 
 	typedef struct {
 		PyObject_HEAD
-		int PC;
-		int iOS;
-		int Android;
-	} platform_obj;
-
-	typedef struct {
-		PyObject_HEAD
 		pyxieShaderDescriptor* shaderDesc;
 		int MapChannel_None;
 		int MapChannel_DiffuseAlpha;
@@ -84,7 +77,7 @@ namespace pyxie {
 	extern PyTypeObject CameraType;
 	extern PyTypeObject EnvironmentType;
 	extern PyTypeObject ShowcaseType;
-	extern PyTypeObject PlatformType;
+	extern PyTypeObject StaticsType;
 	extern PyTypeObject ShaderGeneratorType;
 
 	float* pyObjToFloat(PyObject* obj, float* f, int& d);

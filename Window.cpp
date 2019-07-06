@@ -9,6 +9,8 @@
 #include "pyxieTouchManager.h"
 #include "pyxieResourceManager.h"
 #include "pyxieRenderContext.h"
+#include "pyxieShader.h"
+#include "pyxieSystemInfo.h"
 #include "Backyard.h"
 
 class TestApp : public pyxie::pyxieApplication
@@ -61,10 +63,15 @@ void pyxieShowWindow(bool show, int cx, int cy) {
 	else windowMode = SW_HIDE;
 	Cx = cx;
 	Cy = cy;
+	pyxie::pyxieSystemInfo& sysinfo = pyxie::pyxieSystemInfo::Instance();
+	sysinfo.SetDeviceScreen(Cx, Cy);
+
 }
 
-
 void CreateApprication() {
+	pyxie::pyxieShader::AutoSaveShader("shaders");
+	//pyxie::pyxieShader::AutoReadShader("shaders");
+
 	mainWindow_th = new std::thread(CreateMyWindow);
 	std::unique_lock<std::mutex>  mainWindow_lk(mainWindow_mtx);
 	mainWindow_cv.wait(mainWindow_lk);
