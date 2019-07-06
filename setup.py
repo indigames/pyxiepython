@@ -48,6 +48,6 @@ setup(name='pyxie', version='0.1.0',
 			'Topic :: Games/Entertainment',
 		],
 		data_files = {
-		'DLLs':['bin/win32/pyxcore.dll','bin/win32/pyxtools.dll','bin/win32/PVRTexLib.dll']
+		'':['bin/win32/pyxcore.dll','bin/win32/pyxtools.dll','bin/win32/PVRTexLib.dll']
 		}
       )
