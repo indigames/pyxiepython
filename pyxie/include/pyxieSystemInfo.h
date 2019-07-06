@@ -4,35 +4,30 @@
 //  Copyright Kiharu Shishikura 2019. All rights reserved.
 ///////////////////////////////////////////////////////////////
 #pragma once
+#include "pyxieTypes.h"
 
 namespace pyxie
 {
-	class pyxieSystemInfo
+	class PYXIE_EXPORT pyxieSystemInfo
 	{
 	public:
-		static pyxieSystemInfo& Instance() { return instance; }
+		static pyxieSystemInfo& Instance();
 
-		enum Axis
-		{
-			Horizontal,
-			Vertical
-		};
-
-		void SetSoftLength(float size, Axis axis);
-		void SetHardSize(int w, int h);
-		int GetHardWidth() { return hardWidth; }
-		int GetHardHeight() { return hardHeight; }
-		float GetSoftWidth() { return softWidth; }
-		float GetSoftHeight() { return softHeight; }
-		Axis GetBaseAxis() { return baseAxis; }
+		void SetGemeScreenSize(float size);
+		void SetDeviceScreen(int w, int h);
+		int GetDeviceW() { return devW; }
+		int GetDeviceH() { return devH; }
+		float GetGameW() { return gameW; }
+		float GetGameH() { return gameH; }
+		int GameToDevW(float w);
+		int GameToDevH(float h);
 	private:
-		int hardWidth;
-		int hardHeight;
-		float softWidth;
-		float softHeight;
-		Axis baseAxis;
 		pyxieSystemInfo();
-		static pyxieSystemInfo instance;
+		int devW;
+		int devH;
+		float gameW;
+		float gameH;
+		float gameLength;
 	};
 
 }

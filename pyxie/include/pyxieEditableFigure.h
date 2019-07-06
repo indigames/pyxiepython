@@ -209,28 +209,40 @@ namespace pyxie
 		{}
 	};
 
+
+	struct DrawSet {
+		int ofs;
+		int size;
+		std::vector<FigureMaterialParam>* params;
+		std::vector<FigureMaterialParam>* states;
+	};
+
+
 	struct EditableMesh {
 		uint32_t nameHash;
 		uint32_t materialNameHash;
+
+		uint32_t numVertexAttributes;
+		VertexAttribute* attributes;
+
+		uint32_t numFloatsPerVertex;
+		uint32_t vertexBufferSize;
+		uint32_t numVertices;
+		float* vertices;
+
+		uint32_t indexBufferSize;
 		uint32_t numTriangles;
 		uint32_t* triangles;
-		uint32_t numVertexes;
-		uint32_t numFloatsPerVertex;		//m_numVertexes * m_numFloatsPerVertex = m_vertexes size
-		float *vertexes;
-		uint8_t numVertexAttributes;
-		uint16_t* vertexAttributeIndexes;	//offset of m_vertexes
-		AttributeID* vertexAttributeIds;
-		int32_t* matrixIndexesPerVertex;	//m_numVertexes * 4
-		float* skinningWeightsPerVertex;	//m_numVertexes * 4
+		uint32_t indexSize;
+		uint32_t primitiveType;
+
 		//---------------------------------------
-		uint32_t sizeVertexes;
-		uint32_t sizeTriangles;
+		bool resetVBO;
 		uint32_t vbo[2];
 		uint32_t vao;
-		bool resetVBO;
+
 		//---------------------------------------
 		bool skipRender;
-		bool useStrip;
 		bool continuesIndexes;
 		uint32_t numTryStrips;
 		uint32_t* tryStrips;
@@ -238,6 +250,7 @@ namespace pyxie
 		int32_t* GPUTransformIndexes;
 		uint32_t maxSkinWeightsPerVertex;
 		bool outsource;
+		std::vector<DrawSet>* drawSet;
 	};
 
 	typedef void(*CustomDataCallback) (pyxieMemoryWriter& writer, void* customData);
@@ -275,23 +288,29 @@ namespace pyxie
 		virtual void Pose();
 		virtual void Render();
 
-		void AddMaterial(const char* materialName, pyxieShaderDescriptor& desc);
-		void AddMesh(const char* nodeName, const char* materialName);
-		void SetVertexPointer(const char* nodeName, void* ptr, uint32_t numVerts);
-		void SetVertexValues(const char* nodeName, AttributeID attr, uint32_t startPosition, float* value, uint32_t numVerts, uint32_t align = 16);
-		void SetTriangles(const char* nodeName, uint32_t startPosition, uint32_t* triangles, uint32_t numTriangles, uint32_t align = 16);
-		void AddJoint(int parentIndex, Joint& pose, bool scaleCompensate, const char* jointName);
+		bool AddMaterial(const char* materialName, pyxieShaderDescriptor& desc);
+		bool AddMesh(const char* nodeName, const char* materialName);
+		bool SetVertexPointer(const char* nodeName, void* ptr, uint32_t numVerts, VertexAttribute* attr, uint32_t numAttr);
+		bool SetVertexValues(const char* nodeName, AttributeID attr, uint32_t startPosition, void* value, uint32_t numVerts, uint32_t align = 16);
+		bool SetIndexPointer(const char* nodeName, void* triangles, uint32_t numTriangles, uint32_t size);
+		bool SetIndexValues(const char* nodeName, uint32_t startPosition, uint32_t* triangles, uint32_t numTriangles, uint32_t align = 16);
+		void SetPrimitiveType(const char* nodeName, uint32_t type);
+		bool AddJoint(int parentIndex, Joint& pose, bool scaleCompensate, const char* jointName);
+		bool AddDrawSet(const char* nodeName, int offset, int size);
+		bool AddDrawSetState(const char* nodeName, int setNo, uint32_t key, void* value);
 		bool SetMaterialParam(const char* materialName, const char* paramName, void* value, ShaderParameterDataType dataType = ParamTypeUnknown);
 		bool GetMaterialParam(const char* materialName, const char* paramName, void* value);
 		bool SetMaterialState(const char* materialName, uint32_t key, void* value);
 		bool SaveFigure(const char* path, bool excludeBaseAnime = false, bool excludeSkeleton = false);
 		bool SaveAnimation(const char* path);
 		bool SaveSkeleton(const char* path);
+		
 		uint32_t SetTextureSource(const TextureSource& texturesource);
 		const std::vector<TextureSource>& GetTextureSources() { return textures; }
 		void ReplaceTextureSource(const TextureSource& oldTexture, const TextureSource& newTexture);
 
 		void ClearAll();
+		void ClearAllMeshes();
 
 		int FindSkeketonIndex(const char* jointName);
 

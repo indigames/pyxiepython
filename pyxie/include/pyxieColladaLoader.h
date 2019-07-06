@@ -42,8 +42,8 @@ namespace pyxie
 		void GetScenes(std::vector< PolygonsInstance >& instances, std::map< const FCDMaterial*, uint32_t >& materials, std::vector<const FCDSceneNode*> joints, pyxieEditableFigure* editableFigure);
 		bool CreateScene(const PolygonsInstance& instance, const std::vector<const FCDSceneNode*>& joints, EditableMesh *emesh, uint32_t processingFlags, pyxieEditableFigure* editableFigure);
 		void GetVertexesAndPolygons(const FCDGeometryPolygons *polys, std::map<UniqueVert, uint32_t, UniqueVertCompare> *outUniqueVerts, std::vector<int32_t> *outPolyList, pyxieEditableFigure* editableFigure);
-		void CopySkinData(const FCDSkinController* skin, const std::vector<const FCDSceneNode*>& joints, const std::map<UniqueVert, uint32_t, UniqueVertCompare>& uniqueVerts, int32_t positionInputIndex, EditableMesh *emash, pyxieEditableFigure* editableFigure);
-		void CreateSkinData(const FCDSceneNode* jointNode, const std::vector<const FCDSceneNode*>& joints, EditableMesh *emesh, pyxieEditableFigure* editableFigure);
+		void CreateSkinData(const FCDSceneNode* jointNode, const std::vector<const FCDSceneNode*>& joints, EditableMesh* emesh, pyxieEditableFigure* editableFigure);
+		void CopySkinData(const FCDSkinController* skin, const std::vector<const FCDSceneNode*>& joints, const std::map<UniqueVert, uint32_t, UniqueVertCompare>& uniqueVerts, int32_t positionInputIndex, EditableMesh *emesh, pyxieEditableFigure* editableFigure);
 		void LoadMaterials(std::map< const FCDMaterial*, uint32_t >& materials, pyxieEditableFigure* editableFigure);
 		bool GetMaterialParam(const FCDEffectParameter* fparam, FigureMaterialParam& oparam, std::map<std::string, TextureSource >& textures, pyxieEditableFigure* editableFigure);
 	};

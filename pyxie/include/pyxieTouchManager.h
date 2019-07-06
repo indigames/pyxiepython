@@ -80,7 +80,7 @@ namespace pyxie
 		std::vector<SingleFingerEvent> singlepnextsave;
 		void Fix()
 		{
-			for (int i = 0; i < singlepnextsave.size(); ++i)
+			for (size_t i = 0; i < singlepnextsave.size(); ++i)
 			{
 				if (i == 0)
 				{
