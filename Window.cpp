@@ -241,10 +241,10 @@ BOOL WINAPI DllMain(HINSTANCE hinstDll, DWORD dwReason, LPVOID lpReserved)
 	return TRUE;
 }
 
-PyMODINIT_FUNC _PyInit_pyxie();
+PyMODINIT_FUNC _PyInit__pyxie();
 
-PyMODINIT_FUNC PyInit_pyxie() {
+PyMODINIT_FUNC PyInit__pyxie() {
 	CreateApprication();
-	return _PyInit_pyxie();
+	return _PyInit__pyxie();
 }
 

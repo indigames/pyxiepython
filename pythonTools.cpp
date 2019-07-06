@@ -132,7 +132,7 @@ namespace pyxie
 		tools_methods								// Structure that defines the methods of the module
 	};
 
-	PyMODINIT_FUNC PyInit_pyxietools() {
+	PyMODINIT_FUNC PyInit__pyxietools() {
 		PyObject* module = PyModule_Create(&tools_module);
 
 		if (!ImportPyxie()) {

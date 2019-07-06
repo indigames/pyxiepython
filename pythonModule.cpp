@@ -138,7 +138,7 @@ namespace pyxie
 		pyxie_methods							// Structure that defines the methods of the module
 	};
 
-	PyMODINIT_FUNC _PyInit_pyxie() {
+	PyMODINIT_FUNC _PyInit__pyxie() {
 		PyObject *module = PyModule_Create(&pyxie_module);
 
 		if (!ImportVMath()) {
