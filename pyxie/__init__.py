@@ -3,6 +3,7 @@ pyxie game engine
 """
 from pyxie._pyxie import *
 
+
 SAMPLERSTATE_WRAP = 0
 SAMPLERSTATE_MIRROR = 1
 SAMPLERSTATE_CLAMP = 2
