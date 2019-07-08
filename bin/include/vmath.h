@@ -618,7 +618,7 @@ inline void vmath_vect_xaxis(float* out, int d) { out[0] = 1.0f; out[1] = 0.0f; 
 inline void vmath_vect_yaxis(float* out, int d) { out[0] = 0.0f; out[1] = 1.0f; if (d > 2) { out[2] = 0.0f; if (d > 3) { out[3] = 0.0f; } } }
 inline void vmath_vect_zaxis(float* out, int d) { out[0] = 0.0f; out[1] = 0.0f; if (d > 2) { out[2] = 1.0f; if (d > 3) { out[3] = 0.0f; } } }
 inline void vmath_vect_waxis(float* out, int d) { out[0] = 0.0f; out[1] = 0.0f; if (d > 2) { out[2] = 0.0f; if (d > 3) { out[3] = 1.0f; } } }
-inline void vmath_vect_set(float x, float y, float z, float w, int d, float* out) {	out[0] = x; if (d > 2) { out[1] = y; if (d > 3) { out[2] = z; out[3] = w; } } }
+inline void vmath_vect_set(float x, float y, float z, float w, int d, float* out) {	out[0] = x; out[1] = y; if (d > 2) { out[2] = z;  if (d > 3) { out[3] = w; } } }
 
 inline void vmath_mat_rotationX(float radians, int md, float* out)
 {
