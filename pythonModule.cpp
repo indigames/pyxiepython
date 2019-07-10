@@ -3,6 +3,7 @@
 #include <cmath>
 #include "pythonResource.h"
 #include "Backyard.h"
+#include "pyxieFios.h"
 
 #include "pyxieTouchManager.h"
 #include "pyxieSystemInfo.h"
@@ -14,6 +15,20 @@ extern void pyxieShowWindow(bool show, int cx, int cy);
 
 namespace pyxie
 {
+	static PyObject* pyxie_setRoot(PyObject* self, PyObject* args) {
+		char* path = nullptr;
+		if (!PyArg_ParseTuple(args, "s", &path)) return NULL;
+		pyxieFios::Instance().SetRoot(path);
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	static PyObject* pyxie_getRoot(PyObject* self) {
+		const char* root = pyxieFios::Instance().GetRoot();
+		return _PyUnicode_FromASCII(root, strlen(root));
+	}
+
+
 	static PyObject *pyxie_sync(PyObject *self)
 	{
 		Backyard::Instance().SyncPython();
@@ -126,6 +141,8 @@ namespace pyxie
 		{ "window", (PyCFunction)pyxie_window, METH_VARARGS },
 		{ "singleTouch", (PyCFunction)pyxie_singleTouch, METH_VARARGS },
 		{ "viewSize", (PyCFunction)pyxie_viewSize, METH_NOARGS },
+		{ "setRoot", (PyCFunction)pyxie_setRoot, METH_VARARGS },
+		{ "getRoot", (PyCFunction)pyxie_getRoot, METH_NOARGS },
 
 	{ nullptr, nullptr, 0, nullptr }
 	};
