@@ -19,6 +19,7 @@ class ImgiPyxieRenderer(object):
         self.refresh_font_texture()
 
     def render(self, draw_data):
+
         io = self.io
         display_width, display_height = io.display_size
         fb_width = int(display_width * io.display_fb_scale[0])
@@ -56,7 +57,7 @@ class ImgiPyxieRenderer(object):
                 self.editableFigure.setDrawSetRenderState(mesh_name,drawset, "cull_face_enable", False)
                 self.editableFigure.setDrawSetRenderState(mesh_name,drawset, "depth_test_enable", False)
 
-                
+
                 idx_buffer_offset += command.elem_count * imgui.INDEX_SIZE
                 drawset+=1
             idx+=1

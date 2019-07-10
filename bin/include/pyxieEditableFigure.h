@@ -217,7 +217,6 @@ namespace pyxie
 		std::vector<FigureMaterialParam>* states;
 	};
 
-
 	struct EditableMesh {
 		uint32_t nameHash;
 		uint32_t materialNameHash;
@@ -236,12 +235,6 @@ namespace pyxie
 		uint32_t indexSize;
 		uint32_t primitiveType;
 
-		//---------------------------------------
-		bool resetVBO;
-		uint32_t vbo[2];
-		uint32_t vao;
-
-		//---------------------------------------
 		bool skipRender;
 		bool continuesIndexes;
 		uint32_t numTryStrips;
@@ -251,7 +244,20 @@ namespace pyxie
 		uint32_t maxSkinWeightsPerVertex;
 		bool outsource;
 		std::vector<DrawSet>* drawSet;
+
+		int vboNo;
+		bool resetvbo;
 	};
+
+	struct VBO
+	{
+		bool reset;
+		EditableMesh* mesh;
+		uint32_t vbo[2];
+		uint32_t vao;
+	};
+
+
 
 	typedef void(*CustomDataCallback) (pyxieMemoryWriter& writer, void* customData);
 
@@ -262,6 +268,7 @@ namespace pyxie
 		void* baseAnimeset;
 		float* skinningMatrices;
 		float* inbindSkinningMatrices;
+		std::vector<VBO> vbos;
 	protected:
 		std::vector<EnvironmentSource> figureEnvironments;
 		std::vector<FigureCamera> figureCameras;
@@ -327,6 +334,8 @@ namespace pyxie
 		void SaveLights(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
 		void SaveCameras(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
 
+		void ResetVertexBuffers();
+		int NewVBO();
 
 		friend class pyxieColladaLoader;
 	};
