@@ -323,6 +323,7 @@ namespace pyxie
 		Mat4		proj;
 		Mat4		viewProj;
 		Mat4		invView;
+		Mat4		invWorld;
 		Mat4		tview;
 		Mat4		tproj;
 		Mat4		tviewProj;

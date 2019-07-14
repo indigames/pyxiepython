@@ -269,6 +269,7 @@ namespace pyxie
 		float* skinningMatrices;
 		float* inbindSkinningMatrices;
 		std::vector<VBO> vbos;
+		std::vector<std::string> jointNames;
 	protected:
 		std::vector<EnvironmentSource> figureEnvironments;
 		std::vector<FigureCamera> figureCameras;

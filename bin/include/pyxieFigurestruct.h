@@ -52,7 +52,7 @@ namespace pyxie
 
 
 	struct Sampler {
-		pyxieTexture* tex;
+		align64(pyxieTexture*, tex);
 		uint32_t textureNameIndex;
 		SamplerState samplerState;
 		uint16_t samplerSlot;
@@ -250,7 +250,7 @@ namespace pyxie
 		uint16_t numAnimes;
 		uint32_t pad0;
 		align64(void*, skeleton);
-		align64(void**, animations);
+		align64(uint64_t*, animations);
 		align64(FigureMesh*,meshes);
 		align64(float*, inbindPoses);
 		align64(FigureMaterial*,mates);

@@ -54,6 +54,8 @@ namespace pyxie
 		void Clone(bool afterFinishBuild);
 		RESOURCETYPE ResourceType() { return FIGURETYPE; }
 
+		void Dump(const char* file);
+			
 		virtual void Pose();
 		virtual void Render();
 		void Step(float elapsedTime);

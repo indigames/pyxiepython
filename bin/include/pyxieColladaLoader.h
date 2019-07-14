@@ -26,7 +26,7 @@ namespace pyxie
 	class PYXIE_EXPORT pyxieColladaLoader : public pyxieObject
 	{
 		//std::vector<TextureSource> textureSources;
-		std::vector<std::string> jointNames;
+		//std::vector<std::string> jointNames;
 
 	public:
 		pyxieColladaLoader();

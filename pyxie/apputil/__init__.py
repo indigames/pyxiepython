@@ -3,17 +3,18 @@ pyxie game engine \n
 apprication utilities
 """
 import pyxie
-import requests
-import json
-import hashlib
 import os.path
-
-PYXIE_DEV_URL = 'https://pyxieapp.appspot.com'
 
 def createSprite(width:float=100, height:float=100, texture:str=None, uv_left_top:tuple=(0,0), uv_right_bottom:tuple=(1,1)):
     """
-    Create Visible 2D Rectangle \n
-    return : editableFigure
+    Create Visible 2D Rectangle
+
+    :param width: width of sprite
+    :param height: height of sprite
+    :param texture: texture file name
+    :param uv_left_top: texture uv value of left top cornar
+    :param uv_right_bottom: texture uv value of right bottom cornar
+    :return: editableFigure
     """
     gen = pyxie.shaderGenerator()
     if texture != None:
@@ -46,7 +47,8 @@ def createSprite(width:float=100, height:float=100, texture:str=None, uv_left_to
 def createBox(points):
     """
     Create Visible 2D Rectangle \n
-    return : editableFigure
+    :param points:
+    :return: editableFigure
     """
 
     gen = pyxie.shaderGenerator()
@@ -67,6 +69,11 @@ def createBox(points):
     return efig
 
 def makeDirectories(dir):
+    """
+    Make local directory recursive
+    :param dir: file path to make directory
+    :return: None
+    """
     path = os.path.normpath(dir)
 
     list = []
@@ -93,38 +100,17 @@ def makeDirectories(dir):
             os.mkdir(path)
         i-=1
 
-def devserver_ls(dir):
-    url = PYXIE_DEV_URL + '/ls'
-    param = {'directory': dir}
-    response = requests.post(url, param)
-    list = None
-    if response.status_code == 200:
-        list = json.loads(response.text)
-    return list
+def platformName(platform):
+    """
+    Return the name corresponding to the platform type
 
-def devserver_download(src,dst):
-    list = devserver_ls(src)
-    if list is None: return
-    url = PYXIE_DEV_URL+'/download'
-
-    for key, val in list.items():
-        localHash = ""
-        path = dst+'/'+key
-        if os.path.exists(path):
-            with open(path, 'rb') as f:
-                fileDataBinary = open(path, 'rb').read()
-                if len(fileDataBinary) != 0:
-                    hash = hashlib.md5()
-                    hash.update(fileDataBinary)
-                    localHash = hash.hexdigest()
-
-        if localHash != val['hash']:
-            param = {'directory':src,'file':key}
-            response = requests.post(url, param)
-            if response.status_code == 200:
-                with open(path, 'wb') as f:
-                    f.write(response.content)
-
-
-
-
+    :param platform: pyxie.TARGET_PLATFORM_XX
+    :return: string
+    """
+    if platform == pyxie.TARGET_PLATFORM_PC:
+        return 'pc'
+    if platform == pyxieTARGET_PLATFORM_IOS:
+        return 'ios'
+    if platform == pyxieTARGET_PLATFORM_ANDROID:
+        return 'android'
+    return 'unknown'

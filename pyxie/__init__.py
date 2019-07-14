@@ -1,8 +1,11 @@
 """
 pyxie game engine
 """
-from pyxie._pyxie import *
 
+try:
+    from pyxie._pyxie import *
+except ModuleNotFoundError:
+    from _pyxie import *
 
 SAMPLERSTATE_WRAP = 0
 SAMPLERSTATE_MIRROR = 1
@@ -14,3 +17,8 @@ SAMPLERSTATE_NEAREST_MIPMAP_NEAREST = 2
 SAMPLERSTATE_LINEAR_MIPMAP_NEAREST = 3
 SAMPLERSTATE_NEAREST_MIPMAP_LINEAR = 4
 SAMPLERSTATE_LINEAR_MIPMAP_LINEAR = 5
+
+TARGET_PLATFORM_PC = 0
+TARGET_PLATFORM_IOS = 1
+TARGET_PLATFORM_ANDROID = 2
+
