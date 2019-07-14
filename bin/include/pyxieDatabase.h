@@ -63,7 +63,7 @@ namespace pyxie
 		int CompressSize(int index);
 		int ExpandSize(int index);
 
-		ErrorCode ReadFile(const char* path, void*& outbuffer, int& outsize);
+		ErrorCode ReadFile(const char* path, void*& outbuffer, int& outsize, uint32_t aligh = 1);
 		ErrorCode ReadFile(int index, void* inbuff, void* outbuff);
 
 		uint32_t NumFiles() { return header ? header->numFiles : 0; }

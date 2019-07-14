@@ -35,7 +35,7 @@ namespace pyxie
 		void BuildResource(pyxieResource* res);
 		bool DeleteUnused();
 		bool DeleteDaemon();
-		ErrorCode ReadFile(const char* inputPath, void*& outbuffer, int& outsize);
+		ErrorCode ReadFile(const char* inputPath, void*& outbuffer, int& outsize, uint32_t align=1);
 		pyxieDatabase* GetDB(const char* inputPath, int& indexOfEmbedFileTop);
 	};
 }
