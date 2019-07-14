@@ -1,6 +1,5 @@
 import imgui
 import pyxie
-import ctypes
 import pyvmath
 
 class ImgiPyxieRenderer(object):

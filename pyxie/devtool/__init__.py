@@ -17,7 +17,7 @@ from pyxie import apputil
 try:
     from pyxie.devtool._pyxietools import *
 except ModuleNotFoundError:
-    import _pyxietools
+    from _pyxietools import*
 from pyxie import apputil
 from pyxie.apputil import launch_server
 
@@ -196,6 +196,7 @@ def convertAssets(src,dst,platform, unit=1.0):
                 allTextures[inputimage] = tex;
                 inputimage = inputimage.replace('\\', '/')
                 inputimage = removeRoot(inputimage,src);
+                inputimage,ext = os.path.splitext(inputimage)
                 newTex = {'path':inputimage, 'normal': tex['normal'], 'wrap': tex['wrap']}
                 tmpfig.replaceTextureSource(tex, newTex)
 
