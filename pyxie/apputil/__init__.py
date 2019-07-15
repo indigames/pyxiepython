@@ -4,8 +4,10 @@ apprication utilities
 """
 import pyxie
 import os.path
+import pyvmath as vmath
 
-def createSprite(width:float=100, height:float=100, texture:str=None, uv_left_top:tuple=(0,0), uv_right_bottom:tuple=(1,1)):
+
+def createSprite(width:float=100, height:float=100, texture:str=None, uv_left_top:tuple=(0,0), uv_right_bottom:tuple=(1,1), normal=None):
     """
     Create Visible 2D Rectangle
 
@@ -27,15 +29,24 @@ def createSprite(width:float=100, height:float=100, texture:str=None, uv_left_to
 
     w = width/2
     h = height/2
-    points = (-w,h, w,h, -w,-h, w,-h)
+    points = ((-w,h,0.0), (w,h,0.0), (-w,-h,0.0), (w,-h,0.0))
     uvs = (0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0)
     tris = (0, 2, 1, 1, 2, 3)
 
-    efig.setVertexElements("mesh", efig.VertexAttribure_POSITION, 0, 4, points, 2)
-    efig.setVertexElements("mesh", efig.VertexAttribure_UV0, 0, 4, uvs, 2)
+    if normal is not None:
+        newpoints = []
+        nom0 = (0, 0, 1)
+        mat = vmath.mat33(vmath.quat_rotation(nom0, normal))
+        for p in points:
+            newpoints.append(mat * p)
+        points = newpoints
+
+    efig.setVertexElements("mesh", efig.VertexAttribure_POSITION, points)
+    efig.setVertexElements("mesh", efig.VertexAttribure_UV0,uvs)
     efig.setTriangles("mesh", 0, 2, tris);
     efig.addJoint("joint");
     efig.setMaterialParam("mate", "DiffuseColor", (1.0, 1.0, 1.0, 1.0));
+    #efig.setMaterialRenderState("mate", "cull_face_enable", False)
 
     if texture != None:
         efig.setMaterialParamTexture("mate", "ColorSampler", texture,
@@ -114,3 +125,4 @@ def platformName(platform):
     if platform == pyxieTARGET_PLATFORM_ANDROID:
         return 'android'
     return 'unknown'
+

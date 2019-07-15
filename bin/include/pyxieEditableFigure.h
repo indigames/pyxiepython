@@ -322,6 +322,8 @@ namespace pyxie
 
 		int FindSkeketonIndex(const char* jointName);
 
+		static const VertexAttribute& GetVertexAttribute(AttributeID id);
+
 	protected:
 		void ConvertGPUSkinningScene(uint32_t bonePaletteSize);
 		bool ExportSkeleton(pyxieMemostream* pStream, const Skeleton* skeleton, CustomDataCallback customDataCallback, void* customData);
