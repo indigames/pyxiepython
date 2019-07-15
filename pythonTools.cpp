@@ -127,7 +127,7 @@ namespace pyxie
 	static PyModuleDef tools_module = {
 		PyModuleDef_HEAD_INIT,
 		"pyxietools",								// Module name to use with Python import statements
-		"Provides some functions, but faster",		// Module description
+		"pyxie deverop tool",		// Module description
 		0,
 		tools_methods								// Structure that defines the methods of the module
 	};

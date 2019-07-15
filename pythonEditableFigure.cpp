@@ -139,76 +139,27 @@ namespace pyxie
 		//efig.setVertexElemetns("mesh01", efig.ElementType_POSITION, 0, 4, points)
 		char* meshName;
 		int vertAttr;
-		int offset;
-		int numPoints;
+		int offset = 0;
 		PyObject* points;
-		int inputVertexSize;
 
-		if (PyArg_ParseTuple(args, "siiiOi", &meshName, &vertAttr, &offset, &numPoints, &points, &inputVertexSize)) {
+		if (PyArg_ParseTuple(args, "siO|i", &meshName, &vertAttr, &points, &offset)) {
 			if (vertAttr < 1 || vertAttr >= NUM_ATTRIBUTE_ID) {
 				PyErr_SetString(PyExc_TypeError, "The value of vertexAttribure is incorrect.");
 				return NULL;
 			}
-			if (numPoints <= 0) {
-				PyErr_SetString(PyExc_TypeError, "numPoints must have a value of 1 or more .");
-				return NULL;
-			}
+			const VertexAttribute& attr = pyxieEditableFigure::GetVertexAttribute((AttributeID)vertAttr);
+			int inputVertexSize = attr.size;
+			int bufferSize = pyObjToFloatArray(points, nullptr, inputVertexSize);
 			int outputVertxSize = GetVertexAttribureSize((AttributeID)vertAttr);
-			float* buffer = (float*)PYXIE_MALLOC(numPoints* sizeof(float)* outputVertxSize);
-			MemoryCleaner creaner(buffer);
-			float* bufferPtr = buffer;
-
-			int type = 0;
-			if (PyTuple_Check(points)) type = 1;
-			else if (PyList_Check(points)) type = 2;
-			if (type == 0) {
-				PyErr_SetString(PyExc_TypeError, "points must be tuple or list of float value.");
+			if (outputVertxSize == 0) {
+				PyErr_SetString(PyExc_TypeError, "Parameter error.");
 				return NULL;
 			}
 
-			int inSize = (int)(type==1?PyTuple_Size(points): PyList_Size(points)) / inputVertexSize;
-
-			for (int i = 0; i < numPoints; i++) {
-				int outcount = 0;
-				int idx = i % inSize;
-				for (int j = 0; j < inputVertexSize; j++) {
-
-					PyObject* value = type == 1 ? PyTuple_GET_ITEM(points, idx * inputVertexSize + j)
-						: PyList_GET_ITEM(points, idx * inputVertexSize + j);
-
-					if (PyFloat_Check(value)) {
-						double d = PyFloat_AsDouble(value);
-						*bufferPtr = (float)d;
-						bufferPtr++;
-						outcount++;
-					}
-					else if (PyTuple_Check(value)) {
-						int s = (int)PyTuple_Size(value);
-						for (int k = 0; k < s; k ++ ) {
-							PyObject* v2 = PyTuple_GET_ITEM(value, k);
-							if (PyFloat_Check(v2)) {
-								double d = PyFloat_AsDouble(v2);
-								*bufferPtr = (float)d;
-								bufferPtr++;
-								outcount++;
-							}
-							else {
-								PyErr_SetString(PyExc_TypeError, "points must be tuple or list of float value.");
-								return NULL;
-							}
-						}
-					}
-					else {
-						PyErr_SetString(PyExc_TypeError, "points must be tuple or list of float value.");
-						return NULL;
-					}
-				}
-				for (int j = 0; j < (outputVertxSize - outcount); j++) {
-					*bufferPtr = 0.0f;
-					bufferPtr++;
-				}
-			}
-			self->editablefigure->SetVertexValues(meshName, (AttributeID)vertAttr, offset, buffer, numPoints);
+			float* buffer = (float*)PYXIE_MALLOC(bufferSize * sizeof(float));
+			MemoryCleaner creaner(buffer);
+			pyObjToFloatArray(points, buffer, inputVertexSize);
+			self->editablefigure->SetVertexValues(meshName, (AttributeID)vertAttr, offset, buffer, bufferSize / inputVertexSize);
 		}
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -553,17 +504,12 @@ namespace pyxie
 	static PyObject* editablefigure_setVertexPtr(editablefigure_obj* self, PyObject* args) {
 
 		char* nodename = nullptr;
-		PyObject* ptr = nullptr;
-		uint32_t numVerts = 0;
+		PyObject* ptr;
+		uint64_t numVerts = 0;
 		PyObject* attr= nullptr;
-		if (!PyArg_ParseTuple(args, "sOiO", &nodename, &ptr, &numVerts, &attr)) {
+		if (!PyArg_ParseTuple(args, "sOkO", &nodename, &ptr, &numVerts, &attr)) {
 			return NULL;
 		}
-		if (!PyLong_Check(ptr)){
-			PyErr_SetString(PyExc_TypeError, "parameter error");
-			return NULL;
-		}
-
 		uint32_t numAttr = 0;
 		VertexAttribute attribute[NUM_ATTRIBUTE_ID];
 		if (PyTuple_Check(attr)) {
@@ -594,8 +540,12 @@ namespace pyxie
 			PyErr_SetString(PyExc_TypeError, "attribute param error ((id,size,nom,type),(),()...)");
 			return NULL;
 		}
+		void* vrts;
+		if(sizeof(void*) == 8)
+			vrts = (void*)PyLong_AsLongLong(ptr);
+		else
+			vrts = (void*)PyLong_AsLong(ptr);
 
-		void* vrts = (void*)PyLong_AsLong(ptr);
 		if (!self->editablefigure->SetVertexPointer(nodename, vrts, numVerts, attribute, numAttr)) {
 			PyErr_SetString(PyExc_TypeError, "parameter error.");
 			return NULL;
@@ -607,18 +557,20 @@ namespace pyxie
 	static PyObject* editablefigure_setTrianglePtr(editablefigure_obj* self, PyObject* args) {
 
 		char* nodename = nullptr;
-		PyObject* ptr = nullptr;
-		uint32_t numTriangles = 0;
+		PyObject* ptr;
+		uint64_t numTriangles = 0;
 		uint32_t size = 2;
 
-		if (!PyArg_ParseTuple(args, "sOi|i", &nodename, &ptr, &numTriangles, &size)) {
+		if (!PyArg_ParseTuple(args, "sOk|i", &nodename, &ptr, &numTriangles, &size)) {
 			return NULL;
 		}
-		if (!PyLong_Check(ptr)) {
-			PyErr_SetString(PyExc_TypeError, "parameter error");
-			return NULL;
-		}
-		void* triangles = (void*)PyLong_AsLong(ptr);
+
+		void* triangles;
+		if (sizeof(void*) == 8)
+			triangles = (void*)PyLong_AsLongLong(ptr);
+		else
+			triangles = (void*)PyLong_AsLong(ptr);
+
 		if (!self->editablefigure->SetIndexPointer(nodename, triangles, numTriangles, size)) {
 			PyErr_SetString(PyExc_TypeError, "parameter error.");
 			return NULL;

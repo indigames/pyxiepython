@@ -81,6 +81,7 @@ namespace pyxie {
 	extern PyTypeObject ShaderGeneratorType;
 
 	float* pyObjToFloat(PyObject* obj, float* f, int& d);
+	int pyObjToFloatArray(PyObject* obj, float* f, int numElement);
 
 	bool ImportVMath();
 

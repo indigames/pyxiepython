@@ -59,4 +59,84 @@ namespace pyxie {
 		}
 		return f;
 	}
+
+
+	int pyObjToFloatArray(PyObject* obj, float* f, int numElement) {
+
+		if (numElement > 4) numElement = 4;
+
+		int totalCount = 0;
+		int type = -1;
+		if (PyTuple_Check(obj)) type = 0;
+		else if (PyList_Check(obj))  type = 1;
+		if (type == -1) return 0;
+
+		int elementCount = 0;
+		int numElem = (type == 0) ? PyTuple_Size(obj) : PyList_Size(obj);
+		for (int i = 0; i < numElem; i++) {
+			PyObject* element = (type == 0) ? PyTuple_GET_ITEM(obj, i) : PyList_GET_ITEM(obj, i);
+			if (element->ob_type == _Vec2Type || element->ob_type == _Vec3Type || element->ob_type == _Vec4Type || element->ob_type == _QuatType) {
+				int d = ((vec_obj*)element)->d;
+				float* v = ((vec_obj*)element)->v;
+				for (int j = 0; j < d; j++) {
+					if(f)f[totalCount] = v[j];
+					totalCount++;
+					elementCount++;
+					if (elementCount >= numElement) break;
+				}
+				for (int j = elementCount; j < numElement; j++) {
+					if (f)f[totalCount] = 0.0f;
+					totalCount++;
+				}
+				elementCount=0;
+			}
+			else if (PyFloat_Check(element) || PyLong_Check(element)) {
+				if (f)f[totalCount] = (float)PyFloat_AsDouble(element);
+				totalCount++;
+				elementCount++;
+				if (elementCount >= numElement) elementCount=0;
+			}
+			else if (PyTuple_Check(element)) {
+				int d = (int)PyTuple_Size(element);
+				for (int j = 0; j < d; j++) {
+					PyObject* val = PyTuple_GET_ITEM(element, j);
+					if (f)f[totalCount] = (float)PyFloat_AsDouble(val);
+					totalCount++;
+					elementCount++;
+					if (elementCount >= numElement) break;
+				}
+				for (int j = elementCount; j < numElement; j++) {
+					if (f)f[totalCount] = 0.0f;
+					totalCount++;
+				}
+				elementCount = 0;
+			}
+			else if (PyList_Check(element)) {
+				int d = (int)PyList_Size(element);
+				if (d > 4) d = 4;
+				for (int j = 0; j < d; j++) {
+					PyObject* val = PyList_GET_ITEM(element, j);
+					if (f)f[totalCount] = (float)PyFloat_AsDouble(val);
+					totalCount++;
+					elementCount++;
+					if (elementCount >= numElement) break;
+				}
+				for (int j = elementCount; j < numElement; j++) {
+					if (f)f[totalCount] = 0.0f;
+					totalCount++;
+				}
+				elementCount = 0;
+			}
+		}
+		if (elementCount > 0 && elementCount < elementCount) {
+			for (int j = elementCount; j < numElement; j++) {
+				if (f)f[totalCount] = 0.0f;
+				totalCount++;
+			}
+		}
+		return totalCount;
+	}
+
+
+
 }

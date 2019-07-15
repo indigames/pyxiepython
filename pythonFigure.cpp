@@ -148,10 +148,18 @@ namespace pyxie
 		return Py_None;
 	}
 
-	static PyObject *figure_SetTime(figure_obj *self, PyObject *args){
+	static PyObject* figure_SetTime(figure_obj* self, PyObject* args) {
 		float s;
 		if (!PyArg_ParseTuple(args, "f", &s))return NULL;
 		self->figure->SetEvalTime(s);
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	static PyObject* figure_Dump(figure_obj* self, PyObject* args) {
+		char* file;
+		if (!PyArg_ParseTuple(args, "s", &file))return NULL;
+		self->figure->Dump(file);
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
@@ -162,7 +170,9 @@ namespace pyxie
 		{ "getEnvironment", (PyCFunction)figure_GetEnvironment, METH_NOARGS },
 		{ "step", (PyCFunction)figure_Step, METH_VARARGS },
 		{ "setTime", (PyCFunction)figure_SetTime, METH_VARARGS },
-		{ NULL,	NULL }
+		//{ "dump", (PyCFunction)figure_Dump, METH_VARARGS },
+
+	{ NULL,	NULL }
 	};
 
 	PyGetSetDef figure_getsets[] = {
