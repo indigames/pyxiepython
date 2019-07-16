@@ -129,7 +129,7 @@ def convertAssets(src,dst,platform, unit=1.0):
         for d in files:
             _, ext = os.path.splitext(d)
             if ext is '':
-                rv = findFile(imageDirectory, file, os.path.join(dir, d))
+                rv = findFileFromDiorectoryTree(imageDirectory, file, os.path.join(dir, d))
                 if rv: return rv
         return None
     def findConvertSet(path):

@@ -43,7 +43,7 @@ def createSprite(width:float=100, height:float=100, texture:str=None, uv_left_to
 
     efig.setVertexElements("mesh", efig.VertexAttribure_POSITION, points)
     efig.setVertexElements("mesh", efig.VertexAttribure_UV0,uvs)
-    efig.setTriangles("mesh", 0, 2, tris);
+    efig.setTriangles("mesh", tris);
     efig.addJoint("joint");
     efig.setMaterialParam("mate", "DiffuseColor", (1.0, 1.0, 1.0, 1.0));
     #efig.setMaterialRenderState("mate", "cull_face_enable", False)
@@ -70,7 +70,7 @@ def createBox(points):
     efig.addMaterial("mate01", gen)
     efig.addMesh("mesh01", "mate01");
 
-    efig.setVertexElements("mesh01",efig.VertexAttribure_POSITION, 0, 4, points, 1)
+    efig.setVertexElements("mesh01",efig.VertexAttribure_POSITION, points)
 
     tris = (0,1,3,  1,2,3)
     efig.setTriangles("mesh01", 0, 2, tris);
