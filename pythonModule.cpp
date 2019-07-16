@@ -4,6 +4,7 @@
 #include "pythonResource.h"
 #include "Backyard.h"
 #include "pyxieFios.h"
+#include "pyxieTime.h"
 
 #include "pyxieTouchManager.h"
 #include "pyxieSystemInfo.h"
@@ -15,6 +16,10 @@ extern void pyxieShowWindow(bool show, int cx, int cy);
 
 namespace pyxie
 {
+	static PyObject* pyxie_elapsedTime(PyObject* self) {
+		return PyFloat_FromDouble(pyxieTime::Instance().GetElapsedTime());
+	}
+
 	static PyObject* pyxie_setRoot(PyObject* self, PyObject* args) {
 		char* path = nullptr;
 		if (!PyArg_ParseTuple(args, "s", &path)) return NULL;
@@ -137,6 +142,7 @@ namespace pyxie
 	}
 
 	static PyMethodDef pyxie_methods[] = {
+		{"getElapsedTime", (PyCFunction)pyxie_elapsedTime, METH_NOARGS },
 		{ "swap", (PyCFunction)pyxie_sync, METH_NOARGS },
 		{ "window", (PyCFunction)pyxie_window, METH_VARARGS },
 		{ "singleTouch", (PyCFunction)pyxie_singleTouch, METH_VARARGS },

@@ -84,19 +84,10 @@ namespace pyxie
 		return 0;
 	}
 
-
-	PyObject *figure_getSlotBase(figure_obj *self) { return PyLong_FromLong(pyxieFigure::SlotBase); }
-	PyObject *figure_getSlotA0(figure_obj *self) { return PyLong_FromLong(pyxieFigure::SlotA0); }
-	PyObject *figure_getSlotA1(figure_obj *self) { return PyLong_FromLong(pyxieFigure::SlotA1); }
-	PyObject *figure_getSlotB0(figure_obj *self) { return PyLong_FromLong(pyxieFigure::SlotB0); }
-	PyObject *figure_getSlotB1(figure_obj *self) { return PyLong_FromLong(pyxieFigure::SlotB1); }
-	PyObject *figure_getSlotC0(figure_obj *self) { return PyLong_FromLong(pyxieFigure::SlotC0); }
-	PyObject *figure_getSlotC1(figure_obj *self) { return PyLong_FromLong(pyxieFigure::SlotC1); }
-
 	static PyObject *figure_BindAnimator(figure_obj *self, PyObject *args)
 	{
 		int slot = 0;
-		PyObject* arg2;
+		PyObject* arg2=nullptr;
 
 		if (PyArg_ParseTuple(args, "i|O", &slot, &arg2)){
 			if (arg2) {
@@ -164,12 +155,30 @@ namespace pyxie
 		return Py_None;
 	}
 
+	static PyObject* figure_setBlendingWeight(figure_obj* self, PyObject* args) {
+		int slot;
+		float value;
+		if (!PyArg_ParseTuple(args, "if", &slot, &value))return NULL;
+		self->figure->SetBlendingWeight(slot, value);
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	static PyObject* figure_getBlendingWeight(figure_obj* self, PyObject* args) {
+		int slot;
+		if (!PyArg_ParseTuple(args, "slot", &slot))return NULL;
+		float value  = self->figure->GetBlendingWeight(slot);
+		return PyFloat_FromDouble(value);
+	}
+
 	PyMethodDef figure_methods[] = {
 		{ "connectAnimator", (PyCFunction)figure_BindAnimator, METH_VARARGS },
 		{ "getCamera", (PyCFunction)figure_GetCamera, METH_VARARGS },
 		{ "getEnvironment", (PyCFunction)figure_GetEnvironment, METH_NOARGS },
 		{ "step", (PyCFunction)figure_Step, METH_VARARGS },
 		{ "setTime", (PyCFunction)figure_SetTime, METH_VARARGS },
+		{ "setBlendingWeight", (PyCFunction)figure_setBlendingWeight, METH_VARARGS },
+		{ "getBlendingWeight", (PyCFunction)figure_getBlendingWeight, METH_VARARGS },
 		//{ "dump", (PyCFunction)figure_Dump, METH_VARARGS },
 
 	{ NULL,	NULL }
@@ -179,13 +188,6 @@ namespace pyxie
 		{ const_cast<char*>("position"), (getter)figure_getPosition, (setter)figure_setPosition,NULL, NULL },
 		{ const_cast<char*>("rotation"), (getter)figure_getRotation, (setter)figure_setRotation,NULL, NULL },
 		{ const_cast<char*>("scale"),    (getter)figure_getScale,    (setter)figure_setScale,NULL, NULL },
-		{ const_cast<char*>("SlotBase"),  (getter)figure_getSlotBase,NULL,NULL, NULL },
-		{ const_cast<char*>("SlotA0"),    (getter)figure_getSlotA0,  NULL,NULL, NULL },
-		{ const_cast<char*>("SlotA1"),    (getter)figure_getSlotA1,  NULL,NULL, NULL },
-		{ const_cast<char*>("SlotB0"),    (getter)figure_getSlotB0,  NULL,NULL, NULL },
-		{ const_cast<char*>("SlotB1"),    (getter)figure_getSlotB1,  NULL,NULL, NULL },
-		{ const_cast<char*>("SlotC0"),    (getter)figure_getSlotC0,  NULL,NULL, NULL },
-		{ const_cast<char*>("SlotC1"),    (getter)figure_getSlotC1,  NULL,NULL, NULL },
 		{ NULL, NULL }
 	};
 

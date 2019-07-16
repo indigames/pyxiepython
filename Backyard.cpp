@@ -128,14 +128,16 @@ namespace pyxie {
 
 		pyxieRenderContext& renderContext = pyxieRenderContext::Instance();
 
+		bool clearColor = true;
 		for (auto itr = renderSets.begin(); itr != renderSets.end(); ++itr) {
-			renderContext.BeginScene(NULL, Vec4(0.2f, 0.6f, 0.8f, 1));
+			renderContext.BeginScene(NULL, Vec4(0.2f, 0.6f, 0.8f), clearColor);
 			(*itr).showcas->Update(0.0f);
 			(*itr).camera->Render();
 			(*itr).showcas->Render();
 			renderContext.EndScene();
 			(*itr).camera->DecReference();
 			(*itr).showcas->DecReference();
+			clearColor = false;
 		}
 		//imguiRender();
 		renderSets.clear();

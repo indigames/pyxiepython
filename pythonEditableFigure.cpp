@@ -129,11 +129,6 @@ namespace pyxie
 		return Py_None;
 	}
 
-	int GetVertexAttribureSize(AttributeID id) {
-		static int attrsize[] = { 0,3,3,3,3,2,2,2,2,4,4,4,1 };
-		return attrsize[id];
-	}
-
 	static PyObject* editablefigure_SetVertexElements(editablefigure_obj* self, PyObject* args)
 	{
 		//efig.setVertexElemetns("mesh01", efig.ElementType_POSITION, 0, 4, points)
@@ -150,12 +145,10 @@ namespace pyxie
 			const VertexAttribute& attr = pyxieEditableFigure::GetVertexAttribute((AttributeID)vertAttr);
 			int inputVertexSize = attr.size;
 			int bufferSize = pyObjToFloatArray(points, nullptr, inputVertexSize);
-			int outputVertxSize = GetVertexAttribureSize((AttributeID)vertAttr);
-			if (outputVertxSize == 0) {
+			if (bufferSize == 0) {
 				PyErr_SetString(PyExc_TypeError, "Parameter error.");
 				return NULL;
 			}
-
 			float* buffer = (float*)PYXIE_MALLOC(bufferSize * sizeof(float));
 			MemoryCleaner creaner(buffer);
 			pyObjToFloatArray(points, buffer, inputVertexSize);
@@ -165,48 +158,68 @@ namespace pyxie
 		return Py_None;
 	}
 
+
+	int pyObjToIntArray(PyObject* obj, uint32_t* idx) {
+
+		int totalCount = 0;
+		int type = -1;
+		if (PyTuple_Check(obj)) type = 0;
+		else if (PyList_Check(obj))  type = 1;
+		if (type == -1) return 0;
+
+		int elementCount = 0;
+		int numElem = (type == 0) ? PyTuple_Size(obj) : PyList_Size(obj);
+		for (int i = 0; i < numElem; i++) {
+			PyObject* element = (type == 0) ? PyTuple_GET_ITEM(obj, i) : PyList_GET_ITEM(obj, i);
+			if (PyLong_Check(element)) {
+				if (idx)idx[totalCount] = (float)PyLong_AsLong(element);
+				totalCount++;
+				elementCount++;
+				if (elementCount >= 3) elementCount = 0;
+			}
+			else if (PyTuple_Check(element)) {
+				int d = (int)PyTuple_Size(element);
+				for (int j = 0; j < d; j++) {
+					PyObject* val = PyTuple_GET_ITEM(element, j);
+					if (idx)idx[totalCount] = (float)PyLong_AsLong(val);
+					totalCount++;
+					elementCount++;
+					if (elementCount >= 3) break;
+				}
+				elementCount = 0;
+			}
+			else if (PyList_Check(element)) {
+				int d = (int)PyList_Size(element);
+				for (int j = 0; j < d; j++) {
+					PyObject* val = PyList_GET_ITEM(element, j);
+					if (idx)idx[totalCount] = (float)PyLong_AsLong(val);
+					totalCount++;
+					elementCount++;
+					if (elementCount >= 3) break;
+				}
+				elementCount = 0;
+			}
+		}
+		return totalCount;
+	}
+
+
 	static PyObject* editablefigure_SetTriangles(editablefigure_obj* self, PyObject* args)
 	{
-		//efig.setTriangles("mesh01", 0, 2, tris);
 		char* meshName;
-		int offset;
-		int numTris;
+		int offset=0;
 		PyObject* tris;
+		if (PyArg_ParseTuple(args, "sO|i", &meshName, &tris, &offset)) {
 
-		if (PyArg_ParseTuple(args, "siiO", &meshName, &offset, &numTris, &tris)) {
-
-			if (numTris <= 0) {
-				PyErr_SetString(PyExc_TypeError, "numTris must have a value of 1 or more .");
+			int bufferSize = pyObjToIntArray(tris, nullptr);
+			if (bufferSize == 0) {
+				PyErr_SetString(PyExc_TypeError, "Parameter error.");
 				return NULL;
 			}
-			uint32_t* buffer = (uint32_t*)PYXIE_MALLOC(numTris * sizeof(int) * 3);
+			uint32_t* buffer = (uint32_t*)PYXIE_MALLOC(bufferSize * sizeof(int));
 			MemoryCleaner creaner(buffer);
-			uint32_t* bufferPtr = buffer;
-
-			int type = 0;
-			if (PyTuple_Check(tris)) type = 1;
-			else if (PyList_Check(tris)) type = 2;
-			if (type == 0) {
-				PyErr_SetString(PyExc_TypeError, "points must be tuple or list of int value.");
-				return NULL;
-			}
-
-			int inSize = (int)(type == 1 ? PyTuple_Size(tris) : PyList_Size(tris)) / 3;
-
-			for (int i = 0; i < numTris; i++) {
-				int idx = i % inSize;
-				for (int j = 0; j < 3; j++) {
-					PyObject* value = type == 1 ? PyTuple_GET_ITEM(tris, idx * 3 + j)
-						: PyList_GET_ITEM(tris, idx * 3 + j);
-					if (!PyLong_Check(value)) {
-						PyErr_SetString(PyExc_TypeError, "points must be tuple or list of int value.");
-						return NULL;
-					}
-					*bufferPtr = (uint32_t)PyLong_AsLong(value);
-					bufferPtr++;
-				}
-			}
-			self->editablefigure->SetIndexValues(meshName, offset, buffer, numTris);
+			pyObjToIntArray(tris, buffer);
+			self->editablefigure->SetIndexValues(meshName, offset, buffer, bufferSize/3);
 		}
 		Py_INCREF(Py_None);
 		return Py_None;

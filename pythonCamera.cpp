@@ -59,6 +59,7 @@ namespace pyxie
 		float* v1 = pyObjToFloat((PyObject*)value, buff, d1);
 		if (!v1) return NULL;
 		self->camera->SetPosition(*((Vec3*)v1));
+		self->camera->Step(0.0f);
 		return 0;
 	}
 
@@ -220,7 +221,9 @@ namespace pyxie
 		float buff[4];
 		float* v1 = pyObjToFloat((PyObject*)value, buff, d1);
 		if (!v1) return NULL;
-		self->camera->SetPosition(*((Vec3*)v1));
+		self->camera->SetTarget(*((Vec3*)v1));
+		self->camera->Step(0.0f);
+
 		return 0;
 	}
 
