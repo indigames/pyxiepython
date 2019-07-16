@@ -73,7 +73,7 @@ def createBox(points):
     efig.setVertexElements("mesh01",efig.VertexAttribure_POSITION, points)
 
     tris = (0,1,3,  1,2,3)
-    efig.setTriangles("mesh01", 0, 2, tris);
+    efig.setTriangles("mesh", tris);
     efig.addJoint("joint01");
     efig.setMaterialParam("mate01", "DiffuseColor", (1.0, 1.0, 1.0, 1.0));
 
