@@ -416,7 +416,7 @@ inline void vmath_mat_from_quat(const float* quat, int md, float* out)
 	qyqy2 = (quat[1] * qy2);
 	qyqz2 = (quat[1] * qz2);
 	qyqw2 = (quat[3] * qy2);
-	qzqz2 = (quat[1] * qz2);
+	qzqz2 = (quat[2] * qz2);
 	qzqw2 = (quat[3] * qz2);
 
 	out[0] = (1.0f - qyqy2) - qzqz2;
