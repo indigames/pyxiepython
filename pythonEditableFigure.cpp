@@ -173,7 +173,7 @@ namespace pyxie
 		for (int i = 0; i < numElem; i++) {
 			PyObject* element = (type == 0) ? PyTuple_GET_ITEM(obj, i) : PyList_GET_ITEM(obj, i);
 			if (PyLong_Check(element)) {
-				if (idx)idx[totalCount] = (float)PyLong_AsLong(element);
+				if (idx)idx[totalCount] = PyLong_AsLong(element);
 				totalCount++;
 				elementCount++;
 				if (elementCount >= 3) elementCount = 0;
@@ -182,7 +182,7 @@ namespace pyxie
 				int d = (int)PyTuple_Size(element);
 				for (int j = 0; j < d; j++) {
 					PyObject* val = PyTuple_GET_ITEM(element, j);
-					if (idx)idx[totalCount] = (float)PyLong_AsLong(val);
+					if (idx)idx[totalCount] = PyLong_AsLong(val);
 					totalCount++;
 					elementCount++;
 					if (elementCount >= 3) break;
@@ -193,7 +193,7 @@ namespace pyxie
 				int d = (int)PyList_Size(element);
 				for (int j = 0; j < d; j++) {
 					PyObject* val = PyList_GET_ITEM(element, j);
-					if (idx)idx[totalCount] = (float)PyLong_AsLong(val);
+					if (idx)idx[totalCount] = PyLong_AsLong(val);
 					totalCount++;
 					elementCount++;
 					if (elementCount >= 3) break;
@@ -536,16 +536,16 @@ namespace pyxie
 					PyObject* tmp;
 					tmp = PyTuple_GET_ITEM(v, 0);
 					if(!PyLong_Check(tmp)) { numAttr = 0; break; }
-					attribute[i].id = PyLong_AsLong(tmp);
+					attribute[i].id = (uint8_t)PyLong_AsLong(tmp);
 					tmp = PyTuple_GET_ITEM(v, 1);
 					if (!PyLong_Check(tmp)) { numAttr = 0; break; }
-					attribute[i].size = PyLong_AsLong(tmp);
+					attribute[i].size = (uint16_t)PyLong_AsLong(tmp);
 					tmp = PyTuple_GET_ITEM(v, 2);
 					if (!PyLong_Check(tmp)) { numAttr = 0; break; }
-					attribute[i].normalize = PyLong_AsLong(tmp);
+					attribute[i].normalize = (uint8_t)PyLong_AsLong(tmp);
 					tmp = PyTuple_GET_ITEM(v, 3);
 					if (!PyLong_Check(tmp)) { numAttr = 0; break; }
-					attribute[i].type = PyLong_AsLong(tmp);
+					attribute[i].type = (uint16_t)PyLong_AsLong(tmp);
 				}
 				else { numAttr = 0; break; }
 			}

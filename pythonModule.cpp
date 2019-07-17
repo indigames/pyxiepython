@@ -149,6 +149,8 @@ namespace pyxie
 			return NULL;
 		pyxieSystemInfo& sysinfo = pyxieSystemInfo::Instance();
 		sysinfo.SetGemeScreenSize(length);
+		Py_INCREF(Py_None);
+		return Py_None;
 	}
 
 	static PyMethodDef pyxie_methods[] = {
