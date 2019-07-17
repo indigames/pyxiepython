@@ -31,7 +31,7 @@ namespace pyxie
 
 	PyTypeObject EnvironmentType = {
 		PyVarObject_HEAD_INIT(NULL, 0)
-		"pyxie.environment",				/* tp_name */
+		"environment",				/* tp_name */
 		sizeof(environment_obj),            /* tp_basicsize */
 		0,                                  /* tp_itemsize */
 		(destructor)environment_dealloc,	/* tp_dealloc */

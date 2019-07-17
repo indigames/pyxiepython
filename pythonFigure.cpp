@@ -194,7 +194,7 @@ namespace pyxie
 
 	PyTypeObject FigureType = {
 		PyVarObject_HEAD_INIT(NULL, 0)
-		"pyxie.figure",						/* tp_name */
+		"figure",						/* tp_name */
 		sizeof(figure_obj),                 /* tp_basicsize */
 		0,                                  /* tp_itemsize */
 		(destructor)figure_dealloc,			/* tp_dealloc */

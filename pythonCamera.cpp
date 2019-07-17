@@ -53,6 +53,7 @@ namespace pyxie
 		v3robj->d = 3;
 		return (PyObject*)v3robj;
 	}
+
 	int camera_setPosition(camera_obj* self, PyObject* value)
 	{
 		int d1;
@@ -158,21 +159,17 @@ namespace pyxie
 		self->camera->SetFarPlane((float)PyFloat_AsDouble(value));
 		return 0;
 	}
-	PyObject* camera_getMode(camera_obj* self) {
-		return PyFloat_FromDouble(self->camera->GetMode());
+	PyObject* camera_getLockon(camera_obj* self) {
+		return PyLong_FromLong(self->camera->GetLockon());
 	}
-	int camera_setMode(camera_obj* self, PyObject* value) {
+	int camera_setLockon(camera_obj* self, PyObject* value) {
 
 		if (!PyLong_Check(value)) {
 			PyErr_SetString(PyExc_TypeError, "Only FlyThru(0) or LookAt(1) can be set to mode.");
 			return -1;
 		}
-		uint32_t mode = (uint32_t)PyLong_AsLong(value);
-		if (mode > 1) {
-			PyErr_SetString(PyExc_TypeError, "Only FlyThru(0) or LookAt(1) can be set to mode.");
-			return -1;
-		}
-		self->camera->SetMode((pyxieCamera::Mode)mode);
+		bool lockon = (bool)PyLong_AsLong(value);
+		self->camera->LockonTarget(lockon);
 
 		return 0;
 	}
@@ -198,17 +195,18 @@ namespace pyxie
 		self->camera->SetTilt((float)PyFloat_AsDouble(value));
 		return 0;
 	}
-	PyObject* camera_getDistance(camera_obj* self) {
-		return PyFloat_FromDouble(self->camera->GetDistance());
+	PyObject* camera_getRoll(camera_obj* self) {
+		return PyFloat_FromDouble(self->camera->GetRoll());
 	}
-	int camera_setDistance(camera_obj* self, PyObject* value) {
+	int camera_setRoll(camera_obj* self, PyObject* value) {
 		if (!(PyFloat_Check(value) || PyLong_Check(value))) {
-			PyErr_SetString(PyExc_TypeError, "Only float value can be set to distance.");
+			PyErr_SetString(PyExc_TypeError, "Only float value can be set to tilt.");
 			return -1;
 		}
-		self->camera->SetDistance((float)PyFloat_AsDouble(value));
+		self->camera->SetRoll((float)PyFloat_AsDouble(value));
 		return 0;
 	}
+
 	PyObject* camera_getTarget(camera_obj* self) {
 		vec_obj* v3robj = PyObject_New(vec_obj, _Vec3Type);
 		if (!v3robj) return NULL;
@@ -337,10 +335,10 @@ namespace pyxie
 		{ const_cast<char*>("orthoWidth"),    (getter)camera_getOrthoWidth,    (setter)camera_setOrthoWidth,orthoWidth_doc, NULL },
 		{ const_cast<char*>("nearPlane"),    (getter)camera_getNearPlane,    (setter)camera_setNearPlane,nearPlane_doc, NULL },
 		{ const_cast<char*>("farPlane"),    (getter)camera_getFarPlane,    (setter)camera_setFarPlane,farPlane_doc, NULL },
-		{ const_cast<char*>("mode"),    (getter)camera_getMode,    (setter)camera_setMode,mode_doc, NULL },
+		{ const_cast<char*>("lockon"),    (getter)camera_getLockon,    (setter)camera_setLockon,lockon_doc, NULL },
 		{ const_cast<char*>("pan"),    (getter)camera_getPan,    (setter)camera_setPan,pan_doc, NULL },
 		{ const_cast<char*>("tilt"),    (getter)camera_getTilt,    (setter)camera_setTilt,tilt_doc, NULL },
-		{ const_cast<char*>("distance"),    (getter)camera_getDistance,    (setter)camera_setDistance,distance_doc, NULL },
+		{ const_cast<char*>("roll"),    (getter)camera_getRoll,    (setter)camera_setRoll,tilt_doc, NULL },
 		{ const_cast<char*>("target"),    (getter)camera_getTarget,    (setter)camera_setTarget,target_doc, NULL },
 		{ const_cast<char*>("orthographicProjection"),    (getter)camera_getOrthographicProjection,    (setter)camera_setOrthographicProjection,orthographicProjection_doc, NULL },
 		{ const_cast<char*>("screenScale"),    (getter)camera_getScreenScale,    (setter)camera_setScreenScale,screenScale_doc, NULL },
@@ -354,7 +352,7 @@ namespace pyxie
 
 	PyTypeObject CameraType = {
 		PyVarObject_HEAD_INIT(NULL, 0)
-		"pyxie.camera",						/* tp_name */
+		"camera",						/* tp_name */
 		sizeof(camera_obj),                 /* tp_basicsize */
 		0,                                  /* tp_itemsize */
 		(destructor)camera_dealloc,			/* tp_dealloc */

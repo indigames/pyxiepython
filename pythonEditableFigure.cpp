@@ -560,7 +560,7 @@ namespace pyxie
 		else
 			vrts = (void*)PyLong_AsLong(ptr);
 
-		if (!self->editablefigure->SetVertexPointer(nodename, vrts, numVerts, attribute, numAttr)) {
+		if (!self->editablefigure->SetVertexPointer(nodename, vrts, (uint32_t)numVerts, attribute, numAttr)) {
 			PyErr_SetString(PyExc_TypeError, "parameter error.");
 			return NULL;
 		}
@@ -585,7 +585,7 @@ namespace pyxie
 		else
 			triangles = (void*)PyLong_AsLong(ptr);
 
-		if (!self->editablefigure->SetIndexPointer(nodename, triangles, numTriangles, size)) {
+		if (!self->editablefigure->SetIndexPointer(nodename, triangles, (uint32_t)numTriangles, size)) {
 			PyErr_SetString(PyExc_TypeError, "parameter error.");
 			return NULL;
 		}
@@ -694,7 +694,7 @@ namespace pyxie
 
 	PyTypeObject EditableFigureType = {
 		PyVarObject_HEAD_INIT(NULL, 0)
-		"pyxie.editableFigure",				/* tp_name */
+		"editableFigure",				/* tp_name */
 		sizeof(editablefigure_obj),         /* tp_basicsize */
 		0,                                  /* tp_itemsize */
 		(destructor)editablefigure_dealloc,	/* tp_dealloc */

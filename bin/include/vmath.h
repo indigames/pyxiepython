@@ -894,6 +894,40 @@ inline void vmath_quat(const float* mat3, float* out)
 	out[3] = qw;
 }
 
+inline void vmath_auler(const float* mat3, float& tilt, float& pan, float& roll){
+
+	int d = 3;
+
+	//swap col row ?
+	float fSinX = -mat3[2 * d + 1];		//-a_matRotation.getElem(2, 1);
+
+	tilt = asinf(fSinX);
+
+	float	fSinY, fSinZ, fCosY, fCosZ;
+
+	if (1 - fabs(fSinX) > FLT_EPSILON)	// Gimbal lock?
+	{
+		fCosY = mat3[2 * d + 2];		//a_matRotation.getElem(2, 2);
+		fSinY = mat3[2 * d + 0];		//a_matRotation.getElem(2, 0);
+		pan = atan2f(fSinY, fCosY);
+
+		fCosZ = mat3[1 * d + 1];		//a_matRotation.getElem(1, 1);
+		fSinZ = mat3[0 * d + 1];		//a_matRotation.getElem(0, 1);
+		roll = atan2f(fSinZ, fCosZ);
+	}
+	else								// Gimbal lock has occurred
+	{
+		pan = 0;						// Yaw is undefined; just fix it
+
+		fCosZ = mat3[0 * d + 0];		//a_matRotation.getElem(0, 0);
+		fSinZ = mat3[0 * d + 2];		//a_matRotation.getElem(0, 2) * fSinX;
+		roll = atan2f(fSinZ, fCosZ);
+	}
+}
+
+
+
+
 #if 0
 void pyxieEulerAngles::SetEulerAngles(const Quat& a_quatRotation)
 {

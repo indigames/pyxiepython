@@ -22,15 +22,15 @@ PyDoc_STRVAR(window_doc,
 	"\n"\
 	"This function is ignored on the smartphone\n"\
 	"\n"\
-	"pyxie.window(show, width, hight)"
+	"pyxie.window(show, width, hight)\n"\
 	"\n"\
-	"Parameters"\
-	"----------"\
-	"show : bool"\
-	"    show the window if true, hide it if false"\
-	"width : int"\
-	"    The physical width of the window"\
-	"height : int"\
+	"Parameters\n"\
+	"----------\n"\
+	"show : bool\n"\
+	"    show the window if true, hide it if false\n"\
+	"width : int\n"\
+	"    The physical width of the window\n"\
+	"height : int\n"\
 	"    The physical height of the window");
 
 
@@ -40,15 +40,15 @@ PyDoc_STRVAR(singleTouch_doc,
 	"\n"\
 	"touchInfo = pyxie.singleTouch(fingerNo)\n"\
 	"\n"\
-	"Parameters"\
-	"----------"\
+	"Parameters\n"\
+	"----------\n"\
 	"fingerNo : int\n"\
 	"    What number finger touched the screen\n"\
 	"\n"\
 	"Returns\n"\
 	"-------\n"\
 	"touchInfo : dict\n"\
-	"   Dictionary containing touch information\n"\
+	"    Dictionary containing touch information\n"\
 	"    'id' : int\n"\
 	"        Finger id\n"\
 	"    'org_x' : int\n"\
@@ -111,8 +111,8 @@ PyDoc_STRVAR(setViewLength_doc,
 	"\n"\
 	"pyxie.setViewLength(length)\n"\
 	"\n"\
-	"Parameters"\
-	"----------"\
+	"Parameters\n"\
+	"----------\n"\
 	"length : float\n"\
 	"    length of virtual screen\n");
 
@@ -124,8 +124,8 @@ PyDoc_STRVAR(setRoot_doc,
 	"\n"\
 	"pyxie.setRoot(path)\n"\
 	"\n"\
-	"Parameters"\
-	"----------"\
+	"Parameters\n"\
+	"----------\n"\
 	"path : string\n"\
 	"    Full path of system root directory.");
 
