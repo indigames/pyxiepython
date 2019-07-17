@@ -3,6 +3,7 @@
 #include "pyxieResourceCreator.h"
 #include "pyxieTime.h"
 #include "pyVectorMath.h"
+#include "pythonFigure_doc_en.h"
 
 namespace pyxie
 {
@@ -172,22 +173,22 @@ namespace pyxie
 	}
 
 	PyMethodDef figure_methods[] = {
-		{ "connectAnimator", (PyCFunction)figure_BindAnimator, METH_VARARGS },
-		{ "getCamera", (PyCFunction)figure_GetCamera, METH_VARARGS },
-		{ "getEnvironment", (PyCFunction)figure_GetEnvironment, METH_NOARGS },
-		{ "step", (PyCFunction)figure_Step, METH_VARARGS },
-		{ "setTime", (PyCFunction)figure_SetTime, METH_VARARGS },
-		{ "setBlendingWeight", (PyCFunction)figure_setBlendingWeight, METH_VARARGS },
-		{ "getBlendingWeight", (PyCFunction)figure_getBlendingWeight, METH_VARARGS },
+		{ "connectAnimator", (PyCFunction)figure_BindAnimator, METH_VARARGS, connectAnimator_doc},
+		{ "getCamera", (PyCFunction)figure_GetCamera, METH_VARARGS, getCamera_doc},
+		{ "getEnvironment", (PyCFunction)figure_GetEnvironment, METH_NOARGS, getEnvironment_doc},
+		{ "step", (PyCFunction)figure_Step, METH_VARARGS, step_doc},
+		{ "setTime", (PyCFunction)figure_SetTime, METH_VARARGS, setTime_doc},
+		{ "setBlendingWeight", (PyCFunction)figure_setBlendingWeight, METH_VARARGS, setBlendingWeight_doc},
+		{ "getBlendingWeight", (PyCFunction)figure_getBlendingWeight, METH_VARARGS, getBlendingWeight_doc},
 		//{ "dump", (PyCFunction)figure_Dump, METH_VARARGS },
 
 	{ NULL,	NULL }
 	};
 
 	PyGetSetDef figure_getsets[] = {
-		{ const_cast<char*>("position"), (getter)figure_getPosition, (setter)figure_setPosition,NULL, NULL },
-		{ const_cast<char*>("rotation"), (getter)figure_getRotation, (setter)figure_setRotation,NULL, NULL },
-		{ const_cast<char*>("scale"),    (getter)figure_getScale,    (setter)figure_setScale,NULL, NULL },
+		{ const_cast<char*>("position"), (getter)figure_getPosition, (setter)figure_setPosition,position_doc, NULL },
+		{ const_cast<char*>("rotation"), (getter)figure_getRotation, (setter)figure_setRotation,rotation_doc, NULL },
+		{ const_cast<char*>("scale"),    (getter)figure_getScale,    (setter)figure_setScale,scale_doc, NULL },
 		{ NULL, NULL }
 	};
 

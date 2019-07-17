@@ -12,6 +12,8 @@
 #include <vector>
 #include <algorithm>
 
+#include "pythonModule_doc_en.h"
+
 extern void pyxieShowWindow(bool show, int cx, int cy);
 
 namespace pyxie
@@ -78,7 +80,7 @@ namespace pyxie
 			if (fingerEvent->id == fingerID) {
 				PyObject *_res =
 					Py_BuildValue(
-						"{s:i,s:b,s:h,s:h,s:h,s:h,s:h,s:h,s:L,s:L,s:b,s:b,s:b,s:b,s:b,s:b,s:b,s:b,s:b,s:b,s:b,s:b}",
+						"{s:i,s:b,s:h,s:h,s:h,s:h,s:h,s:h,s:L,s:L,s:b,s:b,s:b,s:b,s:b,s:b,s:b,s:b,s:b,s:b,s:b}",
 						"state", fingerEvent->state,
 						"id", fingerEvent->id,
 						"org_x", fingerEvent->org_x,
@@ -91,10 +93,9 @@ namespace pyxie
 						"elapsed_t", fingerEvent->elapsed_t,
 						"fast_motion_t", fingerEvent->fast_motion_t,
 						"num_tap", fingerEvent->num_tap,
-						"is_press", fingerEvent->state& TOUCH_STATE_PRESS?1:0,
-						"is_hold", fingerEvent->state& TOUCH_STATE_HOLD ? 1 : 0,
-						"is_move", fingerEvent->state& TOUCH_STATE_MOVE ? 1 : 0,
-						"is_release", fingerEvent->state& TOUCH_STATE_RELEASE ? 1 : 0,
+						"is_pressd", fingerEvent->state& TOUCH_STATE_PRESS?1:0,
+						"is_holded", fingerEvent->state& TOUCH_STATE_HOLD ? 1 : 0,
+						"is_released", fingerEvent->state& TOUCH_STATE_RELEASE ? 1 : 0,
 						"is_tapped", fingerEvent->is_tapped,
 						"is_longpressed", fingerEvent->is_longpressed,
 						"is_tap_candidate", fingerEvent->is_tap_candidate,
@@ -141,14 +142,24 @@ namespace pyxie
 		return retval;
 	}
 
+	static PyObject* pyxie_setViewLength(PyObject* self, PyObject* args) {
+
+		float length;
+		if (!PyArg_ParseTuple(args, "f", &length))
+			return NULL;
+		pyxieSystemInfo& sysinfo = pyxieSystemInfo::Instance();
+		sysinfo.SetGemeScreenSize(length);
+	}
+
 	static PyMethodDef pyxie_methods[] = {
-		{"getElapsedTime", (PyCFunction)pyxie_elapsedTime, METH_NOARGS },
-		{ "swap", (PyCFunction)pyxie_sync, METH_NOARGS },
-		{ "window", (PyCFunction)pyxie_window, METH_VARARGS },
-		{ "singleTouch", (PyCFunction)pyxie_singleTouch, METH_VARARGS },
-		{ "viewSize", (PyCFunction)pyxie_viewSize, METH_NOARGS },
-		{ "setRoot", (PyCFunction)pyxie_setRoot, METH_VARARGS },
-		{ "getRoot", (PyCFunction)pyxie_getRoot, METH_NOARGS },
+		{"getElapsedTime", (PyCFunction)pyxie_elapsedTime, METH_NOARGS, getElapsedTime_doc },
+		{ "swap", (PyCFunction)pyxie_sync, METH_NOARGS, swap_doc },
+		{ "window", (PyCFunction)pyxie_window, METH_VARARGS, window_doc},
+		{ "singleTouch", (PyCFunction)pyxie_singleTouch, METH_VARARGS,singleTouch_doc  },
+		{ "viewSize", (PyCFunction)pyxie_viewSize, METH_NOARGS, viewSize_doc},
+		{ "setViewLength", (PyCFunction)pyxie_setViewLength, METH_VARARGS, setViewLength_doc },
+		{ "setRoot", (PyCFunction)pyxie_setRoot, METH_VARARGS,setRoot_doc },
+		{ "getRoot", (PyCFunction)pyxie_getRoot, METH_NOARGS, getRoot_doc },
 
 	{ nullptr, nullptr, 0, nullptr }
 	};
@@ -174,7 +185,6 @@ namespace pyxie
 		if (PyType_Ready(&EnvironmentType) < 0) return NULL;
 		if (PyType_Ready(&ShowcaseType) < 0) return NULL;
 		if (PyType_Ready(&EditableFigureType) < 0) return NULL;
-		if (PyType_Ready(&StaticsType) < 0) return NULL;
 		if (PyType_Ready(&ShaderGeneratorType) < 0) return NULL;
 
 		Py_INCREF(&FigureType);
@@ -194,9 +204,6 @@ namespace pyxie
 
 		Py_INCREF(&ShowcaseType);
 		PyModule_AddObject(module, "showcase", (PyObject *)&ShowcaseType);
-
-		Py_INCREF(&StaticsType);
-		PyModule_AddObject(module, "statics", (PyObject*)& StaticsType);
 
 		Py_INCREF(&ShaderGeneratorType);
 		PyModule_AddObject(module, "shaderGenerator", (PyObject*)& ShaderGeneratorType);

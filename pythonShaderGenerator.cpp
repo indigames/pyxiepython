@@ -3,6 +3,7 @@
 #include "pyxieResourceCreator.h"
 #include "pyxieShaderGen.h"
 #include "structmember.h"
+#include "pythonShaderGenerator_doc_en.h"
 
 namespace pyxie
 {
@@ -215,28 +216,28 @@ namespace pyxie
 	}
 
 	PyMethodDef shaderGen_methods[] = {
-		{ "setBoneCondition",(PyCFunction)shaderGen_SetBoneCondition, METH_VARARGS },
-		{ "setSpecular",(PyCFunction)shaderGen_SetSpecular, METH_VARARGS },
-		{ "setAmbientOcclusion",(PyCFunction)shaderGen_SetAmbientOcclusion, METH_VARARGS },
-		{ "setColorTextureUVChannel",(PyCFunction)shaderGen_SetColorTextureUVChannel, METH_VARARGS },
-		{ "setNormalTextureUVChannel",(PyCFunction)shaderGen_SetNormalTextureUVChannel, METH_VARARGS },
-		{ "setLightTextureUVChannel",(PyCFunction)shaderGen_SetLightTextureUVChannel, METH_VARARGS },
-		{ "setOverlayColorTextureUVChannel",(PyCFunction)shaderGen_SetOverlayColorTextureUVChannel, METH_VARARGS },
-		{ "setOverlayNormalColorTextureUVChannel",(PyCFunction)shaderGen_SetOverlayNormalColorTextureUVChannel, METH_VARARGS },
-		{ "setCalcBinormalInShader",(PyCFunction)shaderGen_SetCalcBinormalInShader, METH_VARARGS },
-		{ "setNumDirLamp",(PyCFunction)shaderGen_SetNumDirLamp, METH_VARARGS },
-		{ "setNumPointLamp",(PyCFunction)shaderGen_SetNumPointLamp, METH_VARARGS },
-		{ "setAmbientType",(PyCFunction)shaderGen_SetAmbientType, METH_VARARGS },
-		{ "setClutLamp",(PyCFunction)shaderGen_SetClutLamp, METH_VARARGS },
-		{ "setVertexColor",(PyCFunction)shaderGen_SetVertexColor, METH_VARARGS },
-		{ "setVertexAlpha",(PyCFunction)shaderGen_SetVertexAlpha, METH_VARARGS },
-		{ "setColorTexture",(PyCFunction)shaderGen_SetColorTexture, METH_VARARGS },
-		{ "setNormalTexture",(PyCFunction)shaderGen_SetNormalTexture, METH_VARARGS },
-		{ "setLightTexture",(PyCFunction)shaderGen_SetLightTexture, METH_VARARGS },
-		{ "setOverlayColorTexture",(PyCFunction)shaderGen_SetOverlayColorTexture, METH_VARARGS },
-		{ "setOverlayNormalTexture",(PyCFunction)shaderGen_SetOverlayNormalTexture, METH_VARARGS },
-		{ "setOverlaySpecularTexture",(PyCFunction)shaderGen_SetOverlaySpecularTexture, METH_VARARGS },
-		{ "setOverlayVertexAlpha",(PyCFunction)shaderGen_SetOverlayVertexAlpha, METH_VARARGS },
+		{ "setBoneCondition",(PyCFunction)shaderGen_SetBoneCondition, METH_VARARGS,setBoneCondition_doc },
+		{ "setSpecular",(PyCFunction)shaderGen_SetSpecular, METH_VARARGS,setSpecular_doc },
+		{ "setAmbientOcclusion",(PyCFunction)shaderGen_SetAmbientOcclusion, METH_VARARGS,setAmbientOcclusion_doc },
+		{ "setColorTextureUVChannel",(PyCFunction)shaderGen_SetColorTextureUVChannel, METH_VARARGS,setColorTextureUVChannel_doc },
+		{ "setNormalTextureUVChannel",(PyCFunction)shaderGen_SetNormalTextureUVChannel, METH_VARARGS,setNormalTextureUVChannel_doc },
+		{ "setLightTextureUVChannel",(PyCFunction)shaderGen_SetLightTextureUVChannel, METH_VARARGS,setLightTextureUVChannel_doc },
+		{ "setOverlayColorTextureUVChannel",(PyCFunction)shaderGen_SetOverlayColorTextureUVChannel, METH_VARARGS,setOverlayColorTextureUVChannel_doc },
+		{ "setOverlayNormalColorTextureUVChannel",(PyCFunction)shaderGen_SetOverlayNormalColorTextureUVChannel, METH_VARARGS,setOverlayNormalColorTextureUVChannel_doc },
+		{ "setCalcBinormalInShader",(PyCFunction)shaderGen_SetCalcBinormalInShader, METH_VARARGS,setCalcBinormalInShader_doc },
+		{ "setNumDirLamp",(PyCFunction)shaderGen_SetNumDirLamp, METH_VARARGS,setNumDirLamp_doc },
+		{ "setNumPointLamp",(PyCFunction)shaderGen_SetNumPointLamp, METH_VARARGS,setNumPointLamp_doc },
+		{ "setAmbientType",(PyCFunction)shaderGen_SetAmbientType, METH_VARARGS,setAmbientType_doc },
+		{ "setClutLamp",(PyCFunction)shaderGen_SetClutLamp, METH_VARARGS,setClutLamp_doc },
+		{ "setVertexColor",(PyCFunction)shaderGen_SetVertexColor, METH_VARARGS,setVertexColor_doc },
+		{ "setVertexAlpha",(PyCFunction)shaderGen_SetVertexAlpha, METH_VARARGS,setVertexAlpha_doc },
+		{ "setColorTexture",(PyCFunction)shaderGen_SetColorTexture, METH_VARARGS,setColorTexture_doc },
+		{ "setNormalTexture",(PyCFunction)shaderGen_SetNormalTexture, METH_VARARGS,setNormalTexture_doc },
+		{ "setLightTexture",(PyCFunction)shaderGen_SetLightTexture, METH_VARARGS,setLightTexture_doc },
+		{ "setOverlayColorTexture",(PyCFunction)shaderGen_SetOverlayColorTexture, METH_VARARGS,setOverlayColorTexture_doc },
+		{ "setOverlayNormalTexture",(PyCFunction)shaderGen_SetOverlayNormalTexture, METH_VARARGS,setOverlayNormalTexture_doc },
+		{ "setOverlaySpecularTexture",(PyCFunction)shaderGen_SetOverlaySpecularTexture, METH_VARARGS,setOverlaySpecularTexture_doc },
+		{ "setOverlayVertexAlpha",(PyCFunction)shaderGen_SetOverlayVertexAlpha, METH_VARARGS,setOverlayVertexAlpha_doc },
 		{ NULL,	NULL }
 	};
 

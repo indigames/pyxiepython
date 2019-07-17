@@ -77,7 +77,6 @@ namespace pyxie {
 	extern PyTypeObject CameraType;
 	extern PyTypeObject EnvironmentType;
 	extern PyTypeObject ShowcaseType;
-	extern PyTypeObject StaticsType;
 	extern PyTypeObject ShaderGeneratorType;
 
 	float* pyObjToFloat(PyObject* obj, float* f, int& d);

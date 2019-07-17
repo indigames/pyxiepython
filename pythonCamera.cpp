@@ -3,6 +3,7 @@
 #include "pyxieResourceCreator.h"
 #include "Backyard.h"
 #include "pyVectorMath.h"
+#include "pythonCamera_doc_en.h"
 
 namespace pyxie
 {
@@ -323,31 +324,31 @@ namespace pyxie
 	}
 
 	PyMethodDef camera_methods[] = {
-		{ "shoot", (PyCFunction)camera_Render, METH_VARARGS },
+		{ "shoot", (PyCFunction)camera_Render, METH_VARARGS, shoot_doc },
 		{ NULL,	NULL }
 	};
 
 	PyGetSetDef camera_getsets[] = {
-		{ const_cast<char*>("position"), (getter)camera_getPosition, (setter)camera_setPosition,NULL, NULL },
-		{ const_cast<char*>("rotation"), (getter)camera_getRotation, (setter)camera_setRotation,NULL, NULL },
-		{ const_cast<char*>("scale"),    (getter)camera_getScale,    (setter)camera_setScale,NULL, NULL },
-		{ const_cast<char*>("fieldOfView"),    (getter)camera_getFieldOfView,    (setter)camera_setFieldOfView,NULL, NULL },
-		{ const_cast<char*>("aspectRate"),    (getter)camera_getAspectRate,    (setter)camera_setAspectRate,NULL, NULL },
-		{ const_cast<char*>("orthoWidth"),    (getter)camera_getOrthoWidth,    (setter)camera_setOrthoWidth,NULL, NULL },
-		{ const_cast<char*>("nearPlane"),    (getter)camera_getNearPlane,    (setter)camera_setNearPlane,NULL, NULL },
-		{ const_cast<char*>("farPlane"),    (getter)camera_getFarPlane,    (setter)camera_setFarPlane,NULL, NULL },
-		{ const_cast<char*>("mode"),    (getter)camera_getMode,    (setter)camera_setMode,NULL, NULL },
-		{ const_cast<char*>("pan"),    (getter)camera_getPan,    (setter)camera_setPan,NULL, NULL },
-		{ const_cast<char*>("tilt"),    (getter)camera_getTilt,    (setter)camera_setTilt,NULL, NULL },
-		{ const_cast<char*>("distance"),    (getter)camera_getDistance,    (setter)camera_setDistance,NULL, NULL },
-		{ const_cast<char*>("target"),    (getter)camera_getTarget,    (setter)camera_setTarget,NULL, NULL },
-		{ const_cast<char*>("orthographicProjection"),    (getter)camera_getOrthographicProjection,    (setter)camera_setOrthographicProjection,NULL, NULL },
-		{ const_cast<char*>("screenScale"),    (getter)camera_getScreenScale,    (setter)camera_setScreenScale,NULL, NULL },
-		{ const_cast<char*>("screenOffset"),    (getter)camera_getScreenOffset,    (setter)camera_setScreenOffset,NULL, NULL },
-		{ const_cast<char*>("screenRadian"),    (getter)camera_getScreenRadian,    (setter)camera_setScreenRadian,NULL, NULL },
-		{ const_cast<char*>("projectionMatrix"),(getter)camera_getProjectionMatrix, NULL, NULL,NULL},
-		{ const_cast<char*>("viewInverseMatrix"),(getter)camera_getViewInverseMatrix, NULL, NULL,NULL},
-		{ const_cast<char*>("screenMatrix"),(getter)camera_getScreenMatrix, NULL, NULL,NULL},
+		{ const_cast<char*>("position"), (getter)camera_getPosition, (setter)camera_setPosition,position_doc, NULL },
+		{ const_cast<char*>("rotation"), (getter)camera_getRotation, (setter)camera_setRotation,rotation_doc, NULL },
+		{ const_cast<char*>("scale"),    (getter)camera_getScale,    (setter)camera_setScale,scale_doc, NULL },
+		{ const_cast<char*>("fieldOfView"),    (getter)camera_getFieldOfView,    (setter)camera_setFieldOfView,fieldOfView_doc, NULL },
+		{ const_cast<char*>("aspectRate"),    (getter)camera_getAspectRate,    (setter)camera_setAspectRate,aspectRate_doc, NULL },
+		{ const_cast<char*>("orthoWidth"),    (getter)camera_getOrthoWidth,    (setter)camera_setOrthoWidth,orthoWidth_doc, NULL },
+		{ const_cast<char*>("nearPlane"),    (getter)camera_getNearPlane,    (setter)camera_setNearPlane,nearPlane_doc, NULL },
+		{ const_cast<char*>("farPlane"),    (getter)camera_getFarPlane,    (setter)camera_setFarPlane,farPlane_doc, NULL },
+		{ const_cast<char*>("mode"),    (getter)camera_getMode,    (setter)camera_setMode,mode_doc, NULL },
+		{ const_cast<char*>("pan"),    (getter)camera_getPan,    (setter)camera_setPan,pan_doc, NULL },
+		{ const_cast<char*>("tilt"),    (getter)camera_getTilt,    (setter)camera_setTilt,tilt_doc, NULL },
+		{ const_cast<char*>("distance"),    (getter)camera_getDistance,    (setter)camera_setDistance,distance_doc, NULL },
+		{ const_cast<char*>("target"),    (getter)camera_getTarget,    (setter)camera_setTarget,target_doc, NULL },
+		{ const_cast<char*>("orthographicProjection"),    (getter)camera_getOrthographicProjection,    (setter)camera_setOrthographicProjection,orthographicProjection_doc, NULL },
+		{ const_cast<char*>("screenScale"),    (getter)camera_getScreenScale,    (setter)camera_setScreenScale,screenScale_doc, NULL },
+		{ const_cast<char*>("screenOffset"),    (getter)camera_getScreenOffset,    (setter)camera_setScreenOffset,screenOffset_doc, NULL },
+		{ const_cast<char*>("screenRadian"),    (getter)camera_getScreenRadian,    (setter)camera_setScreenRadian,screenRadian_doc, NULL },
+		{ const_cast<char*>("projectionMatrix"),(getter)camera_getProjectionMatrix, NULL, projectionMatrix_doc,NULL},
+		{ const_cast<char*>("viewInverseMatrix"),(getter)camera_getViewInverseMatrix, NULL, viewInverseMatrix_doc,NULL},
+		{ const_cast<char*>("screenMatrix"),(getter)camera_getScreenMatrix, NULL, screenMatrix_doc,NULL},
 		{ NULL, NULL }
 	};
 

@@ -1,6 +1,7 @@
 ﻿#include "pyxie.h"
 #include "pythonResource.h"
 #include "pyxieResourceCreator.h"
+#include "pythonShowcase_doc_en.h"
 
 namespace pyxie
 {
@@ -64,9 +65,9 @@ namespace pyxie
 
 
 	PyMethodDef showcase_methods[] = {
-		{ "add", (PyCFunction)shocase_Add, METH_VARARGS },
-		{ "remove", (PyCFunction)shocase_Remove, METH_VARARGS },
-		{ "update", (PyCFunction)shocase_Update, METH_VARARGS },
+		{ "add", (PyCFunction)shocase_Add, METH_VARARGS,add_doc },
+		{ "remove", (PyCFunction)shocase_Remove, METH_VARARGS,remove_doc },
+		{ "update", (PyCFunction)shocase_Update, METH_VARARGS,update_doc },
 		{ NULL,	NULL }
 	};
 	PyGetSetDef showcase_getsets[] = {

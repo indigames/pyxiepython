@@ -207,11 +207,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		pyxie::pyxieTouchManager::Instance().UpdateTouches(1, x, y, 1);
 		break;
 
+	case WM_RBUTTONDOWN:
+		x = LOWORD(lParam);
+		y = HIWORD(lParam);
+		pyxie::pyxieTouchManager::Instance().UpdateTouches(0, x, y, 2);
+		break;
+
+	case WM_RBUTTONUP:
+		x = LOWORD(lParam);
+		y = HIWORD(lParam);
+		pyxie::pyxieTouchManager::Instance().UpdateTouches(1, x, y, 2);
+		break;
+
 	case WM_MOUSEMOVE:
 		if (wParam & MK_LBUTTON) {
 			x = LOWORD(lParam);
 			y = HIWORD(lParam);
 			pyxie::pyxieTouchManager::Instance().UpdateTouches(0, x, y, 1);
+		}
+		if (wParam & MK_RBUTTON) {
+			x = LOWORD(lParam);
+			y = HIWORD(lParam);
+			pyxie::pyxieTouchManager::Instance().UpdateTouches(0, x, y, 2);
 		}
 		break;
 

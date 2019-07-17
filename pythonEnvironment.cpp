@@ -1,5 +1,6 @@
 ﻿#include "pyxie.h"
 #include "pythonResource.h"
+#include "pythonEnvironment_doc_en.h"
 
 namespace pyxie
 {

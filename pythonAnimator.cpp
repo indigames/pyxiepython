@@ -1,6 +1,7 @@
 ﻿#include "pyxie.h"
 #include "pythonResource.h"
 #include "pyxieResourceCreator.h"
+#include "pythonAnimator_doc_en.h"
 
 namespace pyxie
 {
@@ -20,6 +21,7 @@ namespace pyxie
 	{
 		self->anime->DecReference();
 		Py_TYPE(self)->tp_free(self);
+
 	}
 
 	PyObject *animator_str(animator_obj *self)
@@ -28,7 +30,6 @@ namespace pyxie
 		pyxie_snprintf(buf, 64, "animator object");
 		return _PyUnicode_FromASCII(buf, strlen(buf));
 	}
-
 
 	PyObject *animator_getLooping(animator_obj *self)
 	{
@@ -140,19 +141,19 @@ namespace pyxie
 	}
 
 	PyMethodDef animator_methods[] = {
-		{ "rewind", (PyCFunction)animator_rewind, METH_NOARGS },
+		{ "rewind", (PyCFunction)animator_rewind, METH_NOARGS, rewind_doc },
 		{ NULL,	NULL }
 	};
 	PyGetSetDef animator_getsets[] = {
-		{ const_cast<char*>("loop"),             (getter)animator_getLooping, (setter)animator_setLooping,NULL, NULL },
-		{ const_cast<char*>("evalTime"),         (getter)animator_getEvalTime, (setter)animator_setEvalTime,NULL, NULL },
-		{ const_cast<char*>("totalEvalTime"),    (getter)animator_getTotalEvalTime, (setter)animator_setTotalEvalTime,NULL, NULL },
-		{ const_cast<char*>("startTime"),        (getter)animator_getStartTime, (setter)animator_setStartTime,NULL, NULL },
-		{ const_cast<char*>("endTime"),          (getter)animator_getEndTime, (setter)animator_setEndTime,NULL, NULL },
-		{ const_cast<char*>("speed"),            (getter)animator_getSpeed, (setter)animator_setSpeed,NULL, NULL },
-		{ const_cast<char*>("defaultEndTime"),   (getter)animator_getDefaultEndtime, NULL,NULL, NULL },
-		{ const_cast<char*>("elapsedTime"),      (getter)animator_getElapsedTime, NULL,NULL, NULL },
-		{ const_cast<char*>("correctedEvalTime"),(getter)animator_getGetCorrectedEvalTime, NULL, NULL, NULL },
+		{ const_cast<char*>("loop"),             (getter)animator_getLooping, (setter)animator_setLooping,loop_doc, NULL },
+		{ const_cast<char*>("evalTime"),         (getter)animator_getEvalTime, (setter)animator_setEvalTime,evalTime_doc, NULL },
+		{ const_cast<char*>("totalEvalTime"),    (getter)animator_getTotalEvalTime, (setter)animator_setTotalEvalTime,totalEvalTime_doc, NULL },
+		{ const_cast<char*>("startTime"),        (getter)animator_getStartTime, (setter)animator_setStartTime,startTime_doc, NULL },
+		{ const_cast<char*>("endTime"),          (getter)animator_getEndTime, (setter)animator_setEndTime,endTime_doc, NULL },
+		{ const_cast<char*>("speed"),            (getter)animator_getSpeed, (setter)animator_setSpeed,speed_doc, NULL },
+		{ const_cast<char*>("defaultEndTime"),   (getter)animator_getDefaultEndtime, NULL,defaultEndTime_doc, NULL },
+		{ const_cast<char*>("elapsedTime"),      (getter)animator_getElapsedTime, NULL,elapsedTime_doc, NULL },
+		{ const_cast<char*>("correctedEvalTime"),(getter)animator_getGetCorrectedEvalTime, NULL, correctedEvalTime_doc, NULL },
 		{ NULL, NULL }
 	};
 

@@ -4,6 +4,7 @@
 #include "pyxieTime.h"
 #include "structmember.h"
 #include "pyVectorMath.h"
+#include "pythonEditableFigure_doc_en.h"
 
 namespace pyxie
 {
@@ -644,33 +645,33 @@ namespace pyxie
 	}
 
 	PyMethodDef editablefigure_methods[] = {
-		{ "addMaterial", (PyCFunction)editablefigure_AddMaterial, METH_VARARGS },
-		{ "addMesh", (PyCFunction)editablefigure_AddMesh, METH_VARARGS },
-		{ "setVertexElements", (PyCFunction)editablefigure_SetVertexElements, METH_VARARGS },
-		{ "setTriangles", (PyCFunction)editablefigure_SetTriangles, METH_VARARGS },
-		{ "addJoint", (PyCFunction)editablefigure_addJoint, METH_VARARGS | METH_KEYWORDS },
-		{ "setVertexPtr", (PyCFunction)editablefigure_setVertexPtr, METH_VARARGS },
-		{ "setTrianglePtr", (PyCFunction)editablefigure_setTrianglePtr, METH_VARARGS},
-		{ "addDrawSet", (PyCFunction)editablefigure_addDrawSet, METH_VARARGS },
-		{ "setDrawSetRenderState", (PyCFunction)editablefigure_setDrawSetRenderState, METH_VARARGS | METH_KEYWORDS},
-		{ "setMaterialParam", (PyCFunction)editablefigure_SetMaterialParam, METH_VARARGS },
-		{ "setMaterialParamTexture", (PyCFunction)editablefigure_SetMaterialParamTexture, METH_VARARGS | METH_KEYWORDS },
-		{ "getMaterialParam", (PyCFunction)editablefigure_GetMaterialParam, METH_VARARGS },
-		{ "setMaterialRenderState", (PyCFunction)editablefigure_SetMaterialRenderState, METH_VARARGS | METH_KEYWORDS},
-		{ "saveFigure", (PyCFunction)editablefigure_SaveFigure, METH_VARARGS },
-		{ "getTextureSource", (PyCFunction)editablefigure_GetTextureSource, METH_NOARGS },
-		{ "replaceTextureSource", (PyCFunction)editablefigure_ReplaceTextureSource, METH_VARARGS },
-		{ "convertTextureToPlatform", (PyCFunction)editablefigure_ConvertTextureToPlatform, METH_VARARGS },
-		{ "compressFolder", (PyCFunction)editablefigure_CompressFolder, METH_VARARGS },
-		{ "clear", (PyCFunction)editablefigure_Clear, METH_NOARGS },
-		{ "clearMesh", (PyCFunction)editablefigure_ClearMesh, METH_NOARGS },
+		{ "addMaterial", (PyCFunction)editablefigure_AddMaterial, METH_VARARGS,addMaterial_doc  },
+		{ "addMesh", (PyCFunction)editablefigure_AddMesh, METH_VARARGS, addMesh_doc},
+		{ "setVertexElements", (PyCFunction)editablefigure_SetVertexElements, METH_VARARGS, setVertexElements_doc},
+		{ "setTriangles", (PyCFunction)editablefigure_SetTriangles, METH_VARARGS, setTriangles_doc},
+		{ "addJoint", (PyCFunction)editablefigure_addJoint, METH_VARARGS | METH_KEYWORDS, addJoint_doc},
+		{ "setVertexPtr", (PyCFunction)editablefigure_setVertexPtr, METH_VARARGS, setVertexPtr_doc},
+		{ "setTrianglePtr", (PyCFunction)editablefigure_setTrianglePtr, METH_VARARGS,setTrianglePtr_doc},
+		{ "addDrawSet", (PyCFunction)editablefigure_addDrawSet, METH_VARARGS,addDrawSet_doc },
+		{ "setDrawSetRenderState", (PyCFunction)editablefigure_setDrawSetRenderState, METH_VARARGS | METH_KEYWORDS,setDrawSetRenderState_doc},
+		{ "setMaterialParam", (PyCFunction)editablefigure_SetMaterialParam, METH_VARARGS,setMaterialParam_doc },
+		{ "setMaterialParamTexture", (PyCFunction)editablefigure_SetMaterialParamTexture, METH_VARARGS | METH_KEYWORDS, setMaterialParamTexture_doc},
+		{ "getMaterialParam", (PyCFunction)editablefigure_GetMaterialParam, METH_VARARGS, getMaterialParam_doc},
+		{ "setMaterialRenderState", (PyCFunction)editablefigure_SetMaterialRenderState, METH_VARARGS | METH_KEYWORDS,setMaterialRenderState_doc},
+		{ "saveFigure", (PyCFunction)editablefigure_SaveFigure, METH_VARARGS,saveFigure_doc },
+		{ "getTextureSource", (PyCFunction)editablefigure_GetTextureSource, METH_NOARGS, getTextureSource_doc},
+		{ "replaceTextureSource", (PyCFunction)editablefigure_ReplaceTextureSource, METH_VARARGS, replaceTextureSource_doc},
+		{ "convertTextureToPlatform", (PyCFunction)editablefigure_ConvertTextureToPlatform, METH_VARARGS, convertTextureToPlatform_doc},
+		{ "compressFolder", (PyCFunction)editablefigure_CompressFolder, METH_VARARGS, compressFolder_doc},
+		{ "clear", (PyCFunction)editablefigure_Clear, METH_NOARGS, clear_doc},
+		{ "clearMesh", (PyCFunction)editablefigure_ClearMesh, METH_NOARGS, clearMesh_doc},
 		{ NULL,	NULL }
 	};
 
 	PyGetSetDef editablefigure_getsets[] = {
-		{ const_cast<char*>("position"), (getter)editablefigure_getPosition, (setter)editablefigure_setPosition,NULL, NULL },
-		{ const_cast<char*>("rotation"), (getter)editablefigure_getRotation, (setter)editablefigure_setRotation,NULL, NULL },
-		{ const_cast<char*>("scale"),    (getter)editablefigure_getScale,    (setter)editablefigure_setScale,NULL, NULL },
+		{ const_cast<char*>("position"), (getter)editablefigure_getPosition, (setter)editablefigure_setPosition,position_doc, NULL },
+		{ const_cast<char*>("rotation"), (getter)editablefigure_getRotation, (setter)editablefigure_setRotation,rotation_doc, NULL },
+		{ const_cast<char*>("scale"),    (getter)editablefigure_getScale,    (setter)editablefigure_setScale,scale_doc, NULL },
 		{ NULL, NULL }
 	};
 
