@@ -694,7 +694,7 @@ namespace pyxie
 
 	PyTypeObject EditableFigureType = {
 		PyVarObject_HEAD_INIT(NULL, 0)
-		"editableFigure",				/* tp_name */
+		"pyxie.editableFigure",				/* tp_name */
 		sizeof(editablefigure_obj),         /* tp_basicsize */
 		0,                                  /* tp_itemsize */
 		(destructor)editablefigure_dealloc,	/* tp_dealloc */

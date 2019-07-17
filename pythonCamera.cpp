@@ -60,7 +60,7 @@ namespace pyxie
 		float buff[4];
 		float* v1 = pyObjToFloat((PyObject*)value, buff, d1);
 		if (!v1) return NULL;
-		self->camera->SetPosition(*((Vec3*)v1));
+		self->camera->SetCameraPosition(*((Vec3*)v1));
 		self->camera->Step(0.0f);
 		return 0;
 	}
@@ -79,7 +79,7 @@ namespace pyxie
 		float buff[4];
 		float* v1 = pyObjToFloat((PyObject*)value, buff, d1);
 		if (!v1) return NULL;
-		self->camera->SetRotation(*((Quat*)v1));
+		self->camera->SetCameraRotation(*((Quat*)v1));
 		return 0;
 	}
 
@@ -352,7 +352,7 @@ namespace pyxie
 
 	PyTypeObject CameraType = {
 		PyVarObject_HEAD_INIT(NULL, 0)
-		"camera",						/* tp_name */
+		"pyxie.camera",						/* tp_name */
 		sizeof(camera_obj),                 /* tp_basicsize */
 		0,                                  /* tp_itemsize */
 		(destructor)camera_dealloc,			/* tp_dealloc */

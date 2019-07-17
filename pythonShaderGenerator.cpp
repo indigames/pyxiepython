@@ -259,7 +259,7 @@ namespace pyxie
 
 	PyTypeObject ShaderGeneratorType = {
 		PyVarObject_HEAD_INIT(NULL, 0)
-		"shaderGeneragtor",			/* tp_name */
+		"pyxie.shaderGeneragtor",			/* tp_name */
 		sizeof(shaderGen_obj),             /* tp_basicsize */
 		0,                                  /* tp_itemsize */
 		(destructor)shaderGen_dealloc,		/* tp_dealloc */

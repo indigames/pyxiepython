@@ -76,7 +76,7 @@ namespace pyxie
 
 	PyTypeObject ShowcaseType = {
 		PyVarObject_HEAD_INIT(NULL, 0)
-		"showcase",					/* tp_name */
+		"pyxie.showcase",					/* tp_name */
 		sizeof(showcase_obj),               /* tp_basicsize */
 		0,                                  /* tp_itemsize */
 		(destructor)showcase_dealloc,		/* tp_dealloc */

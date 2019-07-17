@@ -93,7 +93,7 @@ namespace pyxie
 						"elapsed_t", fingerEvent->elapsed_t,
 						"fast_motion_t", fingerEvent->fast_motion_t,
 						"num_tap", fingerEvent->num_tap,
-						"is_pressd", fingerEvent->state& TOUCH_STATE_PRESS?1:0,
+						"is_pressed", fingerEvent->state& TOUCH_STATE_PRESS?1:0,
 						"is_holded", fingerEvent->state& TOUCH_STATE_HOLD ? 1 : 0,
 						"is_released", fingerEvent->state& TOUCH_STATE_RELEASE ? 1 : 0,
 						"is_tapped", fingerEvent->is_tapped,

@@ -159,7 +159,7 @@ namespace pyxie
 
 	PyTypeObject AnimatorType = {
 		PyVarObject_HEAD_INIT(NULL, 0)
-		"animator",					/* tp_name */
+		"pyxie.animator",					/* tp_name */
 		sizeof(animator_obj),               /* tp_basicsize */
 		0,                                  /* tp_itemsize */
 		(destructor)animator_dealloc,		/* tp_dealloc */

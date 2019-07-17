@@ -69,7 +69,7 @@ PyDoc_STRVAR(singleTouch_doc,
 	"        Elapsed time\n"\
 	"    'num_tap' : int\n"\
 	"        Number of consecutive taps\n"\
-	"    'is_pressd' : bool\n"\
+	"    'is_pressed' : bool\n"\
 	"        is pressd or not\n"\
 	"    'is_holded' : bool\n"\
 	"        is holded or not\n"\
