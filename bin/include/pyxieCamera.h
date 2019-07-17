@@ -42,8 +42,8 @@ namespace pyxie
 		void Step(float elapsedTime);
 		void Render();
 
-		void SetPosition(const Vec3& pos);
-		void SetRotation(const Quat& rot);
+		void SetCameraPosition(const Vec3& pos);
+		void SetCameraRotation(const Quat& rot);
 
 
 		//Ž‹–ìŠp
