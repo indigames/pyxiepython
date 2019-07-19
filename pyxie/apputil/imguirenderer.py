@@ -38,9 +38,9 @@ class ImgiPyxieRenderer(object):
 
                         #Vertex format description
                         #(ID, size, normalize, type)
-            attr = ((pyxie.ATTRIBUTE_ID_POSITION,2,False,st.GL_FLOAT),
-                    (pyxie.ATTRIBUTE_ID_UV0,2,False,st.GL_FLOAT),
-                    (pyxie.ATTRIBUTE_ID_COLOR,4,True,st.GL_UNSIGNED_BYTE))
+            attr = ((pyxie.ATTRIBUTE_ID_POSITION,2,False,pyxie.GL_FLOAT),
+                    (pyxie.ATTRIBUTE_ID_UV0,2,False,pyxie.GL_FLOAT),
+                    (pyxie.ATTRIBUTE_ID_COLOR,4,True,pyxie.GL_UNSIGNED_BYTE))
             self.editableFigure.setVertexPtr(mesh_name, commands.vtx_buffer_data, commands.vtx_buffer_size,attr)
 
             self.editableFigure.setTrianglePtr(mesh_name, commands.idx_buffer_data, commands.idx_buffer_size//3)
@@ -63,11 +63,11 @@ class ImgiPyxieRenderer(object):
         self.camera.shoot(self.showcase)
 
     def refresh_font_texture(self):
-        st = pyxie.statics()
+
         w, h, pixels = self.io.fonts.get_tex_data_as_rgba32()
         self.editableFigure.setMaterialParamTexture("mate01", "ColorSampler","font",
                                                     pixel=pixels, width=w,height=h,
-                                                    minfilter=st.SAMPLERSTATE_LINEAR,mipfilter=st.SAMPLERSTATE_LINEAR)
+                                                    minfilter=pyxie.SAMPLERSTATE_LINEAR,mipfilter=pyxie.SAMPLERSTATE_LINEAR)
 
     def _create_device_objects(self):
         self.camera = pyxie.camera('2dcamera')
@@ -104,7 +104,7 @@ class ImgiPyxieRenderer(object):
             curX = touch['cur_x'] + w//2
             curY = -touch['cur_y'] + h//2
             self.io.mouse_pos = curX, curY
-            self.io.mouse_down[0] = touch['is_hold']|touch['is_move']
+            self.io.mouse_down[0] = touch['is_holded']|touch['is_moved']
 
 
 
