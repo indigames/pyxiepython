@@ -8,7 +8,7 @@ PyDoc_STRVAR(getElapsedTime_doc,
 	"\n"\
 	"Returns\n"\
 	"-------\n"\
-	"elapsedTime : float");
+	"    elapsedTime : float");
 
 //swap
 PyDoc_STRVAR(swap_doc,
@@ -26,12 +26,12 @@ PyDoc_STRVAR(window_doc,
 	"\n"\
 	"Parameters\n"\
 	"----------\n"\
-	"show : bool\n"\
-	"    show the window if true, hide it if false\n"\
-	"width : int\n"\
-	"    The physical width of the window\n"\
-	"height : int\n"\
-	"    The physical height of the window");
+	"    show : bool\n"\
+	"        show the window if true, hide it if false\n"\
+	"    width : int\n"\
+	"        The physical width of the window\n"\
+	"    height : int\n"\
+	"        The physical height of the window");
 
 
 //singleTouch
@@ -47,42 +47,42 @@ PyDoc_STRVAR(singleTouch_doc,
 	"\n"\
 	"Returns\n"\
 	"-------\n"\
-	"touchInfo : dict\n"\
-	"    Dictionary containing touch information\n"\
-	"    'id' : int\n"\
-	"        Finger id\n"\
-	"    'org_x' : int\n"\
-	"        Pressed x position\n"\
-	"    'org_y' : int\n"\
-	"        Pressed y position\n"\
-	"    'cur_x' : int\n"\
-	"        Current x position\n"\
-	"    'cur_y' : int\n"\
-	"        Current y position\n"\
-	"    'delta_x' : int\n"\
-	"        Delta x position\n"\
-	"    'delta_y' : int\n"\
-	"        Delta y position\n"\
-	"    'delta_t' : int\n"\
-	"        Delta time\n"\
-	"    'elapsed_t' : int\n"\
-	"        Elapsed time\n"\
-	"    'num_tap' : int\n"\
-	"        Number of consecutive taps\n"\
-	"    'is_pressed' : bool\n"\
-	"        is pressd or not\n"\
-	"    'is_holded' : bool\n"\
-	"        is holded or not\n"\
-	"    'is_released' : bool\n"\
-	"        is released or not\n"\
-	"    'is_tapped' : bool\n"\
-	"        is tapped or not\n"\
-	"    'is_flicked' : bool\n"\
-	"        is flicked or not\n"\
-	"    'is_moved' : bool\n"\
-	"        is moved or not\n"\
-	"    'is_longpressed' : bool\n"\
-	"        is longpressed or not\n");
+	"    touchInfo : dict\n"\
+	"        Dictionary containing touch information\n"\
+	"        'id' : int\n"\
+	"            Finger id\n"\
+	"        'org_x' : int\n"\
+	"            Pressed x position\n"\
+	"        'org_y' : int\n"\
+	"            Pressed y position\n"\
+	"        'cur_x' : int\n"\
+	"            Current x position\n"\
+	"        'cur_y' : int\n"\
+	"            Current y position\n"\
+	"        'delta_x' : int\n"\
+	"            Delta x position\n"\
+	"        'delta_y' : int\n"\
+	"            Delta y position\n"\
+	"        'delta_t' : int\n"\
+	"            Delta time\n"\
+	"        'elapsed_t' : int\n"\
+	"            Elapsed time\n"\
+	"        'num_tap' : int\n"\
+	"            Number of consecutive taps\n"\
+	"        'is_pressed' : bool\n"\
+	"            is pressd or not\n"\
+	"        'is_holded' : bool\n"\
+	"            is holded or not\n"\
+	"        'is_released' : bool\n"\
+	"            is released or not\n"\
+	"        'is_tapped' : bool\n"\
+	"            is tapped or not\n"\
+	"        'is_flicked' : bool\n"\
+	"            is flicked or not\n"\
+	"        'is_moved' : bool\n"\
+	"            is moved or not\n"\
+	"        'is_longpressed' : bool\n"\
+	"            is longpressed or not\n");
 
 
 //viewSize
@@ -98,10 +98,10 @@ PyDoc_STRVAR(viewSize_doc,
 	"\n"\
 	"Returns\n"\
 	"-------\n"\
-	"w : float\n"\
-	"    Width of virtual screen size\n"\
-	"h : float\n"\
-	"    Height of virtual screen size");
+	"    w : float\n"\
+	"        Width of virtual screen size\n"\
+	"    h : float\n"\
+	"        Height of virtual screen size");
 
 //setViewLength
 PyDoc_STRVAR(setViewLength_doc,
@@ -113,8 +113,8 @@ PyDoc_STRVAR(setViewLength_doc,
 	"\n"\
 	"Parameters\n"\
 	"----------\n"\
-	"length : float\n"\
-	"    length of virtual screen\n");
+	"    length : float\n"\
+	"        length of virtual screen\n");
 
 //setRoot
 PyDoc_STRVAR(setRoot_doc,
@@ -126,8 +126,8 @@ PyDoc_STRVAR(setRoot_doc,
 	"\n"\
 	"Parameters\n"\
 	"----------\n"\
-	"path : string\n"\
-	"    Full path of system root directory.");
+	"    path : string\n"\
+	"        Full path of system root directory.");
 
 //getRoot
 PyDoc_STRVAR(getRoot_doc,
@@ -137,6 +137,6 @@ PyDoc_STRVAR(getRoot_doc,
 	"\n"\
 	"Returns\n"\
 	"-------\n"\
-	"path : string\n"\
-	"    Full path of system root directory.");
+	"    path : string\n"\
+	"        Full path of system root directory.");
 

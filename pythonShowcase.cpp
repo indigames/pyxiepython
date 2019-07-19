@@ -53,21 +53,19 @@ namespace pyxie
 		return Py_None;
 	}
 
-	static PyObject *shocase_Update(showcase_obj *self, PyObject *args)
+	static PyObject* shocase_Clear(showcase_obj* self)
 	{
-		float val = 0.0f;
-		if (!PyArg_ParseTuple(args, "f", &val))
-			return NULL;
-		self->showcase->Update(val);
+		self->showcase->Clear();
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
 
 
+
 	PyMethodDef showcase_methods[] = {
 		{ "add", (PyCFunction)shocase_Add, METH_VARARGS,add_doc },
 		{ "remove", (PyCFunction)shocase_Remove, METH_VARARGS,remove_doc },
-		{ "update", (PyCFunction)shocase_Update, METH_VARARGS,update_doc },
+		{ "clear", (PyCFunction)shocase_Clear, METH_NOARGS,clear_doc },
 		{ NULL,	NULL }
 	};
 	PyGetSetDef showcase_getsets[] = {
@@ -95,7 +93,7 @@ namespace pyxie
 		0,                                  /* tp_setattro */
 		0,                                  /* tp_as_buffer */
 		Py_TPFLAGS_DEFAULT,					/* tp_flags */
-		0,									/* tp_doc */
+		showcase_doc,						/* tp_doc */
 		0,									/* tp_traverse */
 		0,                                  /* tp_clear */
 		0,                                  /* tp_richcompare */

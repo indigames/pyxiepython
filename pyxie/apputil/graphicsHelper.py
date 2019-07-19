@@ -11,13 +11,23 @@ def createSprite(width:float=100, height:float=100, texture:str=None, uv_left_to
     """
     Create Visible Rectangle
 
-    :param width: width of sprite
-    :param height: height of sprite
-    :param texture: texture file name
-    :param uv_left_top: texture uv value of left top cornar
-    :param uv_right_bottom: texture uv value of right bottom cornar
-    :param normal: specify rectangle's nomal vector
-    :return: editableFigure
+	Parameters
+	----------
+        width : float (optional)
+            sprite width
+        height: float (optional)
+            sprite height
+        texture: string (optional)
+            texture file name
+        uv_left_top: tuple (optional)
+            texture uv value of left top cornar
+        uv_right_bottom: tuple (optional)
+            texture uv value of right bottom cornar
+        normal: pyvmath.vec3 (optional)
+            specify rectangle's nomal vector
+	Returns
+	-------
+        editableFigure
     """
     w = width/2
     h = height/2
@@ -40,11 +50,19 @@ def createMesh(points, tris, texture:str=None, uvs = None):
     """
     Create a polygon mesh by specifying vertex coordinates and triangle index
 
-    :param points: list or tuple of points
-    :param tris: list or tuple of triangle indices
-    :param texture: file path of texture
-    :param uvs: list or tuple of  texture uv
-    :return: editableFigure
+	Parameters
+	----------
+        points: tuple or list
+            list or tuple of points
+        tris: tuple or list
+            list or tuple of triangle indices
+        texture: string (optional)
+            file path of texture
+        uvs: list or tuple (optional)
+            list or tuple of  texture uv
+	Returns
+	-------
+        editableFigure
    
     """
     gen = pyxie.shaderGenerator()
@@ -56,9 +74,9 @@ def createMesh(points, tris, texture:str=None, uvs = None):
     efig.addMaterial("mate", gen)
     efig.addMesh("mesh", "mate");
 
-    efig.setVertexElements("mesh", efig.VertexAttribure_POSITION, points)
+    efig.setVertexElements("mesh", pyxie.ATTRIBUTE_ID_POSITION, points)
     if uvs:
-        efig.setVertexElements("mesh", efig.VertexAttribure_UV0,uvs)
+        efig.setVertexElements("mesh", pyxie.ATTRIBUTE_ID_UV0,uvs)
     efig.setTriangles("mesh", tris);
     efig.addJoint("joint");
     efig.setMaterialParam("mate", "DiffuseColor", (1.0, 1.0, 1.0, 1.0));

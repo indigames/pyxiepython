@@ -13,17 +13,6 @@ namespace pyxie
 		shaderGen_obj * self = NULL;
 		self = (shaderGen_obj*)type->tp_alloc(type, 0);
 		self->shaderDesc = pyxieResourceCreator::Instance().NewShaderDescriptor();
-
-		self->MapChannel_None = pyxieShaderDescriptor::NoMapChannel;
-		self->MapChannel_DiffuseAlpha = pyxieShaderDescriptor::DiffuseMapAlphaChannel;
-		self->MapChannel_DiffuseRed = pyxieShaderDescriptor::DiffuseMapRedChannel;
-		self->MapChannel_NormalAlpha = pyxieShaderDescriptor::NormalMapAlphaChannel;
-		self->MapChannel_NormalRed = pyxieShaderDescriptor::NormalMapRedChannel;
-		self->MapChannel_LightAlpha = pyxieShaderDescriptor::LightMapAlphaChannel;
-		self->MapChannel_LightRed = pyxieShaderDescriptor::LightMapRedChannel;
-		self->MapChannel_VertexColorRed = pyxieShaderDescriptor::VertexColorRedChanel;
-		self->MapChannel_VertexColorAlpha = pyxieShaderDescriptor::VertexColorAlphaChanel;
-
 		return (PyObject *)self;
 	}
 
@@ -241,22 +230,6 @@ namespace pyxie
 		{ NULL,	NULL }
 	};
 
-
-	PyMemberDef shaderGen_members[] = {
-		{"MapChannel_None",T_INT, offsetof(shaderGen_obj, MapChannel_None), READONLY, NULL},
-		{"MapChannel_DiffuseAlpha",T_INT, offsetof(shaderGen_obj, MapChannel_DiffuseAlpha), READONLY, NULL},
-		{"MapChannel_DiffuseRed",T_INT, offsetof(shaderGen_obj, MapChannel_DiffuseRed), READONLY, NULL},
-		{"MapChannel_NormalAlpha",T_INT, offsetof(shaderGen_obj, MapChannel_NormalAlpha), READONLY, NULL},
-		{"MapChannel_NormalRed",T_INT, offsetof(shaderGen_obj, MapChannel_NormalRed), READONLY, NULL},
-		{"MapChannel_LightAlpha",T_INT, offsetof(shaderGen_obj, MapChannel_LightAlpha), READONLY, NULL},
-		{"MapChannel_LightRed",T_INT, offsetof(shaderGen_obj, MapChannel_LightRed), READONLY, NULL},
-		{"MapChannel_VertexColorRed",T_INT, offsetof(shaderGen_obj, MapChannel_VertexColorRed), READONLY, NULL},
-		{"MapChannel_VertexColorAlpha",T_INT, offsetof(shaderGen_obj, MapChannel_VertexColorAlpha), READONLY, NULL},
-		{NULL}  /* Sentinel */
-	};
-
-
-
 	PyTypeObject ShaderGeneratorType = {
 		PyVarObject_HEAD_INIT(NULL, 0)
 		"pyxie.shaderGeneragtor",			/* tp_name */
@@ -273,12 +246,12 @@ namespace pyxie
 		0,                                  /* tp_as_mapping */
 		0,                                  /* tp_hash */
 		0,                                  /* tp_call */
-		(reprfunc)shaderGen_str,           /* tp_str */
+		(reprfunc)shaderGen_str,            /* tp_str */
 		0,                                  /* tp_getattro */
 		0,                                  /* tp_setattro */
 		0,                                  /* tp_as_buffer */
 		Py_TPFLAGS_DEFAULT,					/* tp_flags */
-		0,									/* tp_doc */
+		shaderGeneragtor_doc,				/* tp_doc */
 		0,									/* tp_traverse */
 		0,                                  /* tp_clear */
 		0,                                  /* tp_richcompare */
@@ -286,7 +259,7 @@ namespace pyxie
 		0,									/* tp_iter */
 		0,									/* tp_iternext */
 		shaderGen_methods,					/* tp_methods */
-		shaderGen_members,                 /* tp_members */
+		0,                                  /* tp_members */
 		0,									/* tp_getset */
 		0,                                  /* tp_base */
 		0,                                  /* tp_dict */

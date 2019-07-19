@@ -21,6 +21,7 @@ namespace pyxie {
 
 		void Add(pyxieResource* res);
 		void Remove(pyxieResource* res);
+		void Clear();
 		void Update(float dt);
 		void Render();
 	};

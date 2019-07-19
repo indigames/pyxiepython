@@ -127,11 +127,6 @@ namespace pyxie
 		return PyFloat_FromDouble((double)self->anime->GetElapsedTime());
 	}
 
-	PyObject *animator_getGetCorrectedEvalTime(animator_obj *self)
-	{
-		return PyFloat_FromDouble((double)self->anime->GetEvalTime());
-	}
-
 
 	PyObject *animator_rewind(animator_obj *self)
 	{
@@ -153,7 +148,6 @@ namespace pyxie
 		{ const_cast<char*>("speed"),            (getter)animator_getSpeed, (setter)animator_setSpeed,speed_doc, NULL },
 		{ const_cast<char*>("defaultEndTime"),   (getter)animator_getDefaultEndtime, NULL,defaultEndTime_doc, NULL },
 		{ const_cast<char*>("elapsedTime"),      (getter)animator_getElapsedTime, NULL,elapsedTime_doc, NULL },
-		{ const_cast<char*>("correctedEvalTime"),(getter)animator_getGetCorrectedEvalTime, NULL, correctedEvalTime_doc, NULL },
 		{ NULL, NULL }
 	};
 

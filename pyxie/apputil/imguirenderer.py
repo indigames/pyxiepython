@@ -35,13 +35,12 @@ class ImgiPyxieRenderer(object):
             mesh_name = "m"+str(idx)
             self.editableFigure.addMesh(mesh_name, "mate01")
 
-            st = pyxie.statics()
 
                         #Vertex format description
                         #(ID, size, normalize, type)
-            attr = ((st.ATTRIBUTE_ID_POSITION,2,False,st.GL_FLOAT),
-                    (st.ATTRIBUTE_ID_UV0,2,False,st.GL_FLOAT),
-                    (st.ATTRIBUTE_ID_COLOR,4,True,st.GL_UNSIGNED_BYTE))
+            attr = ((pyxie.ATTRIBUTE_ID_POSITION,2,False,st.GL_FLOAT),
+                    (pyxie.ATTRIBUTE_ID_UV0,2,False,st.GL_FLOAT),
+                    (pyxie.ATTRIBUTE_ID_COLOR,4,True,st.GL_UNSIGNED_BYTE))
             self.editableFigure.setVertexPtr(mesh_name, commands.vtx_buffer_data, commands.vtx_buffer_size,attr)
 
             self.editableFigure.setTrianglePtr(mesh_name, commands.idx_buffer_data, commands.idx_buffer_size//3)

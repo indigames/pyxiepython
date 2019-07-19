@@ -28,18 +28,6 @@ namespace pyxie {
 	typedef struct {
 		PyObject_HEAD
 		pyxieEditableFigure* editablefigure;
-		int VertexAttribure_POSITION;
-		int VertexAttribure_NORMAL;
-		int VertexAttribure_TANGENT;
-		int VertexAttribure_BINORMAL;
-		int VertexAttribure_UV0;
-		int VertexAttribure_UV1;
-		int VertexAttribure_UV2;
-		int VertexAttribure_UV3;
-		int VertexAttribure_COLOR;
-		int VertexAttribure_BLENDINDICES;
-		int VertexAttribure_BLENDWEIGHT;
-		int VertexAttribure_PSIZE;
 	} editablefigure_obj;
 
 	typedef struct {

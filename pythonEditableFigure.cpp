@@ -18,18 +18,6 @@ namespace pyxie
 			self = (editablefigure_obj*)type->tp_alloc(type, 0);
 			//self = PyObject_New(editablefigure_obj, &EditableFigureType);
 			self->editablefigure = pyxieResourceCreator::Instance().NewEditableFigure(path);
-			self->VertexAttribure_POSITION = ATTRIBUTE_ID_POSITION;
-			self->VertexAttribure_NORMAL = ATTRIBUTE_ID_NORMAL;
-			self->VertexAttribure_TANGENT = ATTRIBUTE_ID_TANGENT;
-			self->VertexAttribure_BINORMAL = ATTRIBUTE_ID_BINORMAL;
-			self->VertexAttribure_UV0 = ATTRIBUTE_ID_UV0;
-			self->VertexAttribure_UV1 = ATTRIBUTE_ID_UV1;
-			self->VertexAttribure_UV2 = ATTRIBUTE_ID_UV2;
-			self->VertexAttribure_UV3 = ATTRIBUTE_ID_UV3;
-			self->VertexAttribure_COLOR = ATTRIBUTE_ID_COLOR;
-			self->VertexAttribure_BLENDINDICES = ATTRIBUTE_ID_BLENDINDICES;
-			self->VertexAttribure_BLENDWEIGHT = ATTRIBUTE_ID_BLENDWEIGHT;
-			self->VertexAttribure_PSIZE = ATTRIBUTE_ID_PSIZE;
 		}
 		return (PyObject *)self;
 	}
@@ -48,7 +36,6 @@ namespace pyxie
 		return _PyUnicode_FromASCII(buf, strlen(buf));
 	}
 
-
 	PyObject* editablefigure_getPosition(editablefigure_obj* self)
 	{
 		vec_obj* v3robj = PyObject_New(vec_obj, _Vec3Type);
@@ -57,6 +44,7 @@ namespace pyxie
 		v3robj->d = 3;
 		return (PyObject*)v3robj;
 	}
+
 	int editablefigure_setPosition(editablefigure_obj* self, PyObject* value)
 	{
 		int d1;
@@ -75,6 +63,7 @@ namespace pyxie
 		quatobj->d = 4;
 		return (PyObject*)quatobj;
 	}
+
 	int editablefigure_setRotation(editablefigure_obj* self, PyObject* value)
 	{
 		int d1;
@@ -93,6 +82,7 @@ namespace pyxie
 		v3robj->d = 3;
 		return (PyObject*)v3robj;
 	}
+
 	int editablefigure_setScale(editablefigure_obj* self, PyObject* value)
 	{
 		int d1;
@@ -159,7 +149,6 @@ namespace pyxie
 		return Py_None;
 	}
 
-
 	int pyObjToIntArray(PyObject* obj, uint32_t* idx) {
 
 		int totalCount = 0;
@@ -203,7 +192,6 @@ namespace pyxie
 		}
 		return totalCount;
 	}
-
 
 	static PyObject* editablefigure_SetTriangles(editablefigure_obj* self, PyObject* args)
 	{
@@ -414,6 +402,16 @@ namespace pyxie
 		return 0;
 	}
 
+	static PyObject* editablefigure_SaveSkeleton(editablefigure_obj* self, PyObject* args) {
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	static PyObject* editablefigure_SaveAnimation(editablefigure_obj* self, PyObject* args) {
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
 	static PyObject* editablefigure_GetTextureSource(editablefigure_obj* self)
 	{
 		const std::vector<TextureSource>& texes = self->editablefigure->GetTextureSources();
@@ -430,7 +428,6 @@ namespace pyxie
 		}
 		return texsrces;
 	}
-
 
 	bool DictToTextureSource(PyObject* dict, TextureSource& texsrc) {
 		PyObject* key_obj;
@@ -491,23 +488,13 @@ namespace pyxie
 		return Py_None;
 	}
 
-	static PyObject* editablefigure_ConvertTextureToPlatform(editablefigure_obj* self, PyObject* args)
-	{
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
-
-	static PyObject* editablefigure_CompressFolder(editablefigure_obj* self, PyObject* args)
-	{
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
 	static PyObject* editablefigure_Clear(editablefigure_obj* self)
 	{
 		self->editablefigure->ClearAll();
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
+
 	static PyObject* editablefigure_ClearMesh(editablefigure_obj* self)
 	{
 		self->editablefigure->ClearAllMeshes();
@@ -612,7 +599,7 @@ namespace pyxie
 
 	static PyObject* editablefigure_setDrawSetRenderState(editablefigure_obj* self, PyObject* args, PyObject* kwargs) {
 
-		static char* kwlist[] = { "nodeName","drawSetNo","paramName","value1","value2","value3","value4", NULL };
+		static char* kwlist[] = { "meshName","drawSetNo","paramName","value1","value2","value3","value4", NULL };
 		char* nodeName = nullptr;
 		char* paramName = nullptr;
 		int setNo = 0;
@@ -659,10 +646,10 @@ namespace pyxie
 		{ "getMaterialParam", (PyCFunction)editablefigure_GetMaterialParam, METH_VARARGS, getMaterialParam_doc},
 		{ "setMaterialRenderState", (PyCFunction)editablefigure_SetMaterialRenderState, METH_VARARGS | METH_KEYWORDS,setMaterialRenderState_doc},
 		{ "saveFigure", (PyCFunction)editablefigure_SaveFigure, METH_VARARGS,saveFigure_doc },
+		{ "saveSkeleton", (PyCFunction)editablefigure_SaveSkeleton, METH_VARARGS,saveSkeleton_doc },
+		{ "saveAnimation", (PyCFunction)editablefigure_SaveAnimation, METH_VARARGS,saveAnimation_doc },
 		{ "getTextureSource", (PyCFunction)editablefigure_GetTextureSource, METH_NOARGS, getTextureSource_doc},
 		{ "replaceTextureSource", (PyCFunction)editablefigure_ReplaceTextureSource, METH_VARARGS, replaceTextureSource_doc},
-		{ "convertTextureToPlatform", (PyCFunction)editablefigure_ConvertTextureToPlatform, METH_VARARGS, convertTextureToPlatform_doc},
-		{ "compressFolder", (PyCFunction)editablefigure_CompressFolder, METH_VARARGS, compressFolder_doc},
 		{ "clear", (PyCFunction)editablefigure_Clear, METH_NOARGS, clear_doc},
 		{ "clearMesh", (PyCFunction)editablefigure_ClearMesh, METH_NOARGS, clearMesh_doc},
 		{ NULL,	NULL }
@@ -674,23 +661,6 @@ namespace pyxie
 		{ const_cast<char*>("scale"),    (getter)editablefigure_getScale,    (setter)editablefigure_setScale,scale_doc, NULL },
 		{ NULL, NULL }
 	};
-
-	PyMemberDef editablefigure_members[] = {
-		{"VertexAttribure_POSITION",T_INT, offsetof(editablefigure_obj, VertexAttribure_POSITION), READONLY, NULL},
-		{"VertexAttribure_NORMAL",T_INT, offsetof(editablefigure_obj, VertexAttribure_NORMAL), READONLY, NULL},
-		{"VertexAttribure_TANGENT",T_INT, offsetof(editablefigure_obj, VertexAttribure_TANGENT), READONLY, NULL},
-		{"VertexAttribure_BINORMAL",T_INT, offsetof(editablefigure_obj, VertexAttribure_BINORMAL), READONLY, NULL},
-		{"VertexAttribure_UV0",T_INT, offsetof(editablefigure_obj, VertexAttribure_UV0), READONLY, NULL},
-		{"VertexAttribure_UV1",T_INT, offsetof(editablefigure_obj, VertexAttribure_UV1), READONLY, NULL},
-		{"VertexAttribure_UV2",T_INT, offsetof(editablefigure_obj, VertexAttribure_UV2), READONLY, NULL},
-		{"VertexAttribure_UV3",T_INT, offsetof(editablefigure_obj, VertexAttribure_UV3), READONLY, NULL},
-		{"VertexAttribure_COLOR",T_INT, offsetof(editablefigure_obj, VertexAttribure_COLOR), READONLY, NULL},
-		{"VertexAttribure_BLENDINDICES",T_INT, offsetof(editablefigure_obj, VertexAttribure_BLENDINDICES), READONLY, NULL},
-		{"VertexAttribure_BLENDWEIGHT",T_INT, offsetof(editablefigure_obj, VertexAttribure_BLENDWEIGHT), READONLY, NULL},
-		{"VertexAttribure_PSIZE",T_INT, offsetof(editablefigure_obj, VertexAttribure_PSIZE), READONLY, NULL},
-		{NULL}  /* Sentinel */
-	};
-
 
 	PyTypeObject EditableFigureType = {
 		PyVarObject_HEAD_INIT(NULL, 0)
@@ -721,7 +691,7 @@ namespace pyxie
 		0,									/* tp_iter */
 		0,									/* tp_iternext */
 		editablefigure_methods,				/* tp_methods */
-		editablefigure_members,             /* tp_members */
+		0,									/* tp_members */
 		editablefigure_getsets,             /* tp_getset */
 		0,                                  /* tp_base */
 		0,                                  /* tp_dict */
