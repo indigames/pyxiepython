@@ -42,14 +42,20 @@ def getFileBehavior(file):
 def appendFileBehavior(ext, behavior):
     FileBehavior.append((ext,behavior))
 
-def compileAndCopy(src,dst):
+def compileAndCopy(src,dst, allcopy = False):
     """
-    compile and copy .py files in sec directory
-    other files, refer to the FileBehavior and copy
-
-    :param src: source root folder
-    :param dst: destination root folder
-    :return: None
+    Compile  all *.py files in src directory.
+	Other files will be copied if allcopy is True, 
+	or copy according to FileBehavior if False.
+	
+	Parameters
+	----------
+       src : string
+           source root folder
+       dst: string
+           destination root folder
+       allcopy : bool
+           copy all files except *. py
     """
 
     def findBuildFiles(path):
@@ -68,9 +74,10 @@ def compileAndCopy(src,dst):
     list = findBuildFiles(src)
     for infile in list:
         type = getFileBehavior(infile)
-        if type == 'copy':
+        if type == 'copy' or (type == 'skip' and allcopy):
             outfile = os.path.normpath(infile.replace(src, dst, 1))
             apputil.makeDirectories(outfile)
+            print('copy : '+infile)
             shutil.copy(infile, outfile)
 
         elif type == 'compile':
@@ -80,6 +87,8 @@ def compileAndCopy(src,dst):
                 shutil.copy(infile, outfile)
             else:
                 outfile = replaceExt(outfile, '.pyc')
+                apputil.makeDirectories(outfile)
+                print('compile : '+infile)
                 py_compile.compile(infile, outfile)
 
 def convertAssets(src,dst,platform, unit=1.0):

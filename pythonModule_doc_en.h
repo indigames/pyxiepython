@@ -140,3 +140,16 @@ PyDoc_STRVAR(getRoot_doc,
 	"    path : string\n"\
 	"        Full path of system root directory.");
 
+
+//getPlatform
+PyDoc_STRVAR(getPlatform_doc,
+	"Get current platform\n"\
+	"\n"\
+	"platform = pyxie.getPlatform()\n"\
+	"\n"\
+	"Returns\n"\
+	"-------\n"\
+	"    platform : int\n"\
+	"        pyxie.TARGET_PLATFORM_PC\n"\
+	"        pyxie.TARGET_PLATFORM_IOS\n"\
+	"        pyxie.TARGET_PLATFORM_ANDROID");

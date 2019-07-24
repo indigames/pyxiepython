@@ -78,9 +78,10 @@ namespace pyxie
 		void SetRoll(float roll);
 		float GetRoll() const;
 
-		inline void SetTarget(const Vec3& tar);
-		inline Vec3 GetTarget() const;
-		inline void LockonTarget(bool lockon = true);
+		void SetTarget(const Vec3& tar);
+		Vec3 GetTarget() const;
+		void LockonTarget(bool lockon = true);
+
 		inline bool GetLockon() {return mLockon;}
 
 		//•½s“Š‰eƒJƒƒ‰

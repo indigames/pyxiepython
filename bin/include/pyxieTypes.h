@@ -78,11 +78,25 @@ enum Axis
 };
 
 enum TargetPlatform {
-	WINDOWS_Platform =0,
-	OSX_Platform =1,
-	IOS_Platform =2,
-	ANDROID_Platform =3
+	PC_Platform =0,
+	IOS_Platform =1,
+	ANDROID_Platform =2
 };
+
+#if defined _WIN32              //WIN32
+#define CURRENT_PLATFORM PC_Platform
+#elif defined __APPLE__
+#include "TargetConditionals.h"
+#if TARGET_OS_IPHONE            //iOS
+#define CURRENT_PLATFORM IOS_Platform
+#else                           //OSX
+#define CURRENT_PLATFORM PC_Platform
+#endif
+#elif defined __ANDROID__       //Android
+#define CURRENT_PLATFORM ANDROID_Platform
+#endif
+
+
 
 typedef uint32_t RESOURCETYPE;
 constexpr RESOURCETYPE UNKNOWNTYPE =		((RESOURCETYPE)('_xyp'));

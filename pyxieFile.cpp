@@ -59,7 +59,9 @@ extern "C" {
 
 	void CorrectPath(const char* path, char* correctPath) {
 		pyxie_strncpy(correctPath, path, MAX_PATH);
-		for (char* cp = correctPath; *cp; cp++)
+		char* cp = correctPath;
+		while (*cp == '\\') cp++;
+		for (; *cp; cp++)
 			if (*cp == '\\') *cp = '/';
 		const char* root = pyxie::pyxieFios::Instance().GetRoot();
 		if (strstr(correctPath, root) == correctPath) {
@@ -209,7 +211,7 @@ extern "C" {
 			auto fileIndex = db->FileIndex(correctPath + index);
 			if (fileIndex != -1){
 				statbuf->st_mode = S_IFREG| S_IREAD;
-				statbuf->st_size = db->ExpandSize(index);
+				statbuf->st_size = db->ExpandSize(fileIndex);
 				return 0;
 			}
 			else{
@@ -285,9 +287,12 @@ extern "C" {
 				DBScanDirDescripterTable[fd].fileList->push_back(ft);
 			}
 			else if (strstr(dir, correctPath + index) == dir) {
-				char* endp = strchr(dir, '/');
+				auto len = strlen(correctPath + index);
+				auto subdir = dir + len;
+				if (*subdir == '/') subdir++;
+				char* endp = strchr(subdir, '/');
 				if (endp) *endp = 0;
-				dirs.insert(std::string(dir));
+				dirs.insert(std::string(subdir));
 			}
 		}
 		for (auto it = dirs.begin(); it != dirs.end(); it++) {

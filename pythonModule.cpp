@@ -18,6 +18,11 @@ extern void pyxieShowWindow(bool show, int cx, int cy);
 
 namespace pyxie
 {
+	static PyObject* pyxie_getPlatform(PyObject* self) {
+		return PyLong_FromLong(CURRENT_PLATFORM);
+	}
+
+
 	static PyObject* pyxie_elapsedTime(PyObject* self) {
 		return PyFloat_FromDouble(pyxieTime::Instance().GetElapsedTime());
 	}
@@ -162,6 +167,7 @@ namespace pyxie
 		{ "setViewLength", (PyCFunction)pyxie_setViewLength, METH_VARARGS, setViewLength_doc },
 		{ "setRoot", (PyCFunction)pyxie_setRoot, METH_VARARGS,setRoot_doc },
 		{ "getRoot", (PyCFunction)pyxie_getRoot, METH_NOARGS, getRoot_doc },
+		{ "getPlatform", (PyCFunction)pyxie_getPlatform, METH_NOARGS, getPlatform_doc },
 
 	{ nullptr, nullptr, 0, nullptr }
 	};

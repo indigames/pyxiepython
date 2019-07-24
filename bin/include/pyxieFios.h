@@ -28,6 +28,7 @@ namespace pyxie
 		bool Write(const char* filename, const void* buffer, uint32_t size, bool create = true);
 		void SearchFiles(const char* topPath, const char* serachFile, std::vector<std::string> &directories);
 		bool MakeDir(const char *path);
+		void GetFullPath(const char* path, char* outbuff);
 
 		static pyxieFios& Instance();
 	private:

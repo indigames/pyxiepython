@@ -22,7 +22,7 @@ namespace pyxie
 	{
 		std::vector<pyxieResource*> deleteList;
 		std::map<uint32_t, pyxieResource*> dictionary;
-		std::map<std::string, pyxieDatabase*> dbs;
+		std::map<uint32_t, pyxieDatabase*> dbs;
 		pyxieResourceManager();
 	public:
 		~pyxieResourceManager();
@@ -37,5 +37,8 @@ namespace pyxie
 		bool DeleteDaemon();
 		ErrorCode ReadFile(const char* inputPath, void*& outbuffer, int& outsize, uint32_t align=1);
 		pyxieDatabase* GetDB(const char* inputPath, int& indexOfEmbedFileTop);
+
+		void searchDatabase(const char* root);
+
 	};
 }
