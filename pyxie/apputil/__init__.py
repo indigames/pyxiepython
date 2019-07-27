@@ -49,9 +49,9 @@ def platformName(platform):
     """
     if platform == pyxie.TARGET_PLATFORM_PC:
         return 'pc'
-    if platform == pyxieTARGET_PLATFORM_IOS:
+    if platform == pyxie.TARGET_PLATFORM_IOS:
         return 'ios'
-    if platform == pyxieTARGET_PLATFORM_ANDROID:
+    if platform == pyxie.TARGET_PLATFORM_ANDROID:
         return 'android'
     return 'unknown'
 

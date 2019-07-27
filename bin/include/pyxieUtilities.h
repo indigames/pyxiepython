@@ -5,7 +5,7 @@
 ///////////////////////////////////////////////////////////////
 #pragma once
 #include <stdio.h>
-
+#include <assert.h>
 #ifdef PYXIE_SHARED
 #ifdef _WIN32
 #define PYXIE_EXPORT __declspec(dllexport)

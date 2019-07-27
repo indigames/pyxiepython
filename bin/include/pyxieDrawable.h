@@ -15,6 +15,7 @@ namespace pyxie
 		protected:
 			Transform rootTransform;
 			const float* parentJoint;
+			bool update;
 		public:
 			pyxieDrawable() : parentJoint(nullptr) {
 				rootTransform.translation = Vec3();
@@ -30,11 +31,11 @@ namespace pyxie
 			virtual void Pose() {}
 			virtual void Render() {}
 
-			inline void SetPosition(const Vec3& pos) { rootTransform.translation = pos; }
-			inline const Vec3& GetPosition() const { return rootTransform.translation; }
-			inline void SetRotation(const Quat& rot) { rootTransform.rotation = rot; }
+			inline void SetPosition(const Vec3& pos) { rootTransform.translation = pos; update = true; }
+			inline const Vec3& GetPosition() const { return rootTransform.translation;}
+			inline void SetRotation(const Quat& rot) { rootTransform.rotation = rot; update = true;}
 			inline const Quat& GetRotation() const { return rootTransform.rotation; }
-			inline void SetScale(const Vec3& scale) { rootTransform.scale = (const Vec4&)scale; rootTransform.scale.W(1.0f); }
+			inline void SetScale(const Vec3& scale) { rootTransform.scale = (const Vec4&)scale; rootTransform.scale.W(1.0f);  update = true;}
 			inline const Vec3& GetScale() { return (const Vec3&)rootTransform.scale; }
 		protected:
 			inline bool GetParentJointMatrix(Mat4& outMatrix) const

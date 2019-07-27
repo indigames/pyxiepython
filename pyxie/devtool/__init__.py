@@ -104,6 +104,8 @@ def convertAssets(src,dst,platform, unit=1.0):
     If there is no model data with the same name as the folder name,
     Each model data as base model data and convert separately
 
+    
+
     :param src: source root folder
     :param dst: destination root folder
     :param platform: target platform (pyxie.TARGET_PLATFORM_XX)
@@ -165,7 +167,7 @@ def convertAssets(src,dst,platform, unit=1.0):
                 for f2 in files:
                     f2_name, f2_ext = os.path.splitext(f2)
                     if f2_ext == '.dae':
-                        dict[folder] = [os.path.join(root, fname)]
+                        dict[folder] = [os.path.join(root, f2)]
         return dict
     def removeRoot(path, root):
         newpath = path.replace(root, '', 1)
@@ -249,13 +251,6 @@ def deploy(projectFolder, userID, appName, appVersion, unit = 1.0):
     :return:
     """
 
-    platform = pyxie.TARGET_PLATFORM_PC
-    tmp = '.tmp/stage/'+appName+'/'+ apputil.platformName(platform)
-
-    compileAndCopy(projectFolder,tmp)
-    convertAssets(projectFolder,tmp,platform,unit);
-    packFolders(tmp)
-
     def makeProjectDir(user, app, version, platform):
         root = '/'
         if launch_server.mkdir(root, user) == 0:
@@ -270,7 +265,16 @@ def deploy(projectFolder, userID, appName, appVersion, unit = 1.0):
                         return True
         return False
 
-    if makeProjectDir(userID, appName, appVersion, platform) != True:
-        return
-    addr = '/'+userID+'/'+appName+'/'+str(appVersion)+'/'+ apputil.platformName(platform)
-    launch_server.upload_files(tmp, addr)
+    def deployPlatform(platform, projectFolder, userID, appName, appVersion, unit):
+        tmp = '.tmp/stage/'+appName+'/'+ apputil.platformName(platform)
+        compileAndCopy(projectFolder,tmp)
+        convertAssets(projectFolder,tmp,platform,unit);
+        packFolders(tmp)
+        if makeProjectDir(userID, appName, appVersion, platform) != True:
+            return
+        addr = '/'+userID+'/'+appName+'/'+str(appVersion)+'/'+ apputil.platformName(platform)
+        launch_server.upload_files(tmp, addr)
+
+    deployPlatform(pyxie.TARGET_PLATFORM_PC, projectFolder, userID, appName, appVersion, unit)
+    deployPlatform(pyxie.TARGET_PLATFORM_IOS, projectFolder, userID, appName, appVersion, unit)
+    deployPlatform(pyxie.TARGET_PLATFORM_ANDROID, projectFolder, userID, appName, appVersion, unit)
