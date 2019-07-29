@@ -247,8 +247,8 @@ namespace pyxie {
 		inline float* P() { return v; }
 		inline const float* P() const{ return v; }
 		const Vec<N>& GetVec(int i)const { return *((const Vec<N>*)(&(v[i * M]))); }
-		Vec<N>& GetVec(int i) { return *((Vec<N>*)(&(v[i * M]))); }
-
+		      Vec<N>& GetVec(int i) { return *((Vec<N>*)(&(v[i * M]))); }
+			  
 		inline bool operator ==(const Mat<N,M>& mat)
 		{
 			return vmath_almostEqual(v, mat.v, N*M);
@@ -354,6 +354,24 @@ namespace pyxie {
 		inline float* P() { return v; }
 		inline const float* P() const { return v; }
 
+		inline float X() const { return v[0]; }
+		inline float Y() const { return v[1]; }
+		inline float Z() const { return v[2]; }
+		inline float W() const { return v[3]; }
+		inline void X(float i) { v[0] = i; }
+		inline void Y(float i) { v[1] = i; }
+		inline void Z(float i) { v[2] = i; }
+		inline void W(float i) { v[3] = i; }
+
+		inline float& operator [](int idx)
+		{
+			return v[idx];
+		}
+		inline float operator [](int idx) const {
+			return v[idx];
+		}
+
+
 		inline Quat& operator =(const Quat& q)
 		{
 			vmath_cpy(q.v, 4, v);
@@ -401,29 +419,65 @@ namespace pyxie {
 		}
 	};
 
-
-	struct Joint {
-		Vec4  m_rotation;             // joint rotation (quaternion)
-		Vec4  m_translation;          // joint translation 
-		Vec4  m_scale;                // joint scale
-
-		Joint() :
-			m_rotation(0.0f, 0.0f, 0.0f, 1.0f),
-			m_translation(0.0f, 0.0f, 0.0f, 0.0f),
-			m_scale(1.0f, 1.0f, 1.0f, 1.0f){}
-	};
-	Joint MatrixToJoint(const Mat4& mat);
-
-	constexpr float tolerance = 0.0001f;
-	inline bool AlmostEquals(float x, float y) {
-		return (fabsf(x - y) < tolerance) ? true : false;
+	inline void Matrix4ToJointMatrix(const Mat4& mat, float* joint)
+	{
+		joint[0] = mat[0][0];
+		joint[4] = mat[0][1];
+		joint[8] = mat[0][2];
+		joint[1] = mat[1][0];
+		joint[5] = mat[1][1];
+		joint[9] = mat[1][2];
+		joint[2] = mat[2][0];
+		joint[6] = mat[2][1];
+		joint[10] = mat[2][2];
+		joint[3] = mat[3][0];
+		joint[7] = mat[3][1];
+		joint[11] = mat[3][2];
 	}
 
-	struct Transform
+	inline void JointMatrixToMatrix4(const float* joint, Mat4& outMatrix)
 	{
+		outMatrix.GetVec(0) = Vec4(joint[0], joint[4], joint[8], 0.0f);
+		outMatrix.GetVec(1) = Vec4(joint[1], joint[5], joint[9], 0.0f);
+		outMatrix.GetVec(2) = Vec4(joint[2], joint[6], joint[10], 0.0f);
+		outMatrix.GetVec(3) = Vec4(joint[3], joint[7], joint[11], 1.0f);
+	}
+
+	class PYXIE_EXPORT Joint {
+	public:
 		Quat		rotation;
 		Vec3		translation;
 		Vec4		scale;
+
+		Joint()
+		{
+			scale = Vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		}
+
+		Joint(const float* jointMatrix) {
+			Vec3 col0(jointMatrix[0], jointMatrix[4], jointMatrix[8]);
+			Vec3 col1(jointMatrix[1], jointMatrix[5], jointMatrix[9]);
+			Vec3 col2(jointMatrix[2], jointMatrix[6], jointMatrix[10]);
+			scale.X(col0.Length());
+			scale.Y(col1.Length());
+			scale.Z(col2.Length());
+			scale.W(1.0f);
+
+			translation.X(jointMatrix[3]);
+			translation.Y(jointMatrix[7]);
+			translation.Z(jointMatrix[11]);
+
+			Mat3 rotmat(col0 / scale.X(),col1 / scale.Y(), col2 / scale.Z());
+			rotation = Quat(rotmat);
+		}
+
+		void JointMatrix(float* mat) const{
+			Mat4 tmp;
+			vmath_mat4_from_rottrans(rotation.P(), translation.P(), tmp.P());
+			vmath_mat_appendScale(tmp.P(), scale.P(), 4, 4, tmp.P());
+			Matrix4ToJointMatrix(tmp, mat);
+		}
+
 	};
 
 	inline Vec3 Cross3D(const Vec3& v1, const Vec3& v2) {
@@ -432,41 +486,19 @@ namespace pyxie {
 		return out;
 	}
 
-	inline Mat4 LockAt(const Vec3& eyePos, const Vec3& lookAtPos, const Vec3& upVec) {
-		Mat4 out;
-		vmath_mat4_lookAt(eyePos.P(), lookAtPos.P(), upVec.P(), out.P());
-		return out;
-	}
-	inline Mat4 Perspective(float fovyRadians, float aspect, float zNear, float zFar) {
-		Mat4 out;
-		vmath_mat4_perspective(fovyRadians, aspect, zNear, zFar, out.P());
-		return out;
-	}
-
-	inline Mat4 Frustum(float left, float right, float bottom, float top, float zNear, float zFar) {
-		Mat4 out;
-		vmath_mat4_frustum(left, right, bottom, top, zNear, zFar, out.P());
-		return out;
-	}
-	inline Mat4 Orthographic(float left, float right, float bottom, float top, float zNear, float zFar) {
-		Mat4 out;
-		vmath_mat4_orthographic(left, right, bottom, top, zNear, zFar, out.P());
-		return out;
-	}
-
 	inline Joint MatrixToJoint(const Mat4& mat)
 	{
 		Joint joint;
 
 		// Translation
-		joint.m_translation = mat.GetVec(3);
-		joint.m_translation.W(1.0f);
+		joint.translation = *((Vec3*)(&mat.GetVec(3)));
+		joint.translation.W(1.0f);
 
 		// Scale
-		joint.m_scale.X(mat.GetVec(0).Length());
-		joint.m_scale.Y(mat.GetVec(1).Length());
-		joint.m_scale.Z(mat.GetVec(2).Length());
-		joint.m_scale.W(1.0f);
+		joint.scale.X(mat.GetVec(0).Length());
+		joint.scale.Y(mat.GetVec(1).Length());
+		joint.scale.Z(mat.GetVec(2).Length());
+		joint.scale.W(1.0f);
 
 		// Ortho normalize rotation
 		Vec3 v0, v1, v2;
@@ -539,69 +571,44 @@ namespace pyxie {
 			qw = tmpz;
 		}
 
-		joint.m_rotation.X(qx);
-		joint.m_rotation.Y(qy);
-		joint.m_rotation.Z(qz);
-		joint.m_rotation.W(qw);
+		joint.rotation.X(qx);
+		joint.rotation.Y(qy);
+		joint.rotation.Z(qz);
+		joint.rotation.W(qw);
 
 		return joint;
 	}
 
-
-	inline void Matrices4ToTransform(const Mat4& inputMatrices, Transform& outTranfrorm)
-	{
-		float sx = inputMatrices.GetVec(0).Length();
-		float sy = inputMatrices.GetVec(1).Length();
-		float sz = inputMatrices.GetVec(2).Length();
-		Vec4 scale(sx, sy, sz, 1.0f);
-
-		Mat3 rotmat(
-			((const Vec3&)(inputMatrices.GetVec(0))) / sx,
-			((const Vec3&)(inputMatrices.GetVec(1))) / sy,
-			((const Vec3&)(inputMatrices.GetVec(2))) / sz);
-
-		Quat rotation(rotmat);
-		Vec3 translation = (const Vec3&)(inputMatrices.GetVec(4));
-
-		outTranfrorm.rotation = rotation;
-		outTranfrorm.rotation.Normalize();
-		outTranfrorm.translation = translation;
-		outTranfrorm.scale = scale;
-	}
-
-	inline void TransformToMatrix4(const Transform& inputTransform, Mat4& outputMatrix)
+	inline void TransformToMatrix4(const Joint& inputTransform, Mat4& outputMatrix)
 	{
 		vmath_mat4_from_rottrans(inputTransform.rotation.P(), inputTransform.translation.P(), outputMatrix.P());
 		vmath_mat_appendScale(outputMatrix.P(), inputTransform.scale.P(), 4, 4, outputMatrix.P());
 	}
 
-	inline void JointToMatrix4(const float* joint, Mat4& outMatrix)
-	{
-		outMatrix.GetVec(0) = Vec4(joint[0], joint[4], joint[8], 0.0f);
-		outMatrix.GetVec(1) = Vec4(joint[1], joint[5], joint[9], 0.0f);
-		outMatrix.GetVec(2) = Vec4(joint[2], joint[6], joint[10], 0.0f);
-		outMatrix.GetVec(3) = Vec4(joint[3], joint[7], joint[11], 1.0f);
+	inline Mat4 LockAt(const Vec3& eyePos, const Vec3& lookAtPos, const Vec3& upVec) {
+		Mat4 out;
+		vmath_mat4_lookAt(eyePos.P(), lookAtPos.P(), upVec.P(), out.P());
+		return out;
 	}
 
-	/*
-	typedef uint16_t __fp16;
-	inline __fp16 F32to16(float fval) {
-		uint32_t ival = *(uint32_t*)(&fval);
-		if (!ival) {
-			return	0;
-		}
-		int	e = ((ival & 0x7f800000) >> 23) - 127 + 15;
-		if (e < 0) {
-			return	0;
-		}
-		else if (e > 31) {
-			e = 31;
-		}
-		uint32_t 	s = ival & 0x80000000;
-		uint32_t 	f = ival & 0x007fffff;
-		return	(uint16_t)(((s >> 16) & 0x8000) | ((e << 10) & 0x7c00) | ((f >> 13) & 0x03ff));
+	inline Mat4 Perspective(float fovyRadians, float aspect, float zNear, float zFar) {
+		Mat4 out;
+		vmath_mat4_perspective(fovyRadians, aspect, zNear, zFar, out.P());
+		return out;
 	}
-*/
+
+	inline Mat4 Frustum(float left, float right, float bottom, float top, float zNear, float zFar) {
+		Mat4 out;
+		vmath_mat4_frustum(left, right, bottom, top, zNear, zFar, out.P());
+		return out;
+	}
+
+	inline Mat4 Orthographic(float left, float right, float bottom, float top, float zNear, float zFar) {
+		Mat4 out;
+		vmath_mat4_orthographic(left, right, bottom, top, zNear, zFar, out.P());
+		return out;
+	}
+
 	inline uint8_t F32to8(float fval) {
 		return (uint8_t)(fval * 255);
 	}
@@ -610,14 +617,10 @@ namespace pyxie {
 		return (int16_t)(fval * 32767.0f);
 	}
 
-	constexpr int SKINMATRIXSIZE = 12;
 
-//	extern const Vector3 ZeroVector3;
-//	extern const Vector3 OneVector3;
-//	extern const Vector4 ZeroVector4;
-//	extern const Vector4 OneVector4;
-//	extern const Quat UnitQuat;
-//	extern const Matrix4 UnitMatrix4;
+
+
+	constexpr int SKINMATRIXSIZE = 12;
 
 	//! Enumeration for intersection relations of 3d objects
 	enum IntersectionRelation

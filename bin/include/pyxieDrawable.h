@@ -13,35 +13,33 @@ namespace pyxie
 		class PYXIE_EXPORT pyxieDrawable : public pyxieResource
 		{
 		protected:
-			Transform rootTransform;
+			enum
+			{
+				state_updateTransform = (state_resource_last << 1),
+				state_posed = (state_updateTransform << 1),
+				state_drawable_last = state_posed
+			};
+			Joint rootTransform;
 			const float* parentJoint;
-			bool update;
 		public:
 			pyxieDrawable() : parentJoint(nullptr) {
-				rootTransform.translation = Vec3();
-				rootTransform.scale = Vec4(1.0f,1.0f,1.0f,1.0f);
-				rootTransform.rotation =Quat();
 			}
 			pyxieDrawable(const pyxieDrawable* org) : pyxieResource(org) , parentJoint(nullptr) {
-				rootTransform.translation = Vec3();
-				rootTransform.scale = Vec4(1.0f, 1.0f, 1.0f, 1.0f);
-				rootTransform.rotation = Quat();
 			}
 
 			virtual void Pose() {}
 			virtual void Render() {}
 
-			inline void SetPosition(const Vec3& pos) { rootTransform.translation = pos; update = true; }
+			inline void SetPosition(const Vec3& pos) { rootTransform.translation = pos; SetState(state_updateTransform); ResetState(state_posed);}
 			inline const Vec3& GetPosition() const { return rootTransform.translation;}
-			inline void SetRotation(const Quat& rot) { rootTransform.rotation = rot; update = true;}
+			inline void SetRotation(const Quat& rot) { rootTransform.rotation = rot; SetState(state_updateTransform); ResetState(state_posed);}
 			inline const Quat& GetRotation() const { return rootTransform.rotation; }
-			inline void SetScale(const Vec3& scale) { rootTransform.scale = (const Vec4&)scale; rootTransform.scale.W(1.0f);  update = true;}
+			inline void SetScale(const Vec3& scale) { rootTransform.scale = (const Vec4&)scale; rootTransform.scale.W(1.0f); SetState(state_updateTransform); ResetState(state_posed);}
 			inline const Vec3& GetScale() { return (const Vec3&)rootTransform.scale; }
 		protected:
-			inline bool GetParentJointMatrix(Mat4& outMatrix) const
-			{
+			inline bool GetParentJointMatrix(Mat4& outMatrix) const{
 				if (!parentJoint) return false;
-				JointToMatrix4(parentJoint, outMatrix);
+				JointMatrixToMatrix4(parentJoint, outMatrix);
 				return true;
 			}
 
@@ -53,10 +51,10 @@ namespace pyxie
 				uint32_t numBlendBranches,
 				const void* blendLeaves,
 				uint32_t numBlendLeaves,
-				const Transform* rootJoint,
+				const Joint* rootJoint,
 				void* scratchBuffer,
 				uint32_t sizeScratchBuffer,
 				float* outputUserChannelAnime,
-				Transform* localPoses);
+				Joint* localPoses);
 		};
 }

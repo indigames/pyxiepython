@@ -167,10 +167,69 @@ namespace pyxie
 
 	static PyObject* figure_getBlendingWeight(figure_obj* self, PyObject* args) {
 		int slot;
-		if (!PyArg_ParseTuple(args, "slot", &slot))return NULL;
+		if (!PyArg_ParseTuple(args, "i", &slot))return NULL;
 		float value  = self->figure->GetBlendingWeight(slot);
 		return PyFloat_FromDouble(value);
 	}
+
+
+	static PyObject* figure_getJoint(figure_obj* self, PyObject* args) {
+
+		char* jointName;
+		if (!PyArg_ParseTuple(args, "s", &jointName))return NULL;
+
+		int idx = self->figure->GetJointIndex(GenerateNameHash(jointName));
+
+		auto joint = self->figure->GetJoint(idx);
+
+		PyObject* joint_obj = PyTuple_New(3);
+
+		vec_obj* pos = (vec_obj*)PyObject_New(vec_obj, _Vec3Type);
+		vec_obj* rot = (vec_obj*)PyObject_New(vec_obj, _QuatType);
+		vec_obj* scale = (vec_obj*)PyObject_New(vec_obj, _Vec3Type);
+		for (int i = 0; i < 4; i++) {
+			pos->v[i] = joint.translation[i];
+			rot->v[i] = joint.rotation[i];
+			scale->v[i] = joint.scale[i];
+		}
+		PyTuple_SetItem(joint_obj, 0, (PyObject*)pos);
+		PyTuple_SetItem(joint_obj, 1, (PyObject*)rot);
+		PyTuple_SetItem(joint_obj, 2, (PyObject*)scale);
+		return joint_obj;
+	}
+
+	static PyObject* figure_setJoint(figure_obj* self, PyObject* args, PyObject* kwargs) {
+
+		static char* kwlist[] = { "jointName","position","rotation","scale", NULL };
+
+		char* jointName;
+		PyObject* arg1 = nullptr;
+		PyObject* arg2 = nullptr;
+		PyObject* arg3 = nullptr;
+		if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|OOO", kwlist, &jointName, arg1, arg2, arg3))return NULL;
+
+		Joint joint;
+		float* v;
+		int d;
+		float buff[4];
+		if (arg1) {
+			v = pyObjToFloat(arg1, buff, d);
+			for (int i = 0; i < d; i++) joint.translation[i] = v[i];
+		}
+		if (arg2) {
+			v = pyObjToFloat(arg2, buff, d);
+			for (int i = 0; i < d; i++) joint.rotation[i] = v[i];
+		}
+		if (arg3) {
+			v = pyObjToFloat(arg3, buff, d);
+			for (int i = 0; i < d; i++) joint.scale[i] = v[i];
+		}
+
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
 
 	PyMethodDef figure_methods[] = {
 		{ "connectAnimator", (PyCFunction)figure_BindAnimator, METH_VARARGS, connectAnimator_doc},
@@ -180,6 +239,9 @@ namespace pyxie
 		{ "setTime", (PyCFunction)figure_SetTime, METH_VARARGS, setTime_doc},
 		{ "setBlendingWeight", (PyCFunction)figure_setBlendingWeight, METH_VARARGS, setBlendingWeight_doc},
 		{ "getBlendingWeight", (PyCFunction)figure_getBlendingWeight, METH_VARARGS, getBlendingWeight_doc},
+		{ "getJoint", (PyCFunction)figure_getJoint, METH_VARARGS, getJoint_doc},
+		{ "setJoint", (PyCFunction)figure_setJoint, METH_VARARGS | METH_KEYWORDS, setJoint_doc},
+
 		//{ "dump", (PyCFunction)figure_Dump, METH_VARARGS },
 
 	{ NULL,	NULL }

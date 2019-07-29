@@ -167,7 +167,7 @@ def convertAssets(src,dst,platform, unit=1.0):
                 for f2 in files:
                     f2_name, f2_ext = os.path.splitext(f2)
                     if f2_ext == '.dae':
-                        dict[folder] = [os.path.join(root, f2)]
+                        dict[f2_name] = [os.path.join(root, f2)]
         return dict
     def removeRoot(path, root):
         newpath = path.replace(root, '', 1)

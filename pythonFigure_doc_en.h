@@ -149,3 +149,41 @@ PyDoc_STRVAR(getBlendingWeight_doc,
 	"-------\n"\
 	"    weight\n"\
 	"        Weighted average value specified for each part");
+
+
+//getJoint
+PyDoc_STRVAR(getJoint_doc,
+	"Get the value of joint after animation calculation in world coordinate system\n"\
+	"\n"\
+	"position, rotation, scale = figure.getJoint(jointName)\n"\
+	"\n"\
+	"Parameters\n"\
+	"----------\n"\
+	"    jointName : string\n"\
+	"        The name of the joint you want to get\n"\
+	"Returns\n"\
+	"-------\n"\
+	"    position\n"\
+	"        position of joint\n"\
+	"    rotation\n"\
+	"        rotation of joint\n"\
+	"    scale\n"\
+	"        scale of joint");
+
+
+//setJoint
+PyDoc_STRVAR(setJoint_doc,
+	"Set the value of joint in world coordinate system\n"\
+	"\n"\
+	"figure.setJoint(jointName, position, rotation, scale)\n"\
+	"\n"\
+	"Parameters\n"\
+	"----------\n"\
+	"    jointName : string\n"\
+	"        The name of the joint you want to get\n"\
+	"    position\n"\
+	"        position of joint\n"\
+	"    rotation\n"\
+	"        rotation of joint\n"\
+	"    scale\n"\
+	"        scale of joint");
