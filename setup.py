@@ -13,7 +13,7 @@ pyxie_module = Extension('pyxie._pyxie',
                            'pythonCamera.cpp',
                            'pythonShaderGenerator.cpp',
                            'pythonFigure.cpp',
-                           'pythonResource.cpp'
+                           'pythonResource.cpp',
                            'pythonTexture.cpp'
                        ],
                        include_dirs=['bin/include'],
