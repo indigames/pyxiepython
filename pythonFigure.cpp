@@ -231,6 +231,138 @@ namespace pyxie
 	}
 
 
+	static PyObject* figure_SetMaterialParam(figure_obj* self, PyObject* args)
+	{
+		//efig.setMaterialParam("mate01", "DiffuseColor", (1.0, 1.0, 1.0, 1.0));
+
+		char* materialName;
+		char* paramName;
+		PyObject* param;
+		if (!PyArg_ParseTuple(args, "ssO", &materialName, &paramName, &param)) return NULL;
+
+		float buff[4];
+
+		Py_ssize_t size = 0;
+		ShaderParameterDataType type = ParamTypeUnknown;
+		if (PyTuple_Check(param)) {
+			size = PyTuple_Size(param);
+			if (size <= 0 || size > 4) {
+				PyErr_SetString(PyExc_TypeError, "parameter error.");
+				return NULL;
+			}
+			for (Py_ssize_t i = 0; i < size; i++) {
+				auto item = PyTuple_GET_ITEM(param, i);
+				if (!(PyFloat_Check(item)| PyLong_Check(item))) {
+					PyErr_SetString(PyExc_TypeError, "parameter error.");
+					return NULL;
+				}
+				buff[i] = (float)PyFloat_AsDouble(item);
+			}
+		}
+		else if (PyList_Check(param)) {
+			size = PyList_Size(param);
+			if (size <= 0 || size > 4) {
+				PyErr_SetString(PyExc_TypeError, "parameter error.");
+				return NULL;
+			}
+			for (Py_ssize_t i = 0; i < size; i++) {
+				auto item = PyList_GET_ITEM(param, i);
+				if (!(PyFloat_Check(item) | PyLong_Check(item))) {
+					PyErr_SetString(PyExc_TypeError, "parameter error.");
+					return NULL;
+				}
+				buff[i] = (float)PyFloat_AsDouble(item);
+			}
+		}
+		else if (PyFloat_Check(param)) {
+			size = 1;
+			buff[0] = (float)PyFloat_AsDouble(param);
+		}
+		if (size == 0) {
+			PyErr_SetString(PyExc_TypeError, "parameter error.");
+			return NULL;
+		}
+
+		switch (size) {
+		case 1: type = ParamTypeFloat; break;
+		case 2: type = ParamTypeFloat2; break;
+		case 3: type = ParamTypeFloat3; break;
+		case 4: type = ParamTypeFloat4; break;
+		}
+		if (!self->figure->SetMaterialParam(materialName, paramName, buff)) {
+			PyErr_SetString(PyExc_TypeError, "parameter error.");
+			return NULL;
+		}
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	static PyObject* figure_SetMaterialParamTexture(figure_obj* self, PyObject* args, PyObject* kwargs)
+	{
+		static char* kwlist[] = { "materialName","samplerName","textureName","pixel","width","height","wrap_s","wrap_t","minfilter","magfilter","mipfilter", NULL };
+
+		char* materialName = nullptr;
+		char* samplerName = nullptr;
+
+		PyObject* textureName = nullptr;
+
+		PyObject* pixel = nullptr;
+		int w = 0;
+		int h = 0;
+		int wrap_s = SamplerState::WRAP;
+		int wrap_t = SamplerState::WRAP;
+		int minfilter = SamplerState::LINEAR_MIPMAP_LINEAR;
+		int magfilter = SamplerState::LINEAR;
+		int mipfilter = SamplerState::LINEAR_MIPMAP_LINEAR;
+
+		if (!PyArg_ParseTupleAndKeywords(args, kwargs, "ssO|Oiiiiiii", kwlist,
+			&materialName, &samplerName, &textureName,
+			&pixel, &w, &h,
+			&wrap_s, &wrap_t, &minfilter, &magfilter, &mipfilter)) return NULL;
+
+		Sampler sampler;
+		if (textureName->ob_type == &TextureType) {
+			((texture_obj*)textureName)->colortexture->IncReference();
+			sampler.tex = ((texture_obj*)textureName)->colortexture;
+		}
+		else {
+			const char* nameText = PyUnicode_AsUTF8(textureName);
+			if (pixel) {
+				if (!PyBytes_Check(pixel) || w == 0 || h == 0) {
+					PyErr_SetString(PyExc_TypeError, "parameter error");
+					return NULL;
+				}
+				char* pix = PyBytes_AsString(pixel);
+				sampler.tex = pyxieResourceCreator::Instance().NewTexture(nameText, pix, w, h, true);
+			}
+			else {
+				sampler.tex = pyxieResourceCreator::Instance().NewTexture(nameText);
+			}
+		}
+		sampler.samplerSlot = 0;
+		sampler.samplerState.wrap_s = wrap_s;
+		sampler.samplerState.wrap_t = wrap_t;
+		sampler.samplerState.minfilter = minfilter;
+		sampler.samplerState.magfilter = magfilter;
+		sampler.samplerState.mipfilter = mipfilter;
+
+		if (!self->figure->SetMaterialParam(materialName, samplerName, &sampler)) {
+			PyErr_SetString(PyExc_TypeError, "parameter error.");
+			return NULL;
+		}
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+
+	static PyObject* figure_GetMaterialParam(figure_obj* self, PyObject* args) {
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+
 	PyMethodDef figure_methods[] = {
 		{ "connectAnimator", (PyCFunction)figure_BindAnimator, METH_VARARGS, connectAnimator_doc},
 		{ "getCamera", (PyCFunction)figure_GetCamera, METH_VARARGS, getCamera_doc},
@@ -241,6 +373,9 @@ namespace pyxie
 		{ "getBlendingWeight", (PyCFunction)figure_getBlendingWeight, METH_VARARGS, getBlendingWeight_doc},
 		{ "getJoint", (PyCFunction)figure_getJoint, METH_VARARGS, getJoint_doc},
 		{ "setJoint", (PyCFunction)figure_setJoint, METH_VARARGS | METH_KEYWORDS, setJoint_doc},
+		{ "getMaterialParam", (PyCFunction)figure_GetMaterialParam, METH_VARARGS, getMaterialParam_doc},
+		{ "setMaterialParam", (PyCFunction)figure_SetMaterialParam, METH_VARARGS, setMaterialParam_doc},
+		{ "setMaterialParamTexture", (PyCFunction)figure_SetMaterialParamTexture, METH_VARARGS | METH_KEYWORDS, setMaterialParamTexture_doc},
 
 		//{ "dump", (PyCFunction)figure_Dump, METH_VARARGS },
 

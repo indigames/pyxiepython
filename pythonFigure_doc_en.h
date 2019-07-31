@@ -187,3 +187,74 @@ PyDoc_STRVAR(setJoint_doc,
 	"        rotation of joint\n"\
 	"    scale\n"\
 	"        scale of joint");
+
+
+//setMaterialParam
+PyDoc_STRVAR(setMaterialParam_doc,
+	"Set material parameters\n"\
+	"\n"\
+	"figure.setMaterialParam(materialName, paramName, paramValue)\n"\
+	"\n"\
+	"Parameters\n"\
+	"----------\n"\
+	"    materialName : string\n"\
+	"        Name of the material for which you want to set parameters\n"\
+	"    paramName : string\n"\
+	"        Name of the parameter to pass to the shader\n"\
+	"    paramValue\n"\
+	"        Tuple of value pass to the shader");
+
+//setMaterialParamTexture
+PyDoc_STRVAR(setMaterialParamTexture_doc,
+	"Set texture material parameters\n"\
+	"\n"\
+	"figure.setMaterialParam(materialName, samplerName, textureName, pixel, width, height, wrap_s, wrap_t, minfilter, magfilter, mipfilter)\n"\
+	"\n"\
+	"Parameters\n"\
+	"----------\n"\
+	"    materialName : string\n"\
+	"        Name of the material for which you want to set parameters\n"\
+	"    samplerName : string\n"\
+	"         Name of the sampler parameter to pass to the shader\n"\
+	"    textureName : string (optional)\n"\
+	"        Texture file path\n"\
+	"    pixel : binary (optional)\n"\
+	"        binary array of rgba 32bit format image\n"\
+	"        textureName and pixel + width, height can not be specified at the same time, \n"\
+	"        textureName takes precedence\n"\
+	"    width : int (optional)\n"\
+	"        pixel image width\n"\
+	"    height : int  (optional)\n"\
+	"        pixel image height\n"\
+	"    wrap_s : int  (optional)\n"\
+	"        Texture horizontal wrap mode of sampler state\n"\
+	"        The following values are available\n"\
+	"        pyxie.SAMPLERSTATE_WRAP <- (default)\n"\
+	"        pyxie.SAMPLERSTATE_MIRROR\n"\
+	"        pyxie.SAMPLERSTATE_CLAMP\n"\
+	"        pyxie.SAMPLERSTATE_BORDER\n"\
+	"    wrap_t : int  (optional)\n"\
+	"        Texture vertical wrap mode of sampler state\n"\
+	"        The content is the same as wrap_s\n"\
+	"    minfilter : int  (optional)\n"\
+	"        Sampling method when expanding the texture\n"\
+	"        The following values are available\n"\
+	"        pyxie.SAMPLERSTATE_LINEAR <- (default)\n"\
+	"        pyxie.SAMPLERSTATE_NEAREST\n"\
+	"    magfilter : int  (optional)\n"\
+	"       Sampling method when reducing the texture\n"\
+	"        The following values are available\n"\
+	"        pyxie.SAMPLERSTATE_LINEAR\n"\
+	"        pyxie.SAMPLERSTATE_NEAREST\n"\
+	"        pyxie.SAMPLERSTATE_NEAREST_MIPMAP_NEAREST\n"\
+	"        pyxie.SAMPLERSTATE_LINEAR_MIPMAP_NEAREST\n"\
+	"        pyxie.SAMPLERSTATE_NEAREST_MIPMAP_LINEAR\n"\
+	"        pyxie.SAMPLERSTATE_LINEAR_MIPMAP_LINEAR\n"\
+	"    mipfilter : int  (optional)\n"\
+	"        Not used now.");
+
+//getMaterialParam
+PyDoc_STRVAR(getMaterialParam_doc,
+	"Get material parameters\n"\
+	"\n"\
+	"under construction");

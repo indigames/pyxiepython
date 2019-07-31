@@ -101,6 +101,10 @@ namespace pyxie
 		const Joint GetJoint(int idx);
 		const void  SetJoint(int idx, const Joint& joint);
 
+
+		bool SetMaterialParam(const char* materialName, const char* paramName, void* value);
+		bool GetMaterialParam(const char* materialName, const char* paramName, void* value);
+
 /*
 		///アルファ値
 		void SetAlpha(float a) { color.setW(a); }

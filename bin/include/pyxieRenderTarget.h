@@ -10,10 +10,10 @@ typedef unsigned int ColorBufferHandle;
 typedef unsigned int DepthBufferHandle;
 
 #include "pyxieResource.h"
-#include "pyxieTexture.h"
-
 namespace pyxie
 {
+	class pyxieTexture;
+		
 	enum RenderBufferQuarity
 	{
 		QuarityLow,
@@ -32,7 +32,7 @@ namespace pyxie
 		uint32_t	height;
 		bool useStencilBuffer;
 		bool useDepthBuffer;
-		bool useColorAlpha;
+		//bool useColorAlpha;
 		float scissorX;
 		float scissorY;
 		float scissorW;
@@ -48,7 +48,8 @@ namespace pyxie
 		///useColor         カラーバッファを使う
 		///useDepth         デプスバッファを使う
 		///useStencil       ステンシルバッファを使う
-		pyxieRenderTarget(uint32_t w, uint32_t h, bool useColor, bool useDepth, bool useStencil = false, bool useColorAlpha = false);
+		//pyxieRenderTarget(uint32_t w, uint32_t h, bool useColor, bool useDepth, bool useStencil = false, bool useColorAlpha = false);
+		pyxieRenderTarget(pyxieTexture* colorTex, bool useDepth, bool useStencil = false);
 		pyxieRenderTarget(pyxieRenderTarget* org);
 		~pyxieRenderTarget();
 

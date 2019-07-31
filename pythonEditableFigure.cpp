@@ -255,7 +255,7 @@ namespace pyxie
 			}
 			for (Py_ssize_t i = 0; i < size; i++) {
 				auto item = PyTuple_GET_ITEM(param, i);
-				if (!PyFloat_Check(item)) {
+				if (!(PyFloat_Check(item) | PyLong_Check(item))) {
 					PyErr_SetString(PyExc_TypeError, "parameter error.");
 					return NULL;
 				}
@@ -270,7 +270,7 @@ namespace pyxie
 			}
 			for (Py_ssize_t i = 0; i < size; i++) {
 				auto item = PyList_GET_ITEM(param, i);
-				if (!PyFloat_Check(item)) {
+				if (!(PyFloat_Check(item) | PyLong_Check(item))) {
 					PyErr_SetString(PyExc_TypeError, "parameter error.");
 					return NULL;
 				}
@@ -306,7 +306,9 @@ namespace pyxie
 
 		char* materialName = nullptr;
 		char* samplerName = nullptr;
-		char* textureName = nullptr;
+
+		PyObject* textureName = nullptr;
+
 		PyObject* pixel = nullptr;
 		int w = 0;
 		int h = 0;
@@ -316,28 +318,35 @@ namespace pyxie
 		int magfilter = SamplerState::LINEAR;
 		int mipfilter = SamplerState::LINEAR_MIPMAP_LINEAR;
 
-		if (!PyArg_ParseTupleAndKeywords(args, kwargs, "sss|Oiiiiiii", kwlist,
+		if (!PyArg_ParseTupleAndKeywords(args, kwargs, "ssO|Oiiiiiii", kwlist,
 			&materialName, &samplerName, &textureName,
 			&pixel, &w, &h,
 			&wrap_s, &wrap_t, &minfilter, &magfilter, &mipfilter)) return NULL;
 
 		Sampler sampler;
-		if (pixel) {
-			if (!PyBytes_Check(pixel) || w == 0 || h == 0) {
-				PyErr_SetString(PyExc_TypeError, "parameter error");
-				return NULL;
-			}
-			char* pix = PyBytes_AsString(pixel);
-			sampler.tex = pyxieResourceCreator::Instance().NewTexture(textureName, pix,w,h,true);
+		if (textureName->ob_type == &TextureType) {
+			((texture_obj*)textureName)->colortexture->IncReference();
+			sampler.tex = ((texture_obj*)textureName)->colortexture;
 		}
 		else {
-			sampler.tex = pyxieResourceCreator::Instance().NewTexture(textureName);
+			const char* nameText = PyUnicode_AsUTF8(textureName);
+			if (pixel) {
+				if (!PyBytes_Check(pixel) || w == 0 || h == 0) {
+					PyErr_SetString(PyExc_TypeError, "parameter error");
+					return NULL;
+				}
+				char* pix = PyBytes_AsString(pixel);
+				sampler.tex = pyxieResourceCreator::Instance().NewTexture(nameText, pix, w, h, true);
+			}
+			else {
+				sampler.tex = pyxieResourceCreator::Instance().NewTexture(nameText);
+			}
+			TextureSource texsrc;
+			pyxie_strncpy(texsrc.path, nameText, MAX_PATH);
+			texsrc.normal = false;
+			texsrc.wrap = false;
+			sampler.textureNameIndex = self->editablefigure->SetTextureSource(texsrc);
 		}
-		TextureSource texsrc;
-		pyxie_strncpy(texsrc.path, textureName, MAX_PATH);
-		texsrc.normal = false;
-		texsrc.wrap = false;
-		sampler.textureNameIndex = self->editablefigure->SetTextureSource(texsrc);
 		sampler.samplerSlot = 0;
 		sampler.samplerState.wrap_s = wrap_s;
 		sampler.samplerState.wrap_t = wrap_t;

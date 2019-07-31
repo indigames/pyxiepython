@@ -4,26 +4,47 @@
 #include "pyxieFigure.h"
 #include "pyxieCamera.h"
 #include "pyxieRenderContext.h"
+#include "pyxieRenderTarget.h"
+#include "pyxieTime.h"
 
 #include <map>
 #include <queue>
 #include <mutex>
 #include <thread>
 #include <vector>
-
+#include <iostream>
+#include <exception>
+#include <python.h>
 namespace pyxie {
 
 	struct RenderSet {
 		pyxieCamera* camera;
 		pyxieShowcase* showcas;
+		pyxieRenderTarget* offscreen;
 	};
 	std::vector<RenderSet> renderSets;
 
-
 	Backyard* Backyard::instance;
 	Backyard& Backyard::Instance() { return *instance; }
-	
+
+
+	std::mutex main_mtx;
+	std::mutex python_mtx;
+
+	std::condition_variable main_cv;
+	std::condition_variable python_cv;
+
+	bool wake_Main = false;
+
+	bool quitPython = false;
+	bool quitRequest = false;
+
 	Backyard::~Backyard() {
+		quitRequest = true;
+		while (quitPython) {
+			python_cv.notify_one();
+		}
+
 		for (auto itr = renderSets.begin(); itr != renderSets.end(); ++itr) {
 			(*itr).camera->DecReference();
 			(*itr).showcas->DecReference();
@@ -35,7 +56,7 @@ namespace pyxie {
 		PYXIE_SAFE_DELETE(instance); 
 	}
 
-
+/*
 	std::mutex python_mtx;
 	std::condition_variable python_cv;
 	bool is_readyPython = false;
@@ -59,69 +80,59 @@ namespace pyxie {
 		is_readyPython = true;
 		python_cv.notify_one();
 	}
-
-
-/*
-	std::mutex main_mtx;
-	std::mutex python_mtx;
-
-	std::condition_variable main_cv;
-	std::condition_variable python_cv;
-
-	bool is_readyMain = false;
-	bool is_readyPython = false;
-
-	bool wake_Main = true;
-	bool wake_Python = true;
+*/
 
 	void Backyard::WakeBoth() {
-		is_readyMain = true;
-		is_readyPython = true;
 		python_cv.notify_one();
 		main_cv.notify_one();
 	}
 
+	bool Swapframe = true;
 	void Backyard::SyncMain() {
-		std::unique_lock<std::mutex> main_lk(main_mtx);
-		while (!wake_Python) {
-			is_readyPython = true;
-			python_cv.notify_one();
-		}
-		is_readyMain = false;
-		wake_Main = false;
-		main_cv.wait(main_lk, [] {
-			return is_readyMain; 
-			});
-		wake_Main = true;
+		do{
+			std::this_thread::sleep_for(std::chrono::microseconds(10));
+
+			std::unique_lock<std::mutex> main_lk(main_mtx);
+
+			while(wake_Main)
+				python_cv.notify_one();
+
+			main_cv.wait(main_lk);
+			wake_Main = true;
+			Render();
+		}while (!Swapframe);
 	}
 
-	void Backyard::SyncPython() {
+	void Backyard::SyncPython(bool swapframe) {
+		std::this_thread::sleep_for(std::chrono::microseconds(10));
+
 		std::unique_lock<std::mutex> python_lk(python_mtx);
 
-		while (!wake_Main) {
-			is_readyMain = true;
-			main_cv.notify_one();
-		}
-		is_readyPython = false;
-		wake_Python = false;
-		python_cv.wait(python_lk, [] { 
-			if (is_readyPython) return true;
-			if (is_readyMain) return false;
-			is_readyPython = true;
-			return true;
-			});
-		wake_Python = true;
-	}
-*/
+		Swapframe = swapframe;
 
-	void Backyard::RenderRequest(pyxieCamera* camera, pyxieShowcase* showcase){
+		while (!wake_Main)
+			main_cv.notify_one();
+		python_cv.wait(python_lk);
+		wake_Main = false;
+
+		if (quitRequest) {
+			quitPython = true;
+			PyRun_SimpleString("import os\nos._exit(0)");
+		}
+
+	}
+
+
+	void Backyard::RenderRequest(pyxieCamera* camera, pyxieShowcase* showcase, pyxieRenderTarget* offscreen){
 		camera->IncReference();
 		showcase->IncReference();
 
 		RenderSet rset;
 		rset.camera = camera;
 		rset.showcas = showcase;
+		rset.offscreen = offscreen;
 		renderSets.push_back(rset);
+		SyncPython(false);
 	}
 
 	void Backyard::Render() {
@@ -130,7 +141,7 @@ namespace pyxie {
 
 		bool clearColor = true;
 		for (auto itr = renderSets.begin(); itr != renderSets.end(); ++itr) {
-			renderContext.BeginScene(NULL, Vec4(0.2f, 0.6f, 0.8f), clearColor);
+			renderContext.BeginScene((*itr).offscreen, Vec4(0.2f, 0.6f, 0.8f), clearColor);
 			(*itr).showcas->Update(0.0f);
 			(*itr).camera->Render();
 			(*itr).showcas->Render();

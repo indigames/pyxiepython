@@ -7,7 +7,7 @@ Functions to help build graphics data
 import pyxie
 import pyvmath as vmath
 
-def createSprite(width:float=100, height:float=100, texture:str=None, uv_left_top:tuple=(0,0), uv_right_bottom:tuple=(1,1), normal=None):
+def createSprite(width:float=100, height:float=100, texture=None, uv_left_top:tuple=(0,0), uv_right_bottom:tuple=(1,1), normal=None):
     """
     Create Visible Rectangle
 
@@ -46,7 +46,7 @@ def createSprite(width:float=100, height:float=100, texture:str=None, uv_left_to
     return createMesh(points, tris, texture, uvs)
 
 
-def createMesh(points, tris, texture:str=None, uvs = None):
+def createMesh(points, tris, texture=None, uvs = None):
     """
     Create a polygon mesh by specifying vertex coordinates and triangle index
 

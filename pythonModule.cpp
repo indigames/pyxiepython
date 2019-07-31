@@ -194,6 +194,7 @@ namespace pyxie
 		if (PyType_Ready(&ShowcaseType) < 0) return NULL;
 		if (PyType_Ready(&EditableFigureType) < 0) return NULL;
 		if (PyType_Ready(&ShaderGeneratorType) < 0) return NULL;
+		if (PyType_Ready(&TextureType) < 0) return NULL;
 
 		Py_INCREF(&FigureType);
 		PyModule_AddObject(module, "figure", (PyObject*)& FigureType);
@@ -215,6 +216,9 @@ namespace pyxie
 
 		Py_INCREF(&ShaderGeneratorType);
 		PyModule_AddObject(module, "shaderGenerator", (PyObject*)& ShaderGeneratorType);
+
+		Py_INCREF(&TextureType);
+		PyModule_AddObject(module, "texture", (PyObject*)& TextureType);
 
 		return module;
 	}

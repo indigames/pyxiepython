@@ -76,6 +76,9 @@ extern "C" {
 #endif
 
 
+	void DebugSaveFile(const char* txt, const char* filename);
+
+
 #ifdef __cplusplus
 }
 #endif

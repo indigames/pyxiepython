@@ -8,6 +8,7 @@
 #include "pyxieEnvironmentSet.h"
 #include "pyxieShowcase.h"
 #include "pyxieShaderDescriptor.h"
+#include "pyxieRenderTarget.h"
 
 namespace pyxie {
 	typedef struct {
@@ -47,6 +48,14 @@ namespace pyxie {
 
 	typedef struct {
 		PyObject_HEAD
+			pyxieTexture* colortexture;
+			pyxieRenderTarget* renderTarget;
+			int depth;
+			int stencil;
+	} texture_obj;
+
+	typedef struct {
+		PyObject_HEAD
 		pyxieShaderDescriptor* shaderDesc;
 		int MapChannel_None;
 		int MapChannel_DiffuseAlpha;
@@ -63,6 +72,7 @@ namespace pyxie {
 	extern PyTypeObject EditableFigureType;
 	extern PyTypeObject AnimatorType;
 	extern PyTypeObject CameraType;
+	extern PyTypeObject TextureType;
 	extern PyTypeObject EnvironmentType;
 	extern PyTypeObject ShowcaseType;
 	extern PyTypeObject ShaderGeneratorType;

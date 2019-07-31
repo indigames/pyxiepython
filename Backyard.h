@@ -3,6 +3,7 @@
 namespace pyxie {
 	class pyxieCamera;
 	class pyxieShowcase;
+	class pyxieRenderTarget;
 
 	class Backyard : public pyxieObject {
 		static Backyard* instance;
@@ -14,8 +15,9 @@ namespace pyxie {
 		~Backyard();
 		void WakeBoth();
 		void SyncMain();
-		void SyncPython();
-		void RenderRequest(pyxieCamera* camera, pyxieShowcase* showcase);
+		void SyncPython(bool swapframe=true);
+		void RenderRequest(pyxieCamera* camera, pyxieShowcase* showcase, pyxieRenderTarget* offscreen);
 		void Render();
+		void QuitPython();
 	};
 }

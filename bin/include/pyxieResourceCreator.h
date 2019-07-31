@@ -12,6 +12,7 @@ namespace pyxie {
 	class pyxieShowcase;
 	class pyxieEditableFigure;
 	class pyxieShaderDescriptor;
+	class pyxieRenderTarget;
 
 	class PYXIE_EXPORT pyxieResourceCreator : public pyxieObject {
 	public:
@@ -24,6 +25,7 @@ namespace pyxie {
 		pyxieTexture* NewTexture(const char* path);
 		pyxieTexture* NewTexture(const char* name, const char* pixels, int w, int h, bool alpha);
 		pyxieShowcase* NewShowcase();
+		pyxieRenderTarget* NewRenderTarget(pyxieTexture* colorTexture, bool useDepth, bool useStencil);
 
 		pyxieShaderDescriptor* NewShaderDescriptor();
 		void DeleteShaderDescriptor(pyxieShaderDescriptor* v);

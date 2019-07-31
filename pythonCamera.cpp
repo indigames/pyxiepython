@@ -33,13 +33,18 @@ namespace pyxie
 	static PyObject *camera_Render(camera_obj *self, PyObject *args)
 	{
 		showcase_obj* sco;
-		if (PyArg_ParseTuple(args, "O", &sco)) {
+		texture_obj* tex = nullptr;
+		if (PyArg_ParseTuple(args, "O|O", &sco, &tex)) {
 			if (sco && sco->ob_base.ob_type != &ShowcaseType) {
 				PyErr_SetString(PyExc_TypeError, "Argument of shoot must be showcase.");
 				return NULL;
 			}
 		}
-		Backyard::Instance().RenderRequest(self->camera, sco->showcase);
+
+		if (tex && (!tex->renderTarget))
+			tex->renderTarget = pyxieResourceCreator::Instance().NewRenderTarget(tex->colortexture, tex->depth, tex->stencil);
+
+		Backyard::Instance().RenderRequest(self->camera, sco->showcase, tex?tex->renderTarget:nullptr);
 
 		Py_INCREF(Py_None);
 		return Py_None;
