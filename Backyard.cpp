@@ -93,7 +93,7 @@ namespace pyxie {
 	bool Swapframe = true;
 	void Backyard::SyncMain() {
 		do{
-			std::this_thread::sleep_for(std::chrono::microseconds(10));
+			//std::this_thread::sleep_for(std::chrono::microseconds(10));
 
 			std::unique_lock<std::mutex> main_lk(main_mtx);
 
@@ -107,7 +107,7 @@ namespace pyxie {
 	}
 
 	void Backyard::SyncPython(bool swapframe) {
-		std::this_thread::sleep_for(std::chrono::microseconds(10));
+		//std::this_thread::sleep_for(std::chrono::microseconds(10));
 
 		std::unique_lock<std::mutex> python_lk(python_mtx);
 
