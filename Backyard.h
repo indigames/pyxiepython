@@ -16,7 +16,7 @@ namespace pyxie {
 		void WakeBoth();
 		void SyncMain();
 		void SyncPython(bool swapframe=true);
-		void RenderRequest(pyxieCamera* camera, pyxieShowcase* showcase, pyxieRenderTarget* offscreen);
+		void RenderRequest(pyxieCamera* camera, pyxieShowcase* showcase, pyxieRenderTarget* offscreen, bool clearColor, bool clearDepth, const float* color);
 		void Render();
 		void QuitPython();
 	};

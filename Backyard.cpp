@@ -21,6 +21,9 @@ namespace pyxie {
 		pyxieCamera* camera;
 		pyxieShowcase* showcas;
 		pyxieRenderTarget* offscreen;
+		bool clearColor;
+		bool colearDepth;
+		Vec4 color;
 	};
 	std::vector<RenderSet> renderSets;
 
@@ -123,7 +126,7 @@ namespace pyxie {
 	}
 
 
-	void Backyard::RenderRequest(pyxieCamera* camera, pyxieShowcase* showcase, pyxieRenderTarget* offscreen){
+	void Backyard::RenderRequest(pyxieCamera* camera, pyxieShowcase* showcase, pyxieRenderTarget* offscreen, bool clearColor, bool clearDepth, const float* color){
 		camera->IncReference();
 		showcase->IncReference();
 
@@ -131,6 +134,9 @@ namespace pyxie {
 		rset.camera = camera;
 		rset.showcas = showcase;
 		rset.offscreen = offscreen;
+		rset.clearColor = clearColor;
+		rset.colearDepth = clearDepth;
+		rset.color = Vec4(color[0], color[1], color[2], color[3]);
 		renderSets.push_back(rset);
 		SyncPython(false);
 	}
@@ -139,18 +145,15 @@ namespace pyxie {
 
 		pyxieRenderContext& renderContext = pyxieRenderContext::Instance();
 
-		bool clearColor = true;
 		for (auto itr = renderSets.begin(); itr != renderSets.end(); ++itr) {
-			renderContext.BeginScene((*itr).offscreen, Vec4(0.2f, 0.6f, 0.8f), clearColor);
+			renderContext.BeginScene((*itr).offscreen, (*itr).color,(*itr).clearColor, (*itr).colearDepth);
 			(*itr).showcas->Update(0.0f);
 			(*itr).camera->Render();
 			(*itr).showcas->Render();
 			renderContext.EndScene();
 			(*itr).camera->DecReference();
 			(*itr).showcas->DecReference();
-			clearColor = false;
 		}
-		//imguiRender();
 		renderSets.clear();
 	}
 }

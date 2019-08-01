@@ -30,21 +30,33 @@ namespace pyxie
 		return _PyUnicode_FromASCII(buf, strlen(buf));
 	}
 
-	static PyObject *camera_Render(camera_obj *self, PyObject *args)
+	static PyObject *camera_Render(camera_obj *self, PyObject *args, PyObject* kwargs)
 	{
+		static char* kwlist[] = { "showcase","texture","clearColor","clearDepth","clearColorValue", NULL };
 		showcase_obj* sco;
 		texture_obj* tex = nullptr;
-		if (PyArg_ParseTuple(args, "O|O", &sco, &tex)) {
-			if (sco && sco->ob_base.ob_type != &ShowcaseType) {
-				PyErr_SetString(PyExc_TypeError, "Argument of shoot must be showcase.");
-				return NULL;
-			}
+		int clearColor = true;
+		int clearDepth = true;
+		PyObject* clearColorValue = nullptr;
+		if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|OiiO", kwlist, &sco, &tex, &clearColor, &clearDepth, &clearColorValue)) return NULL;
+
+		if (sco && sco->ob_base.ob_type != &ShowcaseType) {
+			PyErr_SetString(PyExc_TypeError, "Parameter error.");
+			return NULL;
 		}
+
+		float buff[4] = { 0.2f, 0.6f, 0.8f , 0.0f};
+		float* v= nullptr;
+		int d;
+		if (clearColorValue) {
+			v = pyObjToFloat(clearColorValue, buff, d);
+		}
+		if (!v) v = buff;
 
 		if (tex && (!tex->renderTarget))
 			tex->renderTarget = pyxieResourceCreator::Instance().NewRenderTarget(tex->colortexture, tex->depth, tex->stencil);
 
-		Backyard::Instance().RenderRequest(self->camera, sco->showcase, tex?tex->renderTarget:nullptr);
+		Backyard::Instance().RenderRequest(self->camera, sco->showcase, tex?tex->renderTarget:nullptr, clearColor, clearDepth, v);
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -327,7 +339,7 @@ namespace pyxie
 	}
 
 	PyMethodDef camera_methods[] = {
-		{ "shoot", (PyCFunction)camera_Render, METH_VARARGS, shoot_doc },
+		{ "shoot", (PyCFunction)camera_Render, METH_VARARGS | METH_KEYWORDS, shoot_doc },
 		{ NULL,	NULL }
 	};
 
