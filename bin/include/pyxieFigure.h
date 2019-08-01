@@ -220,6 +220,7 @@ namespace pyxie
 		std::map<uint32_t, pyxieAnimator*> animes;
 
 	private:
+		int GetJointIndexNoWait(uint32_t jointHash);
 		void ClearMember();
 		void CreateBlendTree();
 		void CopyBlendWeight();
