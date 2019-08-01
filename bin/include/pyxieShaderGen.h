@@ -26,6 +26,7 @@ namespace pyxie {
 
 	class PYXIE_EXPORT pyxieShaderGen
 	{
+		std::string target;
 	public:
 		pyxieShaderGen() {}
 		void Setup(const char* targetType, std::stringstream& outputStringStream);
