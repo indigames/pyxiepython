@@ -44,7 +44,7 @@ namespace pyxie
 			PyErr_SetString(PyExc_TypeError, "Parameter error.");
 			return NULL;
 		}
-		if (tex && (tex->ob_base.ob_type == &TextureType)) tex = nullptr;
+		if (tex && (tex->ob_base.ob_type != &TextureType)) tex = nullptr;
 
 		float buff[4] = { 0.2f, 0.6f, 0.8f , 0.0f};
 		float* v= nullptr;

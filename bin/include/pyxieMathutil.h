@@ -16,7 +16,7 @@ namespace pyxie {
 
 	template <int N>
 	class PYXIE_EXPORT Vec {
-		float v[N];
+		float v[4];
 	public:
 		Vec() {
 			for (int i = 0; i < N; i++) v[i] = 0.0f;
