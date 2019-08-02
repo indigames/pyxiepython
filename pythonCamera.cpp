@@ -8,9 +8,9 @@
 namespace pyxie
 {
 	PyObject *camera_new(PyTypeObject *type, PyObject *args, PyObject *kw) {
-		char* name;
+		char* name = "camera";
 		camera_obj * self = NULL;
-		if (PyArg_ParseTuple(args, "s", &name)) {
+		if (PyArg_ParseTuple(args, "|s", &name)) {
 			self = (camera_obj*)type->tp_alloc(type, 0);
 			self->camera = pyxieResourceCreator::Instance().NewCamera(name,nullptr);
 		}
@@ -44,6 +44,7 @@ namespace pyxie
 			PyErr_SetString(PyExc_TypeError, "Parameter error.");
 			return NULL;
 		}
+		if (tex && (tex->ob_base.ob_type == &TextureType)) tex = nullptr;
 
 		float buff[4] = { 0.2f, 0.6f, 0.8f , 0.0f};
 		float* v= nullptr;
@@ -52,6 +53,7 @@ namespace pyxie
 			v = pyObjToFloat(clearColorValue, buff, d);
 		}
 		if (!v) v = buff;
+
 
 		if (tex && (!tex->renderTarget))
 			tex->renderTarget = pyxieResourceCreator::Instance().NewRenderTarget(tex->colortexture, tex->depth, tex->stencil);
@@ -388,7 +390,7 @@ namespace pyxie
 		0,                                  /* tp_setattro */
 		0,                                  /* tp_as_buffer */
 		Py_TPFLAGS_DEFAULT,					/* tp_flags */
-		0,									/* tp_doc */
+		camera_doc,							/* tp_doc */
 		0,									/* tp_traverse */
 		0,                                  /* tp_clear */
 		0,                                  /* tp_richcompare */

@@ -1,4 +1,18 @@
 
+PyDoc_STRVAR(camera_doc,
+	"A camera is an object for rendering a scene\n"\
+	"There are two modes of projection for the camera, orthographicand perspective.\n"\
+	"\n"\
+	"Constructor\n"\
+	"----------\n"\
+	"    cam = pyxie.camera(name)\n"\
+	"\n"\
+	"Parameters\n"\
+	"----------\n"\
+	"    name : string (optional)\n"\
+	"        Name of camera \n");
+
+
 //position
 PyDoc_STRVAR(position_doc,
 	"camera position\n"\
@@ -145,11 +159,21 @@ PyDoc_STRVAR(screenMatrix_doc,
 PyDoc_STRVAR(shoot_doc,
 	"Render the view seen from the camera\n"\
 	"\n"\
-	"camera.shoot(showcase)\n"\
+	"camera.shoot(showcase, texture, clearColor, clearDepth, clearColorValue)\n"\
 	"\n"\
 	"Parameters\n"\
 	"----------\n"\
 	"    showcase : pyxie.showcase\n"\
-	"        Showcase containing the objects you want to render\n");
+	"        Showcase containing the objects you want to render\n"\
+	"    texture : pyxie.texture (optional)\n"\
+	"        texture object to render to\n"\
+	"        If you don't set, renders to the frame buffer\n"\
+	"    clearColor : bool  (optional)\n"\
+	"        clear textre (or frame buffer) by clearColorValue befor render\n"\
+	"    clearDepth : bool  (optional)\n"\
+	"        clear textre (or frame buffer) depth value befor render\n"\
+	"        whether a texture has a depth value is specified at texture generation time.\n"\
+	"    clearColorValue : pyvmath.vec4 (optional)\n"\
+	"        texture clear color\n");
 
 

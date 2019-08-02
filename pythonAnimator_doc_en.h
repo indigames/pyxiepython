@@ -1,3 +1,16 @@
+//animator
+PyDoc_STRVAR(animator_doc,
+	"animator is a key frame animation data object \n"\
+	"\n"\
+	"Constructor\n"\
+	"----------\n"\
+	"    anim = pyxie.animator(path)\n"\
+	"\n"\
+	"Parameters\n"\
+	"----------\n"\
+	"    path : string"
+	"        animation file path");
+
 
 
 //loop
