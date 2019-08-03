@@ -347,10 +347,10 @@ namespace pyxie
 		sampler.samplerState.mipfilter = mipfilter;
 
 		if (!self->figure->SetMaterialParam(materialName, samplerName, &sampler)) {
+			if (sampler.tex)sampler.tex->DecReference();
 			PyErr_SetString(PyExc_TypeError, "parameter error.");
 			return NULL;
 		}
-
 		Py_INCREF(Py_None);
 		return Py_None;
 	}

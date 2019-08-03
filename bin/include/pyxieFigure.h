@@ -203,7 +203,7 @@ namespace pyxie
 		pyxieAnimator* animatorSlot[NumSlot];
 		float	lastEvalTime[NumSlot];
 		pyxieShader** meshShaders;
-
+		FigureMaterial** materials;
 		float blendWeight[3];
 		uint32_t brendTreeType;
 		void* blendTreeBranches;

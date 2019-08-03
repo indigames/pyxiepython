@@ -10,7 +10,7 @@ namespace pyxie
 {
 	class pyxieTexture;
 
-#define GEOM_VER 10
+#define GEOM_VER 11
 
 #define align64(v,n) union{v n; uint64_t n##64;}
 
@@ -74,7 +74,7 @@ namespace pyxie
 
 
 	struct FigureMaterial{
-		uint32_t shaderName[8];
+		uint32_t shaderNameValue[8];
 		uint32_t nameHash;
 		uint8_t numParams;
 		uint8_t numStates;
@@ -207,16 +207,17 @@ namespace pyxie
 	};
 
 
-	struct FigureMesh	//72 bytes
+	struct FigureMesh	//64 bytes
 	{
 		align64(void*,vertices);
 		align64(uint16_t*,indices);
 		align64(uint32_t*,bonePaletteIndeces);
 		align64(VertexAttribute*, vertexAttributes);
-		align64(FigureMaterial*, figureMaterial);
+		//align64(FigureMaterial*, figureMaterial);
 		uint32_t nameHash;
 		uint32_t numVerticies;
 		uint32_t numIndices;
+		uint32_t material;
 		int32_t verticesUid;
 		int32_t indicesUid;
 		uint16_t numSkinTransforms;
@@ -224,7 +225,6 @@ namespace pyxie
 		uint16_t numVertexAttributes;
 		uint8_t numWeightsPerVertex;
 		uint8_t flags;
-		uint32_t pad;
 
 		enum MeshAttributeFlag{
 			TRIANGLE_STRIP = 1,

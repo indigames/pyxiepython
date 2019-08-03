@@ -356,9 +356,9 @@ namespace pyxie
 
 		if(!self->editablefigure->SetMaterialParam(materialName, samplerName, &sampler)) {
 			PyErr_SetString(PyExc_TypeError, "parameter error.");
+			if (sampler.tex)sampler.tex->DecReference();
 			return NULL;
 		}
-
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
@@ -661,6 +661,8 @@ namespace pyxie
 		{ "replaceTextureSource", (PyCFunction)editablefigure_ReplaceTextureSource, METH_VARARGS, replaceTextureSource_doc},
 		{ "clear", (PyCFunction)editablefigure_Clear, METH_NOARGS, clear_doc},
 		{ "clearMesh", (PyCFunction)editablefigure_ClearMesh, METH_NOARGS, clearMesh_doc},
+
+
 		{ NULL,	NULL }
 	};
 

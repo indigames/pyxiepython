@@ -337,6 +337,9 @@ namespace pyxie
 		void SaveLights(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
 		void SaveCameras(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
 
+		void ExtendEditableMesh(EditableMesh* mesh, const FigureMaterial* oldmate, const FigureMaterial* newmate);
+
+
 		void ResetVertexBuffers();
 		int NewVBO();
 

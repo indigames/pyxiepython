@@ -279,6 +279,12 @@ namespace pyxie {
 		void SetLightTextureUVChannel(int rgb, int a);
 		void SetOverlayColorTextureUVChannel(int rgb, int a);
 		void SetOverlayNormalColorTextureUVChannel(int rgb, int a);
+
+		static inline bool CompareShaderValue(const uint32_t* name1, const uint32_t* name2) {
+			for (int i = 0; i < 4; i++)
+				if (((uint64_t*)name1)[i] != ((uint64_t*)name2)[i]) return false;
+			return true;
+		}
 	};
 
 }
