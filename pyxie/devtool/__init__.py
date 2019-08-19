@@ -14,10 +14,7 @@ import glob
 import os.path
 import pyxie
 from pyxie import apputil
-try:
-    from pyxie.devtool._pyxietools import *
-except ModuleNotFoundError:
-    from _pyxietools import*
+from pyxie.devtool._pyxietools import *
 from pyxie import apputil
 from pyxie.apputil import launch_server
 

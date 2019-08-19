@@ -2,10 +2,7 @@
 pyxie game engine
 """
 
-try:
-    from pyxie._pyxie import *
-except ModuleNotFoundError:
-    from _pyxie import *
+from pyxie._pyxie import *
 
 SAMPLERSTATE_WRAP = 0
 SAMPLERSTATE_MIRROR = 1
