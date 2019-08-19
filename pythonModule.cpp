@@ -174,7 +174,7 @@ namespace pyxie
 
 	static PyModuleDef pyxie_module = {
 		PyModuleDef_HEAD_INIT,
-		"pyxie",								// Module name to use with Python import statements
+		"_pyxie",								// Module name to use with Python import statements
 		"Provides some functions, but faster",  // Module description
 		0,
 		pyxie_methods							// Structure that defines the methods of the module

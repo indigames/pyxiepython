@@ -37,7 +37,7 @@ namespace pyxie
 		gen.Setup("GL3FP", tmpStream);
 		gen.Precompile(tmpStream.str(), outStream);
 		char buf[2018];
-		pyxie_snprintf(buf, 2018, outStream.str().c_str());
+		pyxie_snprintf(buf, 2018, "%s",outStream.str().c_str());
 		return _PyUnicode_FromASCII(buf, strlen(buf));
 	}
 
