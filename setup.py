@@ -1,4 +1,5 @@
 from distutils.core import setup, Extension
+import setuptools
 
 pyxie_module = Extension('pyxie._pyxie', 
                        sources=[
@@ -26,7 +27,7 @@ tools_module = Extension('pyxie.devtool._pyxietools',
 			           library_dirs=['bin/win32'],
 			           libraries=['pyxtools','pyxcore'])
 
-setup(name='pyxie', version='0.2.09',
+setup(name='pyxie', version='0.2.1',
 		description='pyxie game engine module',
 		author=u'Kiharu Shishikura',
 		author_email='shishi@indigames.net',
@@ -48,8 +49,7 @@ setup(name='pyxie', version='0.2.09',
 			'Topic :: Games/Entertainment',
 		],
 		data_files = {
-			'bin/win32/pyxcore.dll':['bin/win32/pyxcore.dll'],
-			'bin/win32/pyxtools.dll':['bin/win32/pyxtools.dll'],
-			'bin/win32/PVRTexLib.dll':['bin/win32/PVRTexLib.dll']
+			'':['bin/win32/pyxcore.dll'],
+			'devtool':['bin/win32/pyxtools.dll', 'bin/win32/PVRTexLib.dll'],
 			}
       )
