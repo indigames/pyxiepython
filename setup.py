@@ -1,4 +1,4 @@
-from distutils.core import setup, Extension
+from setuptools import setup, Extension, find_packages
 import setuptools
 
 pyxie_module = Extension('pyxie._pyxie', 
@@ -31,7 +31,7 @@ setup(name='pyxie', version='0.2.10',
 		description='pyxie game engine module',
 		author=u'Kiharu Shishikura',
 		author_email='shishi@indigames.net',
-		packages=['pyxie','pyxie.devtool','pyxie.apputil'],
+        packages=find_packages(),
 		ext_modules=[pyxie_module, tools_module],
 		long_description=open('README.md').read(),
 		license='MIT',
@@ -48,9 +48,5 @@ setup(name='pyxie', version='0.2.10',
 			'Operating System :: Microsoft :: Windows',
 			'Topic :: Games/Entertainment',
 		],
-		package_dir={'pyxie':'pyxie', "pyxie/devtool":"pyxie/devtool"},
-		package_data = {
-			'pyxie':['pyxie/pyxcore.dll'],
-			'pyxie/devtool':['pyxie/devtool/pyxtools.dll', 'pyxie/devtool/PVRTexLib.dll'],
-			}
+        include_package_data=True
       )

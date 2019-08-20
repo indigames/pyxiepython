@@ -4,6 +4,8 @@ include README.md
 include setup.py
 include *.h
 include pyxie/include/*.h
+include pyxie/*.dll
+include pyxie/devtool/*.dll
 
 
 
