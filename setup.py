@@ -48,6 +48,7 @@ setup(name='pyxie', version='0.2.10',
 			'Operating System :: Microsoft :: Windows',
 			'Topic :: Games/Entertainment',
 		],
+		package_dir={'pyxie':'pyxie', "pyxie/devtool":"pyxie/devtool"},
 		package_data = {
 			'pyxie':['pyxie/pyxcore.dll'],
 			'pyxie/devtool':['pyxie/devtool/pyxtools.dll', 'pyxie/devtool/PVRTexLib.dll'],
