@@ -49,7 +49,7 @@ setup(name='pyxie', version='0.2.10',
 			'Topic :: Games/Entertainment',
 		],
 		package_data = {
-			'pyxie':['bin/win32/pyxcore.dll'],
-			'pyxie/devtool':['bin/win32/pyxtools.dll', 'bin/win32/PVRTexLib.dll'],
+			'pyxie':['pyxie/pyxcore.dll'],
+			'pyxie/devtool':[pyxie/devtool/pyxtools.dll', 'pyxie/devtool/PVRTexLib.dll'],
 			}
       )
