@@ -50,6 +50,6 @@ setup(name='pyxie', version='0.2.10',
 		],
 		package_data = {
 			'pyxie':['pyxie/pyxcore.dll'],
-			'pyxie/devtool':[pyxie/devtool/pyxtools.dll', 'pyxie/devtool/PVRTexLib.dll'],
+			'pyxie/devtool':['pyxie/devtool/pyxtools.dll', 'pyxie/devtool/PVRTexLib.dll'],
 			}
       )
