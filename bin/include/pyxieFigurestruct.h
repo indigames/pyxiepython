@@ -218,8 +218,8 @@ namespace pyxie
 		uint32_t numVerticies;
 		uint32_t numIndices;
 		uint32_t material;
-		int32_t verticesUid;
-		int32_t indicesUid;
+		int32_t verticesUid;	//unused
+		int32_t indicesUid;		//
 		uint16_t numSkinTransforms;
 		uint16_t vertexFormatSize;
 		uint16_t numVertexAttributes;

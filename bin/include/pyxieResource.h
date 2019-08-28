@@ -82,13 +82,9 @@ namespace pyxie
 		void SetResourceName(const char* name);
 
 
-#ifdef __ANDROID__
+#ifdef __ENABLE_SUSPEND_RECOVER__
 		virtual bool Restore() { return true; }
 		virtual bool Release() { return true; }
-		static void Add_ContextItem(pyxieResource* item, int priority);
-		static void Del_ContextItem(pyxieResource* item);
-		static void Restore_ContextItems();
-		static void Release_ContextItems();
 #endif
 	protected:
 		inline void BuildSuccess() { SetState(state_buildEnd | state_buildSuccess); }

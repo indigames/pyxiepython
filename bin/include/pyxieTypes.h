@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #endif
 #include <windows.h>
+#define __ENABLE_SUSPEND_RECOVER__ 1
 
 /////////////////////////////IOS
 #elif defined __APPLE_CC__
@@ -28,6 +29,7 @@
 /////////////////////////////Android
 #elif defined __ANDROID__
 #include <stdlib.h>
+#define __ENABLE_SUSPEND_RECOVER__ 1
 #endif
 
 #if defined _WIN32

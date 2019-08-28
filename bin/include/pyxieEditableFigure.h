@@ -324,7 +324,10 @@ namespace pyxie
 
 		static const VertexAttribute& GetVertexAttribute(AttributeID id);
 
-	protected:
+#if defined __ENABLE_SUSPEND_RECOVER__
+		virtual bool Restore();
+		virtual bool Release();
+#endif	protected:
 		void ConvertGPUSkinningScene(uint32_t bonePaletteSize);
 		bool ExportSkeleton(pyxieMemostream* pStream, const Skeleton* skeleton, CustomDataCallback customDataCallback, void* customData);
 		bool BuildSimdHierarchy(std::vector<HierachyQuad>& hierachyQuads, const Skeleton* skeleton, const std::set<int>& boneSet);

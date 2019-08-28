@@ -40,5 +40,9 @@ namespace pyxie
 
 		void searchDatabase(const char* root);
 
+#ifdef __ENABLE_SUSPEND_RECOVER__
+		void Release();
+		void Restore();
+#endif
 	};
 }

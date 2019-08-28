@@ -79,7 +79,7 @@ namespace pyxie
 		void SetSamplerState(SamplerState state);
 
 
-#if defined __ANDROID__
+#if defined __ENABLE_SUSPEND_RECOVER__
 		virtual bool Restore();
 		virtual bool Release();
 #endif

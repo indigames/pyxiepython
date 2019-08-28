@@ -19,6 +19,8 @@ namespace pyxie
 		virtual bool			onUpdate();
 		virtual void			onSize(int scrW, int scrH);
 		virtual void			onRender();
+
+		bool isInitialized(){return initialized;}
 	protected:
 		bool initialized;
 	};

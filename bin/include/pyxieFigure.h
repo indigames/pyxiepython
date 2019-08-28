@@ -18,7 +18,10 @@ namespace pyxie
 
 	struct MeshInfo {
 		pyxieShader* shader;
-		Vec4 color;
+		uint32_t verticesUid;
+		uint32_t indicesUid;
+		uint32_t vao;
+		//Vec4 color;
 	};
 
 
@@ -196,13 +199,18 @@ namespace pyxie
 		void SetMeshAABBox(const char* name, const AABBox& aabb);
 */
 
+#if defined __ENABLE_SUSPEND_RECOVER__
+		virtual bool Restore();
+		virtual bool Release();
+#endif
 
 
 	protected:
 		FigureHeader* header;
 		pyxieAnimator* animatorSlot[NumSlot];
 		float	lastEvalTime[NumSlot];
-		pyxieShader** meshShaders;
+		//pyxieShader** meshShaders;
+		MeshInfo* meshinfo;
 		FigureMaterial** materials;
 		float blendWeight[3];
 		uint32_t brendTreeType;
@@ -226,7 +234,7 @@ namespace pyxie
 		void CopyBlendWeight();
 		bool BuildMesh();
 		void DeleteMesh();
-		void DrawMesh(FigureMesh& mesh, pyxieShader* shader);
+		void DrawMesh(FigureMesh& mesh, MeshInfo& info);
 		bool LoopMesh(int& i);
 	};
 }

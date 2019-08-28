@@ -37,12 +37,6 @@ namespace pyxie
 		float scissorY;
 		float scissorW;
 		float scissorH;
-
-#ifdef __ANDROID__
-		bool skipsave;
-		void* savetexture;
-#endif
-
 	public:
 
 		///useColor         カラーバッファを使う
@@ -90,7 +84,7 @@ namespace pyxie
 			scissorH = h;
 		}
 
-#if defined __ANDROID__
+#if defined __ENABLE_SUSPEND_RECOVER__
 		virtual bool Restore();
 		virtual bool Release();
 #endif
