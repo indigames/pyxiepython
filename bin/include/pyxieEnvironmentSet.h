@@ -33,7 +33,7 @@ namespace pyxie
 		void Clone(bool afterFinishBuild);
 		RESOURCETYPE ResourceType() { return ENVIRONMENTSETTYPE; }
 		void Render();
-		const Vec3& GetAmbientSkyColor();
+		const Vec3 GetAmbientSkyColor();
 		void SetAmbientSkyColor(const Vec3& col);
 		const Vec3& GetAmbientGroundColor();
 		void SetAmbientGroundColor(const Vec3& col);
