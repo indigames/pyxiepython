@@ -42,6 +42,7 @@ namespace pyxie
 		uint32_t			numMips;
 		bool				useAlphaChannel;
 		SamplerState		currentState;
+		bool				fromFile;
 
 	public:
 
