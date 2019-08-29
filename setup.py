@@ -15,7 +15,8 @@ pyxie_module = Extension('pyxie._pyxie',
                            'pythonShaderGenerator.cpp',
                            'pythonFigure.cpp',
                            'pythonResource.cpp',
-                           'pythonTexture.cpp'
+                           'pythonTexture.cpp',
+						   'pythonParticle.cpp'
                        ],
                        include_dirs=['bin/include'],
 			           library_dirs=['bin/win32'],

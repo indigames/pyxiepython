@@ -30,7 +30,7 @@ namespace pyxie
 		PyObject* pyobj = NULL;
 		if (PyArg_ParseTuple(args, "O", &pyobj))
 		{
-			if (pyobj->ob_type == &FigureType || pyobj->ob_type == &CameraType || pyobj->ob_type == &EnvironmentType || pyobj->ob_type == &EditableFigureType) {
+			if (pyobj->ob_type == &FigureType || pyobj->ob_type == &CameraType || pyobj->ob_type == &EnvironmentType || pyobj->ob_type == &EditableFigureType || pyobj->ob_type == &ParticleType) {
 				self->showcase->Add(((resource_obj*)pyobj)->res);
 			}
 			else return NULL;
@@ -44,7 +44,7 @@ namespace pyxie
 		PyObject* pyobj = NULL;
 		if (PyArg_ParseTuple(args, "O", &pyobj))
 		{
-			if (pyobj->ob_type == &FigureType || pyobj->ob_type == &CameraType || pyobj->ob_type == &EnvironmentType || pyobj->ob_type == &EditableFigureType) {
+			if (pyobj->ob_type == &FigureType || pyobj->ob_type == &CameraType || pyobj->ob_type == &EnvironmentType || pyobj->ob_type == &EditableFigureType || pyobj->ob_type == &ParticleType) {
 				self->showcase->Remove(((resource_obj*)pyobj)->res);
 			}
 			else return NULL;
