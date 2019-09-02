@@ -79,6 +79,7 @@ namespace pyxie
 		}
 		void SetSamplerState(SamplerState state);
 
+		void UpdateSubImage(uint8_t* bmp, int x, int y, int w, int h);
 
 #if defined __ENABLE_SUSPEND_RECOVER__
 		virtual bool Restore();

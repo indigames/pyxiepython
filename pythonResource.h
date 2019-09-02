@@ -52,6 +52,8 @@ namespace pyxie {
 			pyxieRenderTarget* renderTarget;
 			int depth;
 			int stencil;
+			PyObject* subImage;
+			int x, y, w, h;
 	} texture_obj;
 
 	typedef struct {
