@@ -274,7 +274,8 @@ namespace pyxie
 		std::vector<EnvironmentSource> figureEnvironments;
 		std::vector<FigureCamera> figureCameras;
 		std::map<uint32_t, FigureMaterial*> figureMaterials;
-		std::map<uint32_t, EditableMesh*> editableMeshes;
+		//std::map<uint32_t, EditableMesh*> editableMeshes;
+		std::vector<EditableMesh*> editableMeshes;
 		std::vector<TextureSource> textures;
 		Skeleton* skeleton;
 		Animation* baseAnimation;

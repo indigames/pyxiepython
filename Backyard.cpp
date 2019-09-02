@@ -15,7 +15,16 @@
 #include <iostream>
 #include <exception>
 #include <python.h>
+
+#include "pythonResource.h"
+#include "numpy/ndarrayobject.h"
+
 namespace pyxie {
+
+	std::vector<texture_obj*> imageUpdateList;
+	void Backyard::UpdateImageRequest(void* tex) {
+		imageUpdateList.push_back((texture_obj*)tex);
+	}
 
 	struct RenderSet {
 		pyxieCamera* camera;
@@ -142,6 +151,31 @@ namespace pyxie {
 	}
 
 	void Backyard::Render() {
+
+		for (auto itr = imageUpdateList.begin(); itr != imageUpdateList.end(); ++itr) {
+			if ((*itr)->subImage) {
+				uint8_t* bmp = NULL;
+				int w, h, x, y;
+				if (PyBytes_Check((*itr)->subImage)) {
+					bmp = (uint8_t*)PyBytes_AsString((*itr)->subImage);
+					x = (*itr)->x;
+					y = (*itr)->y;
+					w = (*itr)->w;
+					h = (*itr)->h;
+				}
+				else if ((*itr)->subImage->ob_type->tp_name && strcmp((*itr)->subImage->ob_type->tp_name, "numpy.ndarray") == 0) {
+					PyArrayObject_fields* ndarray = (PyArrayObject_fields*)(*itr)->subImage;
+					bmp = (uint8_t*)ndarray->data;
+					x = (*itr)->x;
+					y = (*itr)->y;
+					h = *ndarray->dimensions;
+					w = *ndarray->strides / ndarray->nd;
+				}
+				if(bmp) (*itr)->colortexture->UpdateSubImage(bmp, x, y, w, h);
+				Py_DECREF((*itr)->subImage);
+			}
+		}
+		imageUpdateList.clear();
 
 		pyxieRenderContext& renderContext = pyxieRenderContext::Instance();
 

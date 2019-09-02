@@ -4,6 +4,7 @@
 #include "Backyard.h"
 #include "pyVectorMath.h"
 #include "pythonTexture_doc_en.h"
+#include "numpy/ndarrayobject.h"
 
 namespace pyxie
 {
@@ -25,13 +26,17 @@ namespace pyxie
 		texture_obj* self = NULL;
 
 		char* pix = nullptr;
-
 		if (pixel) {
-			if (!PyBytes_Check(pixel) || width == 0 || height == 0) {
-				PyErr_SetString(PyExc_TypeError, "parameter error");
-				return NULL;
+			if (pixel->ob_type->tp_name && strcmp(pixel->ob_type->tp_name, "numpy.ndarray") == 0) {
+				PyArrayObject_fields* ndarray = (PyArrayObject_fields*)pixel;
+				height = *ndarray->dimensions;
+				width = *ndarray->strides / ndarray->nd;
+				alpha = ndarray->nd == 4 ? true : false;
+				pix = ndarray->data;
 			}
-			pix = PyBytes_AsString(pixel);
+			else if (PyBytes_Check(pixel)) {
+				pix = PyBytes_AsString(pixel);
+			}
 		}
 
 		self = (texture_obj*)type->tp_alloc(type, 0);
@@ -62,8 +67,30 @@ namespace pyxie
 		return _PyUnicode_FromASCII(buf, strlen(buf));
 	}
 
+	static PyObject* texture_setImage(texture_obj* self, PyObject* args, PyObject* kwargs)
+	{
+		static char* kwlist[] = { "image","x","y","width","height", NULL };
+
+		self->subImage = NULL;
+		self->x = 0;
+		self->y = 0;
+		self->w = -1;
+		self->h = -1;
+		if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|iiii", kwlist,
+			&(self->subImage), &(self->x), &(self->y), &(self->w), &(self->h))) return NULL;
+
+		Backyard::Instance().UpdateImageRequest(self);
+
+		if (self->subImage) {
+			Py_INCREF(self->subImage);
+		}
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
 
 	PyMethodDef texture_methods[] = {
+		{ "setImage", (PyCFunction)texture_setImage, METH_VARARGS | METH_KEYWORDS,setImage_doc },
 		{ NULL,	NULL }
 	};
 

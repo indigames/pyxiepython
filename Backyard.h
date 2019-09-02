@@ -19,5 +19,7 @@ namespace pyxie {
 		void RenderRequest(pyxieCamera* camera, pyxieShowcase* showcase, pyxieRenderTarget* offscreen, bool clearColor, bool clearDepth, const float* color);
 		void Render();
 		void QuitPython();
+
+		void UpdateImageRequest(void* tex);
 	};
 }
