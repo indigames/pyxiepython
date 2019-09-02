@@ -1,5 +1,6 @@
 from setuptools import setup, Extension, find_packages
 import setuptools
+import numpy
 
 pyxie_module = Extension('pyxie._pyxie', 
                        sources=[
@@ -17,13 +18,13 @@ pyxie_module = Extension('pyxie._pyxie',
                            'pythonResource.cpp',
                            'pythonTexture.cpp'
                        ],
-                       include_dirs=['bin/include'],
+                       include_dirs=['bin/include', 'bin/include', numpy.get_include()],
 			           library_dirs=['bin/win32'],
 			           libraries=['pyxcore', 'user32', 'Gdi32'])
 
 tools_module = Extension('pyxie.devtool._pyxietools', 
                        sources=['pythonTools.cpp'],
-                       include_dirs=['bin/include'],
+                       include_dirs=['bin/include', numpy.get_include()],
 			           library_dirs=['bin/win32'],
 			           libraries=['pyxtools','pyxcore'])
 
