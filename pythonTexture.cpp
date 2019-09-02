@@ -4,7 +4,7 @@
 #include "Backyard.h"
 #include "pyVectorMath.h"
 #include "pythonTexture_doc_en.h"
-#include "ndarrayobject.h"
+#include "numpy/ndarrayobject.h"
 
 namespace pyxie
 {

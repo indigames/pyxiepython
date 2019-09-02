@@ -17,7 +17,7 @@
 #include <python.h>
 
 #include "pythonResource.h"
-#include "ndarrayobject.h"
+#include "numpy/ndarrayobject.h"
 
 namespace pyxie {
 
