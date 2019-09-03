@@ -2,13 +2,14 @@
 
 #include "pyxieResource.h"
 #include <unordered_set>
+#include <list>
 
 namespace pyxie {
 	class pyxieFigure;
 	class pyxieEnvironmentSet;
 
 	class PYXIE_EXPORT pyxieShowcase : public pyxieResource {
-		std::unordered_set<pyxieFigure*> figures;
+		std::list<pyxieFigure*> figures;
 		pyxieEnvironmentSet* environmentSet;
 	public:
 		pyxieShowcase(const char* name);
