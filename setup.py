@@ -29,7 +29,7 @@ tools_module = Extension('pyxie.devtool._pyxietools',
 			           library_dirs=['bin/win32'],
 			           libraries=['pyxtools','pyxcore'])
 
-setup(name='pyxie', version='0.3.070',
+setup(name='pyxie', version='0.3.080',
 		description='pyxie game engine module',
 		author=u'Kiharu Shishikura',
 		author_email='shishi@indigames.net',
@@ -38,8 +38,7 @@ setup(name='pyxie', version='0.3.070',
 		long_description=open('README.md').read(),
 		license='MIT',
 		install_requires=[
-			'pyvmath', 
-			'requests'
+			'pyvmath', 'requests', 'numpy'
 			],
 		classifiers=[
 			'Intended Audience :: Developers',
