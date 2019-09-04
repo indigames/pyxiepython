@@ -28,7 +28,7 @@ tools_module = Extension('pyxie.devtool._pyxietools',
 			           library_dirs=['bin/win32'],
 			           libraries=['pyxtools','pyxcore'])
 
-setup(name='pyxie', version='0.3.080',
+setup(name='pyxie', version='0.3.090',
 		description='pyxie game engine module',
 		author=u'Kiharu Shishikura',
 		author_email='shishi@indigames.net',
