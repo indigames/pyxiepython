@@ -17,6 +17,7 @@ from pyxie import apputil
 from pyxie.devtool._pyxietools import *
 from pyxie import apputil
 from pyxie.apputil import launch_server
+import hashlib
 
 FileBehavior = [
     ('.pyxf', 'copy'),
@@ -174,6 +175,26 @@ def convertAssets(src,dst,platform, unit=1.0):
     def replaceExt(file, ext):
         name, extold = os.path.splitext(file)
         return name + ext
+    def readAndCalcHash(srcfile, dstfile, hashfile):
+        hashcode = '00000000000000000000000000000000'
+        newhash  = 'ffffffffffffffffffffffffffffffff'
+        if os.path.exists(dstfile):
+            try:
+                with open(hashfile, 'r') as f:
+                    hashcode = f.read()
+            except : None
+
+        fileDataBinary = open(srcfile, 'rb').read()
+        if len(fileDataBinary) is not 0:
+            hash = hashlib.md5()
+            hash.update(fileDataBinary)
+            newhash = hash.hexdigest()
+        return hashcode,newhash
+    def saveHash(hashfile, newhash):
+        if newhash != 'ffffffffffffffffffffffffffffffff':
+            apputil.makeDirectories(hashfile)
+            with open(hashfile, 'w') as f:
+                f.write(newhash)
 
     # convert model and image
     allimages = findImages(src)
@@ -221,8 +242,15 @@ def convertAssets(src,dst,platform, unit=1.0):
     for key, val in allTextures.items():
         outfile = os.path.normpath(key.replace(src, dst, 1))
         outfile = replaceExt(outfile, '.pyxi')
-        apputil.makeDirectories(outfile)
-        convertTextureToPlatform(key, outfile, platform, val['normal'], val['wrap'])
+        hashfile = os.path.normpath(key.replace(src, '.tmp/hash', 1))
+        hashcode, newhash = readAndCalcHash(key, outfile, hashfile)
+        if hashcode != newhash:
+            apputil.makeDirectories(outfile)
+            convertTextureToPlatform(key, outfile, platform, val['normal'], val['wrap'])
+            saveHash(hashfile, newhash)
+        else:
+            print("skip convert {} because no change".format(key))
+
 
 def packFolders(root):
     """
