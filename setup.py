@@ -1,3 +1,4 @@
+import importlib
 try:
     importlib.import_module('numpy')
 except ImportError:
