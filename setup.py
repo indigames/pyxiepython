@@ -13,10 +13,12 @@ from distutils.sysconfig import get_python_lib
 
 
 is64Bit = sys.maxsize > 2 ** 32
-
+print('--------------------------')
 if is64Bit:
+    print('windows 64bit')
     bindir = 'bin/win64'
 else:
+    print('windows 32bit')
     bindir = 'bin/win32'
 
 pyxie_module = Extension('pyxie._pyxie', 
@@ -45,7 +47,7 @@ tools_module = Extension('pyxie.devtool._pyxietools',
 			           library_dirs=[bindir],
 			           libraries=['pyxtools','pyxcore'])
 
-setup(name='pyxie', version='0.3.110',
+setup(name='pyxie', version='0.3.130',
 		description='pyxie game engine module',
 		author=u'Kiharu Shishikura',
 		author_email='shishi@indigames.net',
