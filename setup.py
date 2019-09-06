@@ -57,7 +57,7 @@ setup(name='pyxie', version='0.3.130',
 		license='MIT',
 		install_requires=[
 			'pyvmath', 'requests', 'numpy'
-			],
+		],
 		classifiers=[
 			'Intended Audience :: Developers',
 			'License :: OSI Approved :: MIT License',
@@ -67,7 +67,7 @@ setup(name='pyxie', version='0.3.130',
 			'Operating System :: Microsoft :: Windows',
 			'Topic :: Games/Entertainment',
 		],
-        data_files=[
+        package_data=[
             ('pyxie' ,  [bindir+"/pyxcore.dll"]),
             ('pyxie/devtool',  [bindir+"/pyxtools.dll",bindir+"/PVRTexLib.dll"])
         ],
