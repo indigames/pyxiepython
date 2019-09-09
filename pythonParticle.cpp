@@ -389,6 +389,25 @@ static PyObject *figure_update_particles(particle_obj *self, PyObject *args)
 	return Py_None;
 }
 
+
+static PyObject *figure_destroy_particles(particle_obj *self, PyObject *args)
+{	
+	int idx;	
+	if (!PyArg_ParseTuple(args, "i", &idx))
+	{
+		printf("ERROR: figure_destroy_particles, parse fail!\n");
+		return NULL;
+	}
+	
+	if (self->figure)
+	{
+		self->figure->DestroyParticle(idx);
+	}
+
+	Py_INCREF(Py_None);
+	return Py_None;
+}
+
 PyMethodDef particle_methods[] = {
 	{"connectAnimator", (PyCFunction)figure_BindAnimator, METH_VARARGS, connectAnimator_doc},
 	{"getCamera", (PyCFunction)figure_GetCamera, METH_VARARGS, getCamera_doc},
@@ -400,6 +419,7 @@ PyMethodDef particle_methods[] = {
 	{"getJoint", (PyCFunction)figure_getJoint, METH_VARARGS, getJoint_doc},
 	{"setJoint", (PyCFunction)figure_setJoint, METH_VARARGS | METH_KEYWORDS, setJoint_doc},
 	{"updateParticles", (PyCFunction)figure_update_particles, METH_VARARGS, setJoint_doc},
+	{"DestroyParticle", (PyCFunction)figure_destroy_particles, METH_VARARGS, setJoint_doc},
 
 	//{ "dump", (PyCFunction)figure_Dump, METH_VARARGS },
 

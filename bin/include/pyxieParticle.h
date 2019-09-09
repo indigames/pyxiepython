@@ -51,6 +51,7 @@ public:
 
     virtual void Render();
     void Init();
+    void DestroyParticle(int idx);
 
     void Build() {}
     void Initialize() {}
