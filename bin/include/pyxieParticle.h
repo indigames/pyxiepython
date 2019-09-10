@@ -43,6 +43,10 @@ private:
     int m_particleCount;
     float m_size;
 
+    // camera
+    pyxieCamera *m_camera;
+    float m_ppm;
+
 public:
     pyxieParticle(b2Vec2 *posBuff = NULL, b2Color *colorBuff = NULL, int count = 0, float size = -1);
     ~pyxieParticle();
@@ -52,6 +56,9 @@ public:
     virtual void Render();
     void Init();
     void DestroyParticle(int idx);
+    inline void SetPPM(float ppm) { m_ppm = ppm; }
+    inline void SetCamera(pyxieCamera *cam) { m_camera = cam; }
+    inline pyxieCamera *GetCamera(const char *name = nullptr) { return m_camera; }
 
     void Build() {}
     void Initialize() {}
@@ -61,8 +68,7 @@ public:
     void Dump(const char *file) {}
     virtual void Pose() {}
 
-    pyxieEnvironmentSet *GetEnvironmentSet() { return 0; }
-    pyxieCamera *GetCamera(const char *name = nullptr) { return 0; }
+    pyxieEnvironmentSet *GetEnvironmentSet() { return 0; } 
 
     void BindAnimator(AnimatorSlot slot, pyxieAnimator *animator) {}
     void BindAnimator(AnimatorSlot slot, const char *name) {}

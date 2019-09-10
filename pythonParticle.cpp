@@ -408,6 +408,39 @@ static PyObject *figure_destroy_particles(particle_obj *self, PyObject *args)
 	return Py_None;
 }
 
+static PyObject *figure_set_camera(particle_obj *self, PyObject *args)
+{	
+	PyObject *arg;
+	if (!PyArg_ParseTuple(args, "O", &arg))
+	{
+		printf("ERROR: figure_set_camera, parse fail!\n");
+		return NULL;
+	}
+	
+	if (arg->ob_type == &CameraType) {
+		camera_obj* cam = (camera_obj*)arg;
+		self->figure->SetCamera(cam->camera);
+	}	
+
+	Py_INCREF(Py_None);
+	return Py_None;
+}
+
+static PyObject *figure_set_ppm(particle_obj *self, PyObject *args)
+{	
+	float ppm;
+	if (!PyArg_ParseTuple(args, "f", &ppm))
+	{
+		printf("ERROR: figure_set_ppm, parse fail!\n");
+		return NULL;
+	}
+	
+	self->figure->SetPPM(ppm);
+	
+	Py_INCREF(Py_None);
+	return Py_None;
+}
+
 PyMethodDef particle_methods[] = {
 	{"connectAnimator", (PyCFunction)figure_BindAnimator, METH_VARARGS, connectAnimator_doc},
 	{"getCamera", (PyCFunction)figure_GetCamera, METH_VARARGS, getCamera_doc},
@@ -420,6 +453,8 @@ PyMethodDef particle_methods[] = {
 	{"setJoint", (PyCFunction)figure_setJoint, METH_VARARGS | METH_KEYWORDS, setJoint_doc},
 	{"updateParticles", (PyCFunction)figure_update_particles, METH_VARARGS, setJoint_doc},
 	{"DestroyParticle", (PyCFunction)figure_destroy_particles, METH_VARARGS, setJoint_doc},
+	{"SetCamera", (PyCFunction)figure_set_camera, METH_VARARGS, setJoint_doc},
+	{"SetPPM", (PyCFunction)figure_set_ppm, METH_VARARGS, setJoint_doc},
 
 	//{ "dump", (PyCFunction)figure_Dump, METH_VARARGS },
 
