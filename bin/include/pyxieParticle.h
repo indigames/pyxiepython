@@ -53,9 +53,10 @@ public:
 
     static pyxieParticle *new_particle(b2Vec2 *posBuff = NULL, b2Color *colorBuff = NULL, int count = 0, float size = -1);
 
-    virtual void Render();
     void Init();
-    void DestroyParticle(int idx);
+    void UpdateParticles(b2Vec2 *posBuff = NULL, b2Color *colorBuff = NULL, int count = 0, float size = -1);
+    virtual void Render();
+
     inline void SetPPM(float ppm) { m_ppm = ppm; }
     inline void SetCamera(pyxieCamera *cam) { m_camera = cam; }
     inline pyxieCamera *GetCamera(const char *name = nullptr) { return m_camera; }

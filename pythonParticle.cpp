@@ -349,59 +349,30 @@ static PyObject *figure_update_particles(particle_obj *self, PyObject *args)
 		return NULL;
 	}
 
-	int len = PyTuple_Size(arg1);
-	b2Vec2 *posBuff = new b2Vec2[len];
-	for (int i = 0; i < len; i++)
+	b2Vec2 *posBuff = NULL;
+	b2Color *colBuff = NULL;
+
+	SwigPyObject *obj1 = (SwigPyObject *)arg1;
+	if (obj1 && obj1->ptr)
 	{
-		PyObject *tmp = PyTuple_GetItem(arg1, i);
-		int len = PyTuple_Size(tmp);
-		if (len >= 2)
+		if (obj1->ty)
 		{
-			posBuff[i].x = (float)PyLong_AsLong(PyTuple_GetItem(tmp, 0));
-			posBuff[i].y = (float)PyLong_AsLong(PyTuple_GetItem(tmp, 1));
+			posBuff = reinterpret_cast<b2Vec2 *>(obj1->ptr);
 		}
 	}
 
-	len = PyTuple_Size(arg2);
-	b2Color *colBuff = new b2Color[len];
-	for (int i = 0; i < len; i++)
+	SwigPyObject *obj2 = (SwigPyObject *)arg2;
+	if (obj2 && obj2->ptr)
 	{
-		PyObject *tmp = PyTuple_GetItem(arg2, i);
-		int len = PyTuple_Size(tmp);
-		if (len >= 4)
+		if (obj2->ty)
 		{
-			colBuff[i].r = (unsigned char)PyLong_AsLong(PyTuple_GetItem(tmp, 0));
-			colBuff[i].g = (unsigned char)PyLong_AsLong(PyTuple_GetItem(tmp, 1));
-			colBuff[i].b = (unsigned char)PyLong_AsLong(PyTuple_GetItem(tmp, 2));
-			colBuff[i].a = (unsigned char)PyLong_AsLong(PyTuple_GetItem(tmp, 3));
+			colBuff = reinterpret_cast<b2Color *>(obj2->ptr);
 		}
 	}
 
 	if (self->figure)
 	{
-		//self->figure->UpdateParticles(posBuff, colBuff, count, radius);
-	}
-
-	delete[] posBuff;
-	delete[] colBuff;
-
-	Py_INCREF(Py_None);
-	return Py_None;
-}
-
-
-static PyObject *figure_destroy_particles(particle_obj *self, PyObject *args)
-{	
-	int idx;	
-	if (!PyArg_ParseTuple(args, "i", &idx))
-	{
-		printf("ERROR: figure_destroy_particles, parse fail!\n");
-		return NULL;
-	}
-	
-	if (self->figure)
-	{
-		self->figure->DestroyParticle(idx);
+		self->figure->UpdateParticles(posBuff, colBuff, count, radius);
 	}
 
 	Py_INCREF(Py_None);
@@ -451,8 +422,7 @@ PyMethodDef particle_methods[] = {
 	{"getBlendingWeight", (PyCFunction)figure_getBlendingWeight, METH_VARARGS, getBlendingWeight_doc},
 	{"getJoint", (PyCFunction)figure_getJoint, METH_VARARGS, getJoint_doc},
 	{"setJoint", (PyCFunction)figure_setJoint, METH_VARARGS | METH_KEYWORDS, setJoint_doc},
-	{"updateParticles", (PyCFunction)figure_update_particles, METH_VARARGS, setJoint_doc},
-	{"DestroyParticle", (PyCFunction)figure_destroy_particles, METH_VARARGS, setJoint_doc},
+	{"UpdateParticles", (PyCFunction)figure_update_particles, METH_VARARGS, setJoint_doc},
 	{"SetCamera", (PyCFunction)figure_set_camera, METH_VARARGS, setJoint_doc},
 	{"SetPPM", (PyCFunction)figure_set_ppm, METH_VARARGS, setJoint_doc},
 
