@@ -3,6 +3,8 @@
 #include <vector>
 #include <map>
 
+struct RenderSurface;
+
 namespace pyxie
 {
 struct b2Vec2
@@ -15,33 +17,50 @@ struct b2Color
     unsigned char r, g, b, a;
 };
 
+
+
 #define MAX_PARTICLES (1024 * 1024)
 
 class PYXIE_EXPORT pyxieParticle : public pyxieFigure
 {
 private:
     // gpu id
-    unsigned int m_textureID;      // texture
-    unsigned int m_vertexArrayID;  //vao
-    unsigned int m_vertexBufferID; //vbo
+    unsigned int m_programID;
+    unsigned int m_programID_screen;
+    unsigned int m_vertexArrayID;  
+    unsigned int m_vertexArrayID_screen;
     unsigned int m_positionBufferID;
+    unsigned int m_positionBufferID_screen;
     unsigned int m_colorBufferID;
+    unsigned int m_vertexArrayID_blurX;
+    unsigned int m_vertexArrayID_blurY;
+    unsigned int m_positionBufferID_blurX;
+    unsigned int m_positionBufferID_blurY;
+    unsigned int m_programID_blurX;
+    unsigned int m_programID_blurY;
+
+
+    // gpu shader location
+    unsigned int aPosition;
+    unsigned int aColor;
+    unsigned int uPointSize;
+    unsigned int uTransform;
+    unsigned int uScrTransform;
+
+    unsigned int ublurTex_X;
+    unsigned int ublurTex_Y;
+
+    unsigned int ublurBufferSize_X;
+    unsigned int ublurBufferSize_Y;
 
     // cpu data (shared with Box2D)
     b2Vec2 *m_posBuff;
     b2Color *m_colorBuff;
-
-    // gpu shader location
-    unsigned int m_programID;
-    unsigned int m_cameraRightID;
-    unsigned int m_cameraUpID;
-    unsigned int m_particleSizeID;
-    unsigned int m_viewProjMatrixID;
-    unsigned int m_textureSamplerID;
-
-    // members
     int m_particleCount;
     float m_size;
+    bool m_bInitialized;
+    RenderSurface *m_RenderSurface;
+    RenderSurface *m_BlurSurface;
 
     // camera
     pyxieCamera *m_camera;
@@ -51,15 +70,18 @@ public:
     pyxieParticle(b2Vec2 *posBuff = NULL, b2Color *colorBuff = NULL, int count = 0, float size = -1);
     ~pyxieParticle();
 
-    static pyxieParticle *new_particle(b2Vec2 *posBuff = NULL, b2Color *colorBuff = NULL, int count = 0, float size = -1);
-
     void Init();
     void UpdateParticles(b2Vec2 *posBuff = NULL, b2Color *colorBuff = NULL, int count = 0, float size = -1);
     virtual void Render();
-
+    void RenderToScreen();
+    void Blur();
     inline void SetPPM(float ppm) { m_ppm = ppm; }
     inline void SetCamera(pyxieCamera *cam) { m_camera = cam; }
     inline pyxieCamera *GetCamera(const char *name = nullptr) { return m_camera; }
+    inline static pyxieParticle *new_particle(b2Vec2 *posBuff = NULL, b2Color *colorBuff = NULL, int count = 0, float size = -1)
+    {
+        return new pyxieParticle(posBuff, colorBuff, count, size);
+    }
 
     void Build() {}
     void Initialize() {}
