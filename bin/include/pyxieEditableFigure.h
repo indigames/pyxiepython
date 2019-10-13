@@ -364,10 +364,6 @@ protected:
 		void SaveLights(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
 		void SaveCameras(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
 
-		void ConvertGPUSkinningScene(uint32_t bonePaletteSize);
-		bool ExportSkeleton(pyxieMemostream* pStream, const Skeleton* skeleton, CustomDataCallback customDataCallback, void* customData);
-		bool BuildSimdHierarchy(std::vector<HierachyQuad>& hierachyQuads, const Skeleton* skeleton, const std::set<int>& boneSet);
-		void DrawMesh(EditableMesh* mesh, pyxieShader* shader);
 
 		void ExtendEditableMesh(EditableMesh* mesh, const FigureMaterial* oldmate, const FigureMaterial* newmate);
 

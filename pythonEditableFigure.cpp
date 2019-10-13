@@ -315,6 +315,7 @@ namespace pyxie
 		return Py_None;
 	}
 
+
 	static PyObject* editablefigure_setVertexPtr(editablefigure_obj* self, PyObject* args) {
 
 		PyObject* arg = nullptr;
@@ -702,84 +703,6 @@ namespace pyxie
 	static PyObject* editablefigure_ClearMesh(editablefigure_obj* self)
 	{
 		self->editablefigure->ClearAllMeshes();
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
-
-	static PyObject* editablefigure_setVertexPtr(editablefigure_obj* self, PyObject* args) {
-
-		char* nodename = nullptr;
-		PyObject* ptr;
-		uint64_t numVerts = 0;
-		PyObject* attr= nullptr;
-		if (!PyArg_ParseTuple(args, "sOkO", &nodename, &ptr, &numVerts, &attr)) {
-			return NULL;
-		}
-		uint32_t numAttr = 0;
-		VertexAttribute attribute[NUM_ATTRIBUTE_ID];
-		if (PyTuple_Check(attr)) {
-			numAttr = (uint32_t)PyTuple_Size(attr);
-			for (uint32_t i = 0; i < numAttr; i++) {
-				PyObject* v = PyTuple_GET_ITEM(attr, i);
-				if (PyTuple_Check(v)) {
-					int n = (int)PyTuple_Size(v);
-					if (n != 4) { numAttr = 0; break;}
-					PyObject* tmp;
-					tmp = PyTuple_GET_ITEM(v, 0);
-					if(!PyLong_Check(tmp)) { numAttr = 0; break; }
-					attribute[i].id = (uint8_t)PyLong_AsLong(tmp);
-					tmp = PyTuple_GET_ITEM(v, 1);
-					if (!PyLong_Check(tmp)) { numAttr = 0; break; }
-					attribute[i].size = (uint16_t)PyLong_AsLong(tmp);
-					tmp = PyTuple_GET_ITEM(v, 2);
-					if (!PyLong_Check(tmp)) { numAttr = 0; break; }
-					attribute[i].normalize = (uint8_t)PyLong_AsLong(tmp);
-					tmp = PyTuple_GET_ITEM(v, 3);
-					if (!PyLong_Check(tmp)) { numAttr = 0; break; }
-					attribute[i].type = (uint16_t)PyLong_AsLong(tmp);
-				}
-				else { numAttr = 0; break; }
-			}
-		}
-		if (numAttr == 0) {
-			PyErr_SetString(PyExc_TypeError, "attribute param error ((id,size,nom,type),(),()...)");
-			return NULL;
-		}
-		void* vrts;
-		if(sizeof(void*) == 8)
-			vrts = (void*)PyLong_AsLongLong(ptr);
-		else
-			vrts = (void*)PyLong_AsUnsignedLong(ptr);
-
-		if (!self->editablefigure->SetVertexPointer(nodename, vrts, (uint32_t)numVerts, attribute, numAttr)) {
-			PyErr_SetString(PyExc_TypeError, "parameter error.");
-			return NULL;
-		}
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
-
-	static PyObject* editablefigure_setTrianglePtr(editablefigure_obj* self, PyObject* args) {
-
-		char* nodename = nullptr;
-		PyObject* ptr;
-		uint64_t numTriangles = 0;
-		uint32_t size = 2;
-
-		if (!PyArg_ParseTuple(args, "sOk|i", &nodename, &ptr, &numTriangles, &size)) {
-			return NULL;
-		}
-
-		void* triangles;
-		if (sizeof(void*) == 8)
-			triangles = (void*)PyLong_AsLongLong(ptr);
-		else
-			triangles = (void*)PyLong_AsUnsignedLong(ptr);
-
-		if (!self->editablefigure->SetIndexPointer(nodename, triangles, (uint32_t)numTriangles, size)) {
-			PyErr_SetString(PyExc_TypeError, "parameter error.");
-			return NULL;
-		}
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
