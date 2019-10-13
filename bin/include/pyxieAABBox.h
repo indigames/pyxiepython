@@ -10,7 +10,7 @@ namespace pyxie {
 	{
 	public:
 		//! Default Constructor.
-		pyxieAABBox() : MinEdge(-1, -1, -1), MaxEdge(1, 1, 1) {}
+		pyxieAABBox() : MinEdge(3.402823e+38, 3.402823e+38, 3.402823e+38), MaxEdge(-3.402823e+38, -3.402823e+38, -3.402823e+38) {}
 
 		//! Constructor with min edge and max edge.
 		pyxieAABBox(const Vec3& min, const Vec3& max) : MinEdge(min), MaxEdge(max) {}

@@ -110,7 +110,8 @@ namespace pyxie
 #if defined __ENABLE_SUSPEND_RECOVER__
 		virtual bool Restore();
 		virtual bool Release();
-#endif	private:
+#endif
+private:
 		void ClearMember();
 		void SetParameter(CGparameter location, uint32_t paramtype, void* value);
 		uint32_t VertexAttributeNameToType(const char* name);

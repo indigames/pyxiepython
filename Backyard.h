@@ -20,6 +20,9 @@ namespace pyxie {
 		void Render();
 		void QuitPython();
 
+		void SetFinishProgram(bool finish);
+		bool IsProgramRunning();
+
 		void UpdateImageRequest(void* tex);
 	};
 }

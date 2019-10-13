@@ -1,5 +1,7 @@
 #pragma once
 #include "pyxieObject.h"
+#include "pyxieShaderDescriptor.h"
+
 
 namespace pyxie {
 
@@ -13,6 +15,7 @@ namespace pyxie {
 	class pyxieEditableFigure;
 	class pyxieShaderDescriptor;
 	class pyxieRenderTarget;
+	class pyxieShader;
 
 	class PYXIE_EXPORT pyxieResourceCreator : public pyxieObject {
 	public:
@@ -26,6 +29,7 @@ namespace pyxie {
 		pyxieTexture* NewTexture(const char* name, const char* pixels, int w, int h, bool alpha);
 		pyxieShowcase* NewShowcase();
 		pyxieRenderTarget* NewRenderTarget(pyxieTexture* colorTexture, bool useDepth, bool useStencil);
+		pyxieShader* NewShader(pyxieShaderDescriptor& desc);
 
 		pyxieShaderDescriptor* NewShaderDescriptor();
 		void DeleteShaderDescriptor(pyxieShaderDescriptor* v);

@@ -253,6 +253,20 @@ PyDoc_STRVAR(setMaterialParamTexture_doc,
 	"    mipfilter : int  (optional)\n"\
 	"        Not used now.");
 
+//setParentJoint
+PyDoc_STRVAR(setParentJoint_doc,
+	"Set the joint of another figure \n"\
+	"(or EditableFigure) as the parent joint.\n"\
+	"\n"\
+	"figure.setParentJoint(figure, jointName)\n"\
+	"\n"\
+	"Parameters\n"\
+	"----------\n"\
+	"    figure : figure\n"\
+	"        Parent figure or EditableFigure\n"\
+	"    jointName : string\n"\
+	"        Parent joint name\n");
+
 //getMaterialParam
 PyDoc_STRVAR(getMaterialParam_doc,
 	"Get material parameters\n"\

@@ -244,9 +244,8 @@ namespace pyxie
 		uint32_t maxSkinWeightsPerVertex;
 		bool outsource;
 		std::vector<DrawSet>* drawSet;
-
 		int vboNo;
-		bool resetvbo;
+		bool enablevbo;
 	};
 
 	struct VBO
@@ -264,10 +263,10 @@ namespace pyxie
 	class ColladaLoader;
 
 	class PYXIE_EXPORT pyxieEditableFigure : public pyxieDrawable {
-		void* skeletonset;
+		//void* skeletonset;
 		void* baseAnimeset;
-		float* skinningMatrices;
-		float* inbindSkinningMatrices;
+		//float* skinningMatrices;
+		//float* inbindSkinningMatrices;
 		std::vector<VBO> vbos;
 		std::vector<std::string> jointNames;
 	protected:
@@ -297,55 +296,86 @@ namespace pyxie
 		virtual void Pose();
 		virtual void Render();
 
+		//add elemet
 		bool AddMaterial(const char* materialName, pyxieShaderDescriptor& desc);
 		bool AddMesh(const char* nodeName, const char* materialName);
-		bool SetVertexPointer(const char* nodeName, void* ptr, uint32_t numVerts, VertexAttribute* attr, uint32_t numAttr);
-		bool SetVertexValues(const char* nodeName, AttributeID attr, uint32_t startPosition, void* value, uint32_t numVerts, uint32_t align = 16);
-		bool SetIndexPointer(const char* nodeName, void* triangles, uint32_t numTriangles, uint32_t size);
-		bool SetIndexValues(const char* nodeName, uint32_t startPosition, uint32_t* triangles, uint32_t numTriangles, uint32_t align = 16);
-		void SetPrimitiveType(const char* nodeName, uint32_t type);
-		bool AddJoint(int parentIndex, Joint& pose, bool scaleCompensate, const char* jointName);
-		bool AddDrawSet(const char* nodeName, int offset, int size);
-		bool AddDrawSetState(const char* nodeName, int setNo, uint32_t key, void* value);
-		bool SetMaterialParam(const char* materialName, const char* paramName, void* value, ShaderParameterDataType dataType = ParamTypeUnknown);
+		bool AddJoint(int parentIndex, Joint& pose, bool scaleCompensate, const char* jointName);	//parentIndex == -1 if root
+
+		//cont elemet
+		int NumMeshes() { return editableMeshes.size(); }
+		int NumMaterials() { return figureMaterials.size(); }
+		int NumJoints() { return skeleton ? skeleton->m_numJoints : 0; }
+
+		//edit mesh
+		int GetMeshIndex(uint32_t meshNameHash);
+		bool SetMeshVertexAttributes(int index, VertexAttribute* attr, uint32_t numAttr);
+		bool SetMeshVertices(int index, const void* ptr, uint32_t numVerts);
+		bool SetMeshVertexValues(int index, const void* ptr, uint32_t numVerts, AttributeID attr, uint32_t startPosition, uint32_t align = 16);
+		bool SetMeshIndices(int index, uint32_t startPosition, const uint32_t* triangles, uint32_t numTriangles, uint32_t datasize, uint32_t align = 16);
+		void SetMeshPrimitiveType(int index, uint32_t type);
+		bool AddMeshDrawSet(int index, int offset, int size);
+		bool AddMeshDrawSetState(int index, int setNo, uint32_t key, void* value);
+		void CalcMeshAABBox(int index, float* outmin, float* outmax);
+		EditableMesh* GetMesh(int index);
+		bool MergeMesh();
+
+		//edit joint
+		int GetJointIndex(uint32_t jointHash);
+		const Joint GetJoint(int index);
+		const void  SetJoint(int index, const Joint& joint);
+
+		// edit material
+		bool SetMaterialParam(const char* materialName, const char* paramName, const void* value, ShaderParameterDataType dataType = ParamTypeUnknown);
 		bool GetMaterialParam(const char* materialName, const char* paramName, void* value);
 		bool SetMaterialState(const char* materialName, uint32_t key, void* value);
+
+		// save figure
 		bool SaveFigure(const char* path, bool excludeBaseAnime = false, bool excludeSkeleton = false);
 		bool SaveAnimation(const char* path);
 		bool SaveSkeleton(const char* path);
-		
-		uint32_t SetTextureSource(const TextureSource& texturesource);
+
+		// texture source
 		const std::vector<TextureSource>& GetTextureSources() { return textures; }
+		uint32_t SetTextureSource(const TextureSource& texturesource);
 		void ReplaceTextureSource(const TextureSource& oldTexture, const TextureSource& newTexture);
 
 		void ClearAll();
 		void ClearAllMeshes();
 
-		int FindSkeketonIndex(const char* jointName);
-
 		static const VertexAttribute& GetVertexAttribute(AttributeID id);
+
 
 #if defined __ENABLE_SUSPEND_RECOVER__
 		virtual bool Restore();
 		virtual bool Release();
-#endif	protected:
+#endif
+	protected:
+		// save figure
+protected:
 		void ConvertGPUSkinningScene(uint32_t bonePaletteSize);
 		bool ExportSkeleton(pyxieMemostream* pStream, const Skeleton* skeleton, CustomDataCallback customDataCallback, void* customData);
 		bool BuildSimdHierarchy(std::vector<HierachyQuad>& hierachyQuads, const Skeleton* skeleton, const std::set<int>& boneSet);
 		void DrawMesh(EditableMesh* mesh, pyxieShader* shader);
 
-		void SaveMeshes(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
+        void SaveMeshes(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
 		void SaveInbindPoses(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
 		void SaveMaterials(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
 		void SaveNames(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
 		void SaveLights(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
 		void SaveCameras(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
 
+		void ConvertGPUSkinningScene(uint32_t bonePaletteSize);
+		bool ExportSkeleton(pyxieMemostream* pStream, const Skeleton* skeleton, CustomDataCallback customDataCallback, void* customData);
+		bool BuildSimdHierarchy(std::vector<HierachyQuad>& hierachyQuads, const Skeleton* skeleton, const std::set<int>& boneSet);
+		void DrawMesh(EditableMesh* mesh, pyxieShader* shader);
+
 		void ExtendEditableMesh(EditableMesh* mesh, const FigureMaterial* oldmate, const FigureMaterial* newmate);
 
 
 		void ResetVertexBuffers();
 		int NewVBO();
+
+		void ClearMesh(EditableMesh* emesh);
 
 		friend class pyxieColladaLoader;
 	};

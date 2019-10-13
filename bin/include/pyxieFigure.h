@@ -90,21 +90,6 @@ namespace pyxie
 
 		FigureHeader* GetHeader() { return header; }
 
-		//skinningMatricesのインデックスを返す（無ければ-1）
-		int GetJointIndex(uint32_t jointHash);
-
-		//ジョイントの親ジョイントのインデックスを返す
-		//存在しない場合は-1を返す
-		///※非同期読込完了までロックする
-		int GetJointParentIndex(uint32_t jointHash);
-
-		//シーン内に含まれているジョイントの総数
-		int NumJoints();
-
-		const Joint GetJoint(int idx);
-		const void  SetJoint(int idx, const Joint& joint);
-
-
 		bool SetMaterialParam(const char* materialName, const char* paramName, void* value);
 		bool GetMaterialParam(const char* materialName, const char* paramName, void* value);
 
@@ -146,9 +131,6 @@ namespace pyxie
 			JointsToMatrix4(mat, &rootJoint);
 			return mat;
 		}
-
-		///他のFigureの特定のジョイントとトランスフォームの親子関係をつける
-		bool SetParentJoint(Figure* parentFigure, const char* jointName);
 
 		void UpdateInbindTransform();
 
@@ -219,7 +201,7 @@ namespace pyxie
 		uint16_t numBlendBranches;
 		uint16_t numBlendLeaves;
 
-		float* skinningMatrices;
+		//float* skinningMatrices;
 		//float* inbindSkinningMatrices;
 		//Transform*	localJointBuffer;
 
@@ -228,7 +210,6 @@ namespace pyxie
 		std::map<uint32_t, pyxieAnimator*> animes;
 
 	private:
-		int GetJointIndexNoWait(uint32_t jointHash);
 		void ClearMember();
 		void CreateBlendTree();
 		void CopyBlendWeight();

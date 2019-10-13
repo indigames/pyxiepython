@@ -7,6 +7,24 @@
 
 namespace pyxie
 {
+	int GetJointIndex(figure_obj* self, PyObject* arg) {
+		int index = -1;
+		if (PyLong_Check(arg)) {
+			index = PyLong_AsLong(arg);
+		}
+		else if (PyUnicode_Check(arg)) {
+			Py_ssize_t data_len;
+			const char* key_str = PyUnicode_AsUTF8AndSize(arg, &data_len);
+			index = self->figure->GetJointIndex(GenerateNameHash(key_str));
+		}
+		if (index == -1) {
+			PyErr_SetString(PyExc_TypeError, "joint not found.");
+		}
+		return index;
+	}
+
+
+
 	PyObject *figure_new(PyTypeObject *type, PyObject *args, PyObject *kw) {
 		char* path;
 		figure_obj * self = NULL;
@@ -175,12 +193,12 @@ namespace pyxie
 
 	static PyObject* figure_getJoint(figure_obj* self, PyObject* args) {
 
-		char* jointName;
-		if (!PyArg_ParseTuple(args, "s", &jointName))return NULL;
+		PyObject* arg;
+		if (!PyArg_ParseTuple(args, "O", &arg))return NULL;
 
-		int idx = self->figure->GetJointIndex(GenerateNameHash(jointName));
-
-		auto joint = self->figure->GetJoint(idx);
+		int index = GetJointIndex(self, arg);
+		if (index == -1) return NULL;
+		auto joint = self->figure->GetJoint(index);
 
 		PyObject* joint_obj = PyTuple_New(3);
 
@@ -202,13 +220,16 @@ namespace pyxie
 
 		static char* kwlist[] = { "jointName","position","rotation","scale", NULL };
 
-		char* jointName;
+		PyObject* arg;
 		PyObject* arg1 = nullptr;
 		PyObject* arg2 = nullptr;
 		PyObject* arg3 = nullptr;
-		if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|OOO", kwlist, &jointName, arg1, arg2, arg3))return NULL;
+		if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|OOO", kwlist, &arg, &arg1, &arg2, &arg3))return NULL;
 
-		Joint joint;
+		int index = GetJointIndex(self, arg);
+		if (index == -1) return NULL;
+
+		Joint joint = self->figure->GetJoint(index);
 		float* v;
 		int d;
 		float buff[4];
@@ -224,7 +245,7 @@ namespace pyxie
 			v = pyObjToFloat(arg3, buff, d);
 			for (int i = 0; i < d; i++) joint.scale[i] = v[i];
 		}
-
+		self->figure->SetJoint(index, joint);
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -355,13 +376,27 @@ namespace pyxie
 		return Py_None;
 	}
 
-
 	static PyObject* figure_GetMaterialParam(figure_obj* self, PyObject* args) {
 
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
 
+	static PyObject* figure_SetParentJoint(figure_obj* self, PyObject* args) {
+
+		PyObject* parent;
+		char* jointName;
+		if (!PyArg_ParseTuple(args, "Os", &parent, &jointName)) return NULL;
+
+		auto drawable = ((pyxieDrawable*)(((resource_obj*)parent)->res));
+		uint32_t hash = GenerateNameHash(jointName);
+		int idx = drawable->GetJointIndex(hash);
+		if (idx != -1) {
+			self->figure->SetParentJoint(drawable, drawable->GetJointMatrix(idx));
+		}
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
 
 	PyMethodDef figure_methods[] = {
 		{ "connectAnimator", (PyCFunction)figure_BindAnimator, METH_VARARGS, connectAnimator_doc},
@@ -376,6 +411,7 @@ namespace pyxie
 		{ "getMaterialParam", (PyCFunction)figure_GetMaterialParam, METH_VARARGS, getMaterialParam_doc},
 		{ "setMaterialParam", (PyCFunction)figure_SetMaterialParam, METH_VARARGS, setMaterialParam_doc},
 		{ "setMaterialParamTexture", (PyCFunction)figure_SetMaterialParamTexture, METH_VARARGS | METH_KEYWORDS, setMaterialParamTexture_doc},
+		{ "setParentJoint", (PyCFunction)figure_SetParentJoint, METH_VARARGS, setParentJoint_doc},
 
 		//{ "dump", (PyCFunction)figure_Dump, METH_VARARGS },
 

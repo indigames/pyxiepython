@@ -23,6 +23,7 @@ extern "C" {
 		pyxie::pyxieDatabase* db;
 		int index;
 		int pos;
+		char* temp;
 	};
 	std::mutex DBFileDescripter_mtx;
 	static const int maxDBFileDescripter = 16;
@@ -49,6 +50,7 @@ extern "C" {
 			DBFileDescripterTable[i].db = nullptr;
 			DBFileDescripterTable[i].index = 0;
 			DBFileDescripterTable[i].pos = 0;
+			DBFileDescripterTable[i].temp = 0;
 		}
 		for (int i = 0; i < maxDBScanDirDescripter; i++) {
 			DBScanDirDescripterTable[i].fileList = nullptr;
@@ -152,6 +154,45 @@ extern "C" {
 		return 0;
 	}
 
+
+	int pyxieReadLine(int fd, void* buff, uint32_t count) {
+		int readsize = 0;
+		if (fd >= DBDescripter) {
+			DBFileDescripter& dbd = DBFileDescripterTable[fd - DBDescripter];
+			auto outsize = dbd.db->ExpandSize(dbd.index);
+			if (!dbd.temp) {
+				auto insize = dbd.db->CompressSize(dbd.index);
+				if (outsize == 0 || insize == 0) return 0;
+				void* inbuff = pyxie::PYXIE_MALLOC(insize);
+				dbd.temp = (char*)pyxie::PYXIE_MALLOC(outsize);
+				auto err = dbd.db->ReadFile(dbd.index, inbuff, dbd.temp);
+				pyxie::PYXIE_FREE(inbuff);
+			}
+			char* outbuff = (char*)buff;
+			if (dbd.pos >= outsize) {
+				*outbuff = 0;
+				outbuff++;
+			}
+			char* inbuff = (char*)(&(dbd.temp[dbd.pos]));
+			while(true){
+				*outbuff = *inbuff;
+				outbuff++;
+				readsize++;
+				dbd.pos++;
+				if (*inbuff == '\r' || *inbuff == '\n' || *inbuff == 0) break;
+				if (readsize >= (count - 1)) break;
+				if (dbd.pos >= outsize) break;
+				inbuff++;
+			}
+			if (*(outbuff - 1) != 0) {
+				*outbuff = 0;
+				outbuff++;
+			}
+		}
+		return readsize;
+	}
+
+
 	size_t pyxieSeek(int fd, size_t ofs, int orign) {
 		if (fd >= DBDescripter) {
 			DBFileDescripter& dbd = DBFileDescripterTable[fd - DBDescripter];
@@ -228,6 +269,7 @@ extern "C" {
 			std::unique_lock<std::mutex> uniq_lk(DBFileDescripter_mtx);
 			DBFileDescripterTable[fd- DBDescripter].db = nullptr;
 			DBFileDescripterTable[fd- DBDescripter].index = 0;
+			PYXIE_SAFE_FREE(DBFileDescripterTable[fd - DBDescripter].temp);
 			return 0;
 		}
 		return -1;

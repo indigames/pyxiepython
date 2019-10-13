@@ -158,7 +158,7 @@ namespace pyxie {
 		return free(p);
 	}
 
-#define	PYXIE_SAFE_FREE(p) { if(p){PYXIE_FREE(p); (p) = 0;} }
+#define	PYXIE_SAFE_FREE(p) { if(p){pyxie::PYXIE_FREE(p); (p) = 0;} }
 
 	inline void* PYXIE_REALLOC(void* p, size_t s) {
 		return realloc(p, s);

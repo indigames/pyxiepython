@@ -20,13 +20,20 @@ namespace pyxie
 				state_drawable_last = state_posed
 			};
 			Joint rootTransform;
-			const float* parentJoint;
-		public:
-			pyxieDrawable() : parentJoint(nullptr) {
-			}
-			pyxieDrawable(const pyxieDrawable* org) : pyxieResource(org) , parentJoint(nullptr) {
-			}
 
+			const float* parentJoint;
+			pyxieDrawable* parentJointObject;
+			float* skinningMatrices;
+			float* inbindSkinningMatrices;
+			void* skeletonset;
+		public:
+			pyxieDrawable() : parentJoint(nullptr), parentJointObject(nullptr), skinningMatrices(nullptr), skeletonset(nullptr) {
+			}
+			pyxieDrawable(const pyxieDrawable* org) : pyxieResource(org) , parentJoint(nullptr), parentJointObject(nullptr), skinningMatrices(nullptr), skeletonset(nullptr) {
+			}
+			virtual ~pyxieDrawable() {
+				if (parentJointObject) parentJointObject->DecReference();
+			}
 			virtual void Pose() {}
 			virtual void Render() {}
 
@@ -58,10 +65,36 @@ namespace pyxie
 					ResetState(state_posed);
 				}
 			}
+
 			inline const Vec3& GetScale() { return (const Vec3&)rootTransform.scale; }
+			inline void SetParentJoint(pyxieDrawable* object, const float* joint) {
+				if (parentJointObject) parentJointObject->DecReference();
+				parentJoint = joint;
+				parentJointObject = object;
+				if (parentJointObject) parentJointObject->IncReference();
+			}
+
+			const float* GetJointMatrix(int idx);
+
+			//skinningMatricesのインデックスを返す（無ければ-1）
+			virtual int GetJointIndex(uint32_t jointHash);
+
+			//ジョイントの親ジョイントのインデックスを返す
+			//存在しない場合は-1を返す
+			///※非同期読込完了までロックする
+			int GetJointParentIndex(uint32_t jointHash);
+
+			//シーン内に含まれているジョイントの総数
+			virtual int NumJoints();
+			virtual const Joint GetJoint(int idx);
+			virtual const void  SetJoint(int idx, const Joint& joint);
+
 		protected:
+			int GetJointIndexNoWait(uint32_t jointHash);
+
 			inline bool GetParentJointMatrix(Mat4& outMatrix) const{
 				if (!parentJoint) return false;
+				parentJointObject->Pose();
 				JointMatrixToMatrix4(parentJoint, outMatrix);
 				return true;
 			}

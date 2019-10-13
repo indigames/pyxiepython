@@ -190,4 +190,14 @@ namespace pyxie {
 		}
 		renderSets.clear();
 	}
+
+	static bool finishFlag = false;
+	void Backyard::SetFinishProgram(bool finish) {
+		finishFlag = finish;
+	}
+	bool Backyard::IsProgramRunning() {
+		return !finishFlag;
+	}
+
+
 }

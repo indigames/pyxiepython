@@ -396,7 +396,8 @@ inline void vmath_identity(float* out, int md)
 {
 	for (int i = 0; i < md; i++) {
 		for (int j = 0; j < md; j++) {
-			out[i] = (i == j) ? 1.0f : 0.0f;
+			int idx = i * md + j;
+			out[idx] = (i == j) ? 1.0f : 0.0f;
 		}
 	}
 }
@@ -444,15 +445,15 @@ inline void vmath_mat_from_quat(const float* quat, int md, float* out)
 inline void vmath_mat4_from_rottrans(const float* quat, const float* v, float* out) {
 	vmath_mat_from_quat(quat, 4, out);
 	out[12] = v[0];
-	out[12] = v[1];
-	out[12] = v[2];
-	out[12] = 1.0f;
+	out[13] = v[1];
+	out[14] = v[2];
+	out[15] = 1.0f;
 }
 
 inline bool vmath_mat_almostEqual(float* a, float* b, int md) {
 	for (int i = 0; i < md; i++) {
 		for (int j = 0; j < md; j++) {
-			int idx = i * 4 + j;
+			int idx = i * md + j;
 			if (!vmath_almostEqual(a[idx], b[idx])) return false;
 		}
 	}
@@ -463,7 +464,7 @@ inline void vmath_mat_transpose(const float* mat, int md, float* out)
 {
 	for (int i = 0; i < md; i++) {
 		for (int j = 0; j < md; j++) {
-			out[j * 4 + i] = mat[i * 4 + j];
+			out[j * md + i] = mat[i * md + j];
 		}
 	}
 }
@@ -924,8 +925,6 @@ inline void vmath_auler(const float* mat3, float& tilt, float& pan, float& roll)
 		roll = atan2f(fSinZ, fCosZ);
 	}
 }
-
-
 
 
 #if 0

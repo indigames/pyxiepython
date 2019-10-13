@@ -28,7 +28,7 @@ namespace pyxie
 		Vec2		screenScale;
 		Vec2		screenOffset;
 		float		screenRadian;
-
+		int			upaxis;
 	public:
 		pyxieCamera(const char* name);
 		pyxieCamera(pyxieFigure* figure, FigureCamera* figureCam);
@@ -106,6 +106,8 @@ namespace pyxie
 		const Vec2&	GetScreenScale() const { return screenScale; }
 		const Vec2&	GetScreenOffset() const { return screenOffset; }
 		float GetScreenRadian() const { return screenRadian; }
+
+		void SetUpAxis(int ax) { upaxis = ax; }
 
 	private:
 		void update();

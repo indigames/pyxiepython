@@ -9,6 +9,13 @@ typedef struct {
 
 typedef struct {
 	PyObject_HEAD
-	float m[16];
+		float m[16];
 	int d;
 } mat_obj;
+
+typedef struct {
+	PyObject_HEAD
+	float min[4];
+	float max[4];
+	int d;
+} aabb_obj;

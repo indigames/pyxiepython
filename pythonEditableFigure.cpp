@@ -1,4 +1,4 @@
-﻿#include "pyxie.h"
+#include "pyxie.h"
 #include "pythonResource.h"
 #include "pyxieResourceCreator.h"
 #include "pyxieTime.h"
@@ -8,6 +8,72 @@
 
 namespace pyxie
 {
+	////////////////////////////////////////////////////////
+	//Local funcs
+	////////////////////////////////////////////////////////
+	int pyObjToIntArray(PyObject* obj, uint32_t* idx) {
+
+		int totalCount = 0;
+		int type = -1;
+		if (PyTuple_Check(obj)) type = 0;
+		else if (PyList_Check(obj))  type = 1;
+		if (type == -1) return 0;
+
+		int elementCount = 0;
+		int numElem = (type == 0) ? PyTuple_Size(obj) : PyList_Size(obj);
+		for (int i = 0; i < numElem; i++) {
+			PyObject* element = (type == 0) ? PyTuple_GET_ITEM(obj, i) : PyList_GET_ITEM(obj, i);
+			if (PyLong_Check(element)) {
+				if (idx)idx[totalCount] = PyLong_AsLong(element);
+				totalCount++;
+				elementCount++;
+				if (elementCount >= 3) elementCount = 0;
+			}
+			else if (PyTuple_Check(element)) {
+				int d = (int)PyTuple_Size(element);
+				for (int j = 0; j < d; j++) {
+					PyObject* val = PyTuple_GET_ITEM(element, j);
+					if (idx)idx[totalCount] = PyLong_AsLong(val);
+					totalCount++;
+					elementCount++;
+					if (elementCount >= 3) break;
+				}
+				elementCount = 0;
+			}
+			else if (PyList_Check(element)) {
+				int d = (int)PyList_Size(element);
+				for (int j = 0; j < d; j++) {
+					PyObject* val = PyList_GET_ITEM(element, j);
+					if (idx)idx[totalCount] = PyLong_AsLong(val);
+					totalCount++;
+					elementCount++;
+					if (elementCount >= 3) break;
+				}
+				elementCount = 0;
+			}
+		}
+		return totalCount;
+	}
+
+	int GetMeshIndex(editablefigure_obj* self, PyObject* arg) {
+		int index = -1;
+		if (PyLong_Check(arg)) {
+			index = PyLong_AsLong(arg);
+		}
+		else if (PyUnicode_Check(arg)) {
+			Py_ssize_t data_len;
+			const char* key_str = PyUnicode_AsUTF8AndSize(arg, &data_len);
+			index = self->editablefigure->GetMeshIndex(GenerateNameHash(key_str));
+		}
+		if (index == -1) {
+			PyErr_SetString(PyExc_TypeError, "mesh not found.");
+		}
+		return index;
+	}
+
+	////////////////////////////////////////////////////////
+	//python funcs
+	////////////////////////////////////////////////////////
 	PyObject *editablefigure_new(PyTypeObject *type, PyObject *args, PyObject *kw) {
 
 		auto t = &EditableFigureType;
@@ -93,6 +159,22 @@ namespace pyxie
 		return 0;
 	}
 
+	PyObject* editablefigure_numJoints(editablefigure_obj* self)
+	{
+		return PyLong_FromLong(self->editablefigure->NumJoints());
+	}
+
+	PyObject* editablefigure_numMeshes(editablefigure_obj* self)
+	{
+		return PyLong_FromLong(self->editablefigure->NumMeshes());
+	}
+
+	PyObject* editablefigure_numMaterials(editablefigure_obj* self)
+	{
+		return PyLong_FromLong(self->editablefigure->NumMaterials());
+	}
+
+
 	static PyObject* editablefigure_AddMaterial(editablefigure_obj* self, PyObject* args)
 	{
 		char* name;
@@ -123,12 +205,12 @@ namespace pyxie
 	static PyObject* editablefigure_SetVertexElements(editablefigure_obj* self, PyObject* args)
 	{
 		//efig.setVertexElemetns("mesh01", efig.ElementType_POSITION, 0, 4, points)
-		char* meshName;
+		PyObject* arg;
 		int vertAttr;
 		int offset = 0;
 		PyObject* points;
 
-		if (PyArg_ParseTuple(args, "siO|i", &meshName, &vertAttr, &points, &offset)) {
+		if (PyArg_ParseTuple(args, "OiO|i", &arg, &vertAttr, &points, &offset)) {
 			if (vertAttr < 1 || vertAttr >= NUM_ATTRIBUTE_ID) {
 				PyErr_SetString(PyExc_TypeError, "The value of vertexAttribure is incorrect.");
 				return NULL;
@@ -140,65 +222,80 @@ namespace pyxie
 				PyErr_SetString(PyExc_TypeError, "Parameter error.");
 				return NULL;
 			}
+
+			int index = GetMeshIndex(self, arg);
+			if (index == -1) return NULL;
+
 			float* buffer = (float*)PYXIE_MALLOC(bufferSize * sizeof(float));
 			MemoryCleaner creaner(buffer);
 			pyObjToFloatArray(points, buffer, inputVertexSize);
-			self->editablefigure->SetVertexValues(meshName, (AttributeID)vertAttr, offset, buffer, bufferSize / inputVertexSize);
+			self->editablefigure->SetMeshVertexValues(index, buffer, bufferSize / inputVertexSize, (AttributeID)vertAttr, offset);
 		}
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
 
-	int pyObjToIntArray(PyObject* obj, uint32_t* idx) {
+	static PyObject* editablefigure_GetVertexElements(editablefigure_obj* self, PyObject* args) {
 
-		int totalCount = 0;
-		int type = -1;
-		if (PyTuple_Check(obj)) type = 0;
-		else if (PyList_Check(obj))  type = 1;
-		if (type == -1) return 0;
+		PyObject* arg;
+		int vertAttr;
+		int offset = 0;
+		int size = 100000000;
 
-		int elementCount = 0;
-		int numElem = (type == 0) ? PyTuple_Size(obj) : PyList_Size(obj);
-		for (int i = 0; i < numElem; i++) {
-			PyObject* element = (type == 0) ? PyTuple_GET_ITEM(obj, i) : PyList_GET_ITEM(obj, i);
-			if (PyLong_Check(element)) {
-				if (idx)idx[totalCount] = PyLong_AsLong(element);
-				totalCount++;
-				elementCount++;
-				if (elementCount >= 3) elementCount = 0;
-			}
-			else if (PyTuple_Check(element)) {
-				int d = (int)PyTuple_Size(element);
-				for (int j = 0; j < d; j++) {
-					PyObject* val = PyTuple_GET_ITEM(element, j);
-					if (idx)idx[totalCount] = PyLong_AsLong(val);
-					totalCount++;
-					elementCount++;
-					if (elementCount >= 3) break;
-				}
-				elementCount = 0;
-			}
-			else if (PyList_Check(element)) {
-				int d = (int)PyList_Size(element);
-				for (int j = 0; j < d; j++) {
-					PyObject* val = PyList_GET_ITEM(element, j);
-					if (idx)idx[totalCount] = PyLong_AsLong(val);
-					totalCount++;
-					elementCount++;
-					if (elementCount >= 3) break;
-				}
-				elementCount = 0;
+		if (!PyArg_ParseTuple(args, "Oi|ii", &arg, &vertAttr, &offset, &size)) return NULL;
+
+		int index = GetMeshIndex(self, arg);
+		if (index == -1) return NULL;
+		EditableMesh* emesh = self->editablefigure->GetMesh(index);
+
+		uint32_t offs = 0;
+		uint32_t number = 0;
+		uint32_t datasize = 0;
+
+		for (uint32_t i = 0; i < emesh->numVertexAttributes; i++) {
+			if (emesh->attributes[i].id == vertAttr) {
+				offs = emesh->attributes[i].offset;
+				number = emesh->attributes[i].size;
+				break;
 			}
 		}
-		return totalCount;
+		if (size + offset > emesh->numVertices) size = emesh->numVertices - offset;
+
+		if (size <= 0) {
+			Py_INCREF(Py_None);
+			return Py_None;
+		}
+
+		PyTypeObject* type;
+		switch (number) {
+		case 2: type = _Vec2Type; break;
+		case 3: type = _Vec3Type; break;
+		case 4: type = _Vec4Type; break;
+		}
+		PyObject* verts = PyTuple_New(size);
+		if (!verts) return NULL;
+
+		for (int i = 0; i < size; i++) {
+			float* location = emesh->vertices + ((i + offset) * emesh->numFloatsPerVertex) + offs;
+			vec_obj* vrobj = PyObject_New(vec_obj, type);
+			vrobj->d = number;
+			for (int j = 0; j < number; j++) {
+				vrobj->v[j] = location[j];
+			}
+			PyTuple_SetItem(verts, i, (PyObject*)vrobj);
+		}
+
+		return verts;
 	}
 
 	static PyObject* editablefigure_SetTriangles(editablefigure_obj* self, PyObject* args)
 	{
-		char* meshName;
+		PyObject* arg;
 		int offset=0;
 		PyObject* tris;
-		if (PyArg_ParseTuple(args, "sO|i", &meshName, &tris, &offset)) {
+		if (PyArg_ParseTuple(args, "OO|i", &arg, &tris, &offset)) {
+
+
 
 			int bufferSize = pyObjToIntArray(tris, nullptr);
 			if (bufferSize == 0) {
@@ -208,11 +305,109 @@ namespace pyxie
 			uint32_t* buffer = (uint32_t*)PYXIE_MALLOC(bufferSize * sizeof(int));
 			MemoryCleaner creaner(buffer);
 			pyObjToIntArray(tris, buffer);
-			self->editablefigure->SetIndexValues(meshName, offset, buffer, bufferSize/3);
+
+			int index = GetMeshIndex(self, arg);
+			if (index == -1) return NULL;
+
+			self->editablefigure->SetMeshIndices(index, offset, buffer, bufferSize / 3, 4);
 		}
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
+
+	static PyObject* editablefigure_setVertexPtr(editablefigure_obj* self, PyObject* args) {
+
+		PyObject* arg = nullptr;
+		PyObject* ptr;
+		uint64_t numVerts = 0;
+		PyObject* attr = nullptr;
+		if (!PyArg_ParseTuple(args, "OOkO", &arg, &ptr, &numVerts, &attr)) {
+			return NULL;
+		}
+		uint32_t numAttr = 0;
+		VertexAttribute attribute[NUM_ATTRIBUTE_ID];
+		if (PyTuple_Check(attr)) {
+			numAttr = (uint32_t)PyTuple_Size(attr);
+			for (uint32_t i = 0; i < numAttr; i++) {
+				PyObject* v = PyTuple_GET_ITEM(attr, i);
+				if (PyTuple_Check(v)) {
+					int n = (int)PyTuple_Size(v);
+					if (n != 4) { numAttr = 0; break; }
+					PyObject* tmp;
+					tmp = PyTuple_GET_ITEM(v, 0);
+					if (!PyLong_Check(tmp)) { numAttr = 0; break; }
+					attribute[i].id = (uint8_t)PyLong_AsLong(tmp);
+					tmp = PyTuple_GET_ITEM(v, 1);
+					if (!PyLong_Check(tmp)) { numAttr = 0; break; }
+					attribute[i].size = (uint16_t)PyLong_AsLong(tmp);
+					tmp = PyTuple_GET_ITEM(v, 2);
+					if (!PyLong_Check(tmp)) { numAttr = 0; break; }
+					attribute[i].normalize = (uint8_t)PyLong_AsLong(tmp);
+					tmp = PyTuple_GET_ITEM(v, 3);
+					if (!PyLong_Check(tmp)) { numAttr = 0; break; }
+					attribute[i].type = (uint16_t)PyLong_AsLong(tmp);
+				}
+				else { numAttr = 0; break; }
+			}
+		}
+		if (numAttr == 0) {
+			PyErr_SetString(PyExc_TypeError, "attribute param error ((id,size,nom,type),(),()...)");
+			return NULL;
+		}
+
+
+		void* vrts;
+		if (PyLong_Check(ptr)) {
+			if (sizeof(void*) == 8)
+				vrts = (void*)PyLong_AsLongLong(ptr);
+			else
+				vrts = (void*)PyLong_AsLong(ptr);
+		}
+
+
+		int index = GetMeshIndex(self, arg);
+		if (index == -1) return NULL;
+
+		if (!self->editablefigure->SetMeshVertexAttributes(index, attribute, numAttr)) {
+			PyErr_SetString(PyExc_TypeError, "faild to set vertex attributes.");
+			return NULL;
+		}
+		if (!self->editablefigure->SetMeshVertices(index, vrts, (uint32_t)numVerts)) {
+			PyErr_SetString(PyExc_TypeError, "faild to set vertex.");
+			return NULL;
+		}
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	static PyObject* editablefigure_setTrianglePtr(editablefigure_obj* self, PyObject* args) {
+
+		PyObject* arg = nullptr;
+		PyObject* ptr;
+		uint64_t numTriangles = 0;
+		uint32_t size = 2;
+
+		if (!PyArg_ParseTuple(args, "OOk|i", &arg, &ptr, &numTriangles, &size)) {
+			return NULL;
+		}
+
+		void* triangles;
+		if (sizeof(void*) == 8)
+			triangles = (void*)PyLong_AsLongLong(ptr);
+		else
+			triangles = (void*)PyLong_AsLong(ptr);
+
+		int index = GetMeshIndex(self, arg);
+		if (index == -1) return NULL;
+
+		if (!self->editablefigure->SetMeshIndices(index, 0, (uint32_t*)triangles, numTriangles, size)) {
+			PyErr_SetString(PyExc_TypeError, "failed to set triangles.");
+			return NULL;
+		}
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
 
 	static PyObject* editablefigure_addJoint(editablefigure_obj* self, PyObject* args, PyObject* kwargs)
 	{
@@ -227,7 +422,7 @@ namespace pyxie
 
 		Joint joint;
 		int parentIndex = -1;
-		if (parentJointName) parentIndex = self->editablefigure->FindSkeketonIndex(parentJointName);
+		if (parentJointName) parentIndex = self->editablefigure->GetJointIndex(GenerateNameHash(parentJointName));
 		self->editablefigure->AddJoint(parentIndex, joint, (bool)scaleCompensate, jointName);
 
 		Py_INCREF(Py_None);
@@ -554,7 +749,7 @@ namespace pyxie
 		if(sizeof(void*) == 8)
 			vrts = (void*)PyLong_AsLongLong(ptr);
 		else
-			vrts = (void*)PyLong_AsLong(ptr);
+			vrts = (void*)PyLong_AsUnsignedLong(ptr);
 
 		if (!self->editablefigure->SetVertexPointer(nodename, vrts, (uint32_t)numVerts, attribute, numAttr)) {
 			PyErr_SetString(PyExc_TypeError, "parameter error.");
@@ -579,7 +774,7 @@ namespace pyxie
 		if (sizeof(void*) == 8)
 			triangles = (void*)PyLong_AsLongLong(ptr);
 		else
-			triangles = (void*)PyLong_AsLong(ptr);
+			triangles = (void*)PyLong_AsUnsignedLong(ptr);
 
 		if (!self->editablefigure->SetIndexPointer(nodename, triangles, (uint32_t)numTriangles, size)) {
 			PyErr_SetString(PyExc_TypeError, "parameter error.");
@@ -590,14 +785,17 @@ namespace pyxie
 	}
 
 	static PyObject* editablefigure_addDrawSet(editablefigure_obj* self, PyObject* args) {
-		char* nodename = nullptr;
+		PyObject* arg = nullptr;
 		uint32_t offset = 0;
 		uint32_t size = 0;
 
-		if (!PyArg_ParseTuple(args, "sii", &nodename, &offset, &size)) {
+		if (!PyArg_ParseTuple(args, "Oii", &arg, &offset, &size)) {
 			return NULL;
 		}
-		if (!self->editablefigure->AddDrawSet(nodename, offset, size)) {
+		int index = GetMeshIndex(self, arg);
+		if (index == -1) return NULL;
+
+		if (!self->editablefigure->AddMeshDrawSet(index, offset, size)) {
 			PyErr_SetString(PyExc_TypeError, "parameter error.");
 			return NULL;
 		}
@@ -608,14 +806,14 @@ namespace pyxie
 
 	static PyObject* editablefigure_setDrawSetRenderState(editablefigure_obj* self, PyObject* args, PyObject* kwargs) {
 
-		static char* kwlist[] = { "meshName","drawSetNo","paramName","value1","value2","value3","value4", NULL };
-		char* nodeName = nullptr;
+		static char* kwlist[] = { "meshNameOrIndex","drawSetNo","paramName","value1","value2","value3","value4", NULL };
+		PyObject* arg = nullptr;
 		char* paramName = nullptr;
 		int setNo = 0;
 		PyObject* values[4] = { 0,0,0,0 };
 
-		if (!PyArg_ParseTupleAndKeywords(args, kwargs, "sisO|OOO", kwlist,
-			&nodeName, &setNo, &paramName, &values[0], &values[1], &values[2], &values[3])) return NULL;
+		if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OisO|OOO", kwlist,
+			&arg, &setNo, &paramName, &values[0], &values[1], &values[2], &values[3])) return NULL;
 
 		RenderStateInfo* stateInfo = nullptr;
 		const ShaderParameterInfo* paramInfo = pyxieRenderContext::Instance().GetShaderParameterInfoByName(paramName);
@@ -631,7 +829,11 @@ namespace pyxie
 				else if (stateInfo->valueTypes[i] == Float)  ((float*)val)[i] = (float)PyFloat_AsDouble(values[i]);
 			}
 		}
-		if (!self->editablefigure->AddDrawSetState(nodeName, setNo, (ShaderParameterKey)paramInfo->key, val)) {
+
+		int index = GetMeshIndex(self, arg);
+		if (index == -1) return NULL;
+
+		if (!self->editablefigure->AddMeshDrawSetState(index, setNo, (ShaderParameterKey)paramInfo->key, val)) {
 			PyErr_SetString(PyExc_TypeError, "parameter error.");
 			return NULL;
 		}
@@ -640,37 +842,176 @@ namespace pyxie
 		return Py_None;
 	}
 
+	static PyObject* editablefigure_SetParentJoint(editablefigure_obj* self, PyObject* args) {
+
+		PyObject* parent;
+		char* jointName;
+		if (!PyArg_ParseTuple(args, "Os", &parent, &jointName)) return NULL;
+
+		auto drawable = ((pyxieDrawable*)(((resource_obj*)parent)->res));
+		uint32_t hash = GenerateNameHash(jointName);
+		int idx = drawable->GetJointIndex(hash);
+		if (idx != -1) {
+			self->editablefigure->SetParentJoint(drawable, drawable->GetJointMatrix(idx));
+		}
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	static PyObject* editablefigure_getJoint(editablefigure_obj* self, PyObject* args) {
+
+		PyObject* arg;
+		if (!PyArg_ParseTuple(args, "O", &arg))return NULL;
+
+		int index = -1;
+		if (PyLong_Check(arg)) {
+			index = PyLong_AsLong(arg);
+		}
+		else if (PyUnicode_Check(arg)) {
+			Py_ssize_t data_len;
+			const char* key_str = PyUnicode_AsUTF8AndSize(arg, &data_len);
+			index = self->editablefigure->GetJointIndex(GenerateNameHash(key_str));
+		}
+
+		Joint joint;
+		if (index == -1) {
+			pyxie_printf("joint is not found.");
+		}
+		else
+		{
+			joint = self->editablefigure->GetJoint(index);
+		}
+		PyObject* joint_obj = PyTuple_New(3);
+
+		vec_obj* pos = (vec_obj*)PyObject_New(vec_obj, _Vec3Type);
+		vec_obj* rot = (vec_obj*)PyObject_New(vec_obj, _QuatType);
+		vec_obj* scale = (vec_obj*)PyObject_New(vec_obj, _Vec3Type);
+		for (int i = 0; i < 4; i++) {
+			pos->v[i] = joint.translation[i];
+			rot->v[i] = joint.rotation[i];
+			scale->v[i] = joint.scale[i];
+		}
+		pos->d = 3;
+		rot->d = 4;
+		scale->d = 3;
+		PyTuple_SetItem(joint_obj, 0, (PyObject*)pos);
+		PyTuple_SetItem(joint_obj, 1, (PyObject*)rot);
+		PyTuple_SetItem(joint_obj, 2, (PyObject*)scale);
+		return joint_obj;
+	}
+
+	static PyObject* editablefigure_setJoint(editablefigure_obj* self, PyObject* args, PyObject* kwargs) {
+
+		static char* kwlist[] = { "jointName","position","rotation","scale", NULL };
+
+		PyObject* arg;
+		PyObject* arg1 = nullptr;
+		PyObject* arg2 = nullptr;
+		PyObject* arg3 = nullptr;
+		if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|OOO", kwlist, &arg, &arg1, &arg2, &arg3))return NULL;
+
+		int index = -1;
+		if (PyLong_Check(arg)) {
+			index = PyLong_AsLong(arg);
+		}
+		else if (PyUnicode_Check(arg)) {
+			Py_ssize_t data_len;
+			const char* key_str = PyUnicode_AsUTF8AndSize(arg, &data_len);
+			index = self->editablefigure->GetJointIndex(GenerateNameHash(key_str));
+		}
+		if (index != -1) {
+			Joint joint = self->editablefigure->GetJoint(index);
+			float* v;
+			int d;
+			float buff[4];
+			if (arg1) {
+				v = pyObjToFloat(arg1, buff, d);
+				for (int i = 0; i < d; i++) joint.translation[i] = v[i];
+			}
+			if (arg2) {
+				v = pyObjToFloat(arg2, buff, d);
+				for (int i = 0; i < d; i++) joint.rotation[i] = v[i];
+			}
+			if (arg3) {
+				v = pyObjToFloat(arg3, buff, d);
+				for (int i = 0; i < d; i++) joint.scale[i] = v[i];
+			}
+			self->editablefigure->SetJoint(index, joint);
+		}
+		else {
+			pyxie_printf("joint not found.");
+		}
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	static PyObject* editablefigure_mergeMesh(editablefigure_obj* self)
+	{
+		self->editablefigure->MergeMesh();
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	static PyObject* editablefigure_getMeshAABB(editablefigure_obj* self, PyObject* args) {
+		PyObject* arg;
+		if (!PyArg_ParseTuple(args, "O", &arg)) return NULL;
+		int index = GetMeshIndex(self, arg);
+		if (index == -1) return NULL;
+
+		vec_obj* min = PyObject_New(vec_obj, _Vec3Type);
+		vec_obj* max = PyObject_New(vec_obj, _Vec3Type);
+		self->editablefigure->CalcMeshAABBox(index, min->v, max->v);
+		min->d = 3;
+		max->d = 3;
+
+		PyObject* tuple = PyTuple_New(2);
+		PyTuple_SetItem(tuple, 0, (PyObject*)min);
+		PyTuple_SetItem(tuple, 1, (PyObject*)max);
+
+		return tuple;
+	}
+
+
 	PyMethodDef editablefigure_methods[] = {
-		{ "addMaterial", (PyCFunction)editablefigure_AddMaterial, METH_VARARGS,addMaterial_doc  },
-		{ "addMesh", (PyCFunction)editablefigure_AddMesh, METH_VARARGS, addMesh_doc},
-		{ "setVertexElements", (PyCFunction)editablefigure_SetVertexElements, METH_VARARGS, setVertexElements_doc},
-		{ "setTriangles", (PyCFunction)editablefigure_SetTriangles, METH_VARARGS, setTriangles_doc},
-		{ "addJoint", (PyCFunction)editablefigure_addJoint, METH_VARARGS | METH_KEYWORDS, addJoint_doc},
-		{ "setVertexPtr", (PyCFunction)editablefigure_setVertexPtr, METH_VARARGS, setVertexPtr_doc},
-		{ "setTrianglePtr", (PyCFunction)editablefigure_setTrianglePtr, METH_VARARGS,setTrianglePtr_doc},
-		{ "addDrawSet", (PyCFunction)editablefigure_addDrawSet, METH_VARARGS,addDrawSet_doc },
-		{ "setDrawSetRenderState", (PyCFunction)editablefigure_setDrawSetRenderState, METH_VARARGS | METH_KEYWORDS,setDrawSetRenderState_doc},
-		{ "setMaterialParam", (PyCFunction)editablefigure_SetMaterialParam, METH_VARARGS,setMaterialParam_doc },
-		{ "setMaterialParamTexture", (PyCFunction)editablefigure_SetMaterialParamTexture, METH_VARARGS | METH_KEYWORDS, setMaterialParamTexture_doc},
-		{ "getMaterialParam", (PyCFunction)editablefigure_GetMaterialParam, METH_VARARGS, getMaterialParam_doc},
-		{ "setMaterialRenderState", (PyCFunction)editablefigure_SetMaterialRenderState, METH_VARARGS | METH_KEYWORDS,setMaterialRenderState_doc},
-		{ "saveFigure", (PyCFunction)editablefigure_SaveFigure, METH_VARARGS,saveFigure_doc },
-		{ "saveSkeleton", (PyCFunction)editablefigure_SaveSkeleton, METH_VARARGS,saveSkeleton_doc },
-		{ "saveAnimation", (PyCFunction)editablefigure_SaveAnimation, METH_VARARGS,saveAnimation_doc },
-		{ "getTextureSource", (PyCFunction)editablefigure_GetTextureSource, METH_NOARGS, getTextureSource_doc},
-		{ "replaceTextureSource", (PyCFunction)editablefigure_ReplaceTextureSource, METH_VARARGS, replaceTextureSource_doc},
-		{ "clear", (PyCFunction)editablefigure_Clear, METH_NOARGS, clear_doc},
-		{ "clearMesh", (PyCFunction)editablefigure_ClearMesh, METH_NOARGS, clearMesh_doc},
-
-
-		{ NULL,	NULL }
+	{ "addMaterial", (PyCFunction)editablefigure_AddMaterial, METH_VARARGS,addMaterial_doc  },
+	{ "addMesh", (PyCFunction)editablefigure_AddMesh, METH_VARARGS, addMesh_doc},
+	{ "addJoint", (PyCFunction)editablefigure_addJoint, METH_VARARGS | METH_KEYWORDS, addJoint_doc},
+	{ "setTriangles", (PyCFunction)editablefigure_SetTriangles, METH_VARARGS, setTriangles_doc},
+	{ "setTrianglePtr", (PyCFunction)editablefigure_setTrianglePtr, METH_VARARGS,setTrianglePtr_doc},
+	{ "setVertexElements", (PyCFunction)editablefigure_SetVertexElements, METH_VARARGS, setVertexElements_doc},
+	{ "getVertexElements", (PyCFunction)editablefigure_GetVertexElements, METH_VARARGS, getVertexElements_doc},
+	{ "setVertexPtr", (PyCFunction)editablefigure_setVertexPtr, METH_VARARGS, setVertexPtr_doc},
+	{ "addDrawSet", (PyCFunction)editablefigure_addDrawSet, METH_VARARGS,addDrawSet_doc },
+	{ "setDrawSetRenderState", (PyCFunction)editablefigure_setDrawSetRenderState, METH_VARARGS | METH_KEYWORDS,setDrawSetRenderState_doc},
+	{ "setMaterialParam", (PyCFunction)editablefigure_SetMaterialParam, METH_VARARGS,setMaterialParam_doc },
+	{ "setMaterialParamTexture", (PyCFunction)editablefigure_SetMaterialParamTexture, METH_VARARGS | METH_KEYWORDS, setMaterialParamTexture_doc},
+	{ "getMaterialParam", (PyCFunction)editablefigure_GetMaterialParam, METH_VARARGS, getMaterialParam_doc},
+	{ "setMaterialRenderState", (PyCFunction)editablefigure_SetMaterialRenderState, METH_VARARGS | METH_KEYWORDS,setMaterialRenderState_doc},
+	{ "saveFigure", (PyCFunction)editablefigure_SaveFigure, METH_VARARGS,saveFigure_doc },
+	{ "saveSkeleton", (PyCFunction)editablefigure_SaveSkeleton, METH_VARARGS,saveSkeleton_doc },
+	{ "saveAnimation", (PyCFunction)editablefigure_SaveAnimation, METH_VARARGS,saveAnimation_doc },
+	{ "getTextureSource", (PyCFunction)editablefigure_GetTextureSource, METH_NOARGS, getTextureSource_doc},
+	{ "replaceTextureSource", (PyCFunction)editablefigure_ReplaceTextureSource, METH_VARARGS, replaceTextureSource_doc},
+	{ "clear", (PyCFunction)editablefigure_Clear, METH_NOARGS, clear_doc},
+	{ "clearMesh", (PyCFunction)editablefigure_ClearMesh, METH_NOARGS, clearMesh_doc},
+	{ "setParentJoint", (PyCFunction)editablefigure_SetParentJoint, METH_VARARGS, setParentJoint_doc},
+	{ "getJoint", (PyCFunction)editablefigure_getJoint, METH_VARARGS, getJoint_doc},
+	{ "setJoint", (PyCFunction)editablefigure_setJoint, METH_VARARGS | METH_KEYWORDS, setJoint_doc},
+	{ "mergeMesh", (PyCFunction)editablefigure_mergeMesh, METH_VARARGS, mergeMesh_doc},
+	{ "getMeshAABB", (PyCFunction)editablefigure_getMeshAABB, METH_VARARGS, getMeshAABB_doc},
+	
+	{ NULL,	NULL }
 	};
 
 	PyGetSetDef editablefigure_getsets[] = {
 		{ const_cast<char*>("position"), (getter)editablefigure_getPosition, (setter)editablefigure_setPosition,position_doc, NULL },
 		{ const_cast<char*>("rotation"), (getter)editablefigure_getRotation, (setter)editablefigure_setRotation,rotation_doc, NULL },
 		{ const_cast<char*>("scale"),    (getter)editablefigure_getScale,    (setter)editablefigure_setScale,scale_doc, NULL },
-		{ NULL, NULL }
+		{ const_cast<char*>("numJoints"),(getter)editablefigure_numJoints,    (setter)NULL,numJoints_doc, NULL },
+		{ const_cast<char*>("numMeshes"),(getter)editablefigure_numMeshes,    (setter)NULL,numMeshes_doc, NULL },
+		{ const_cast<char*>("numMaterials"),(getter)editablefigure_numMaterials,    (setter)NULL,numMaterials_doc, NULL },
+
+	{ NULL, NULL }
 	};
 
 	PyTypeObject EditableFigureType = {

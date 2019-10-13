@@ -20,6 +20,28 @@ PyDoc_STRVAR(scale_doc,
 	"    type :  pyvmath.vec3 : (x,y,z)\n"\
 	"    read / write");
 
+//numJoints
+PyDoc_STRVAR(numJoints_doc,
+	"Number of joints \n"\
+	"\n"\
+	"    type :  int\n"\
+	"    read only");
+
+//numMeshes
+PyDoc_STRVAR(numMeshes_doc,
+	"Number of meshes \n"\
+	"\n"\
+	"    type :  int\n"\
+	"    read only");
+
+//numMaterials
+PyDoc_STRVAR(numMaterials_doc,
+	"Number of materials \n"\
+	"\n"\
+	"    type :  int\n"\
+	"    read only");
+
+
 //addMaterial
 PyDoc_STRVAR(addMaterial_doc,
 	"Add new material object to the editableFigure\n"\
@@ -53,16 +75,18 @@ PyDoc_STRVAR(addMesh_doc,
 
 
 
-	//setVertexElements
+//setVertexElements
 PyDoc_STRVAR(setVertexElements_doc,
 	"Set vertex data to the mesh object\n"\
 	"\n"\
-	"editableFigure.setVertexElements(meshName, attributeType, data, offset)\n"\
+	"editableFigure.setVertexElements(meshName or index, attributeType, data, offset)\n"\
 	"\n"\
 	"Parameters\n"\
 	"----------\n"\
 	"    meshName : string\n"\
 	"        Registered mesh name to which you want to add vertex information\n"\
+	"    index : int\n"\
+	"        Registered mesh index to which you want to add vertex information\n"\
 	"    attributeType : int\n"\
 	"        Vertex element type\n"\
 	"        One of the following values\n"\
@@ -89,17 +113,54 @@ PyDoc_STRVAR(setVertexElements_doc,
 	"    points = ((-1, 1, 0), (1, 1, 0), (-1, -1, 0), (1, -1, 0))\n"\
 	"    efig.setVertexElements('meshA', pyxie.ATTRIBUTE_ID_POSITION, points");
 
+//getVertexElements
+PyDoc_STRVAR(getVertexElements_doc,
+	"Get vertex data from the mesh object\n"\
+	"\n"\
+	"editableFigure.getVertexElements(meshName or index, attributeType, offset, size)\n"\
+	"\n"\
+	"Parameters\n"\
+	"----------\n"\
+	"    meshName : string\n"\
+	"        Registered mesh name to which you want to add vertex information\n"\
+	"    index : int\n"\
+	"        Registered mesh index No to which you want to get vertex information\n"\
+	"    attributeType : int\n"\
+	"        Vertex element type\n"\
+	"        One of the following values\n"\
+	"\n"\
+	"        pyxie.ATTRIBUTE_ID_POSITION\n"\
+	"        pyxie.ATTRIBUTE_ID_NORMAL\n"\
+	"        pyxie.ATTRIBUTE_ID_TANGENT\n"\
+	"        pyxie.ATTRIBUTE_ID_BINORMAL\n"\
+	"        pyxie.ATTRIBUTE_ID_UV0\n"\
+	"        pyxie.ATTRIBUTE_ID_UV1\n"\
+	"        pyxie.ATTRIBUTE_ID_UV2\n"\
+	"        pyxie.ATTRIBUTE_ID_UV3\n"\
+	"        pyxie.ATTRIBUTE_ID_COLOR\n"\
+	"        pyxie.ATTRIBUTE_ID_BLENDINDICES\n"\
+	"        pyxie.ATTRIBUTE_ID_BLENDWEIGHT\n"\
+	"        pyxie.ATTRIBUTE_ID_PSIZE\n"\
+	"    offset : int (optional)\n"\
+	"        Start position to get vertex elements\n"\
+	"        0 if omitted.\n"\
+	"    size : int (optional)\n"\
+	"        Numver of vertex elements to get.\n"\
+	"        If omitted, all data after the offset.\n");
+
 
 //setTriangles
 PyDoc_STRVAR(setTriangles_doc,
 	"Set traiangle index data to the mesh object\n"\
 	"\n"\
-	"editableFigure.setTriangles(meshName, data, offset)\n"\
+	"editableFigure.setTriangles(meshName or index, data, offset)\n"\
 	"\n"\
 	"Parameters\n"\
 	"----------\n"\
 	"    meshName : string\n"\
 	"        Registered mesh name to which you want to add triangle index\n"\
+	"    index : string\n"\
+	"        Registered mesh index to which you want to add triangle index\n"\
 	"    data : tuple or list\n"\
 	"        Triangle index\n"\
 	"    offset : int (optional)\n"\
@@ -132,12 +193,14 @@ PyDoc_STRVAR(addJoint_doc,
 PyDoc_STRVAR(setVertexPtr_doc,
 	"Set formatted vertex data to the mesh.\n"\
 	"\n"\
-	"editableFigure.setVertexPtr(meshName, ptr, numVerts, attributes)\n"\
+	"editableFigure.setVertexPtr(meshName or index, ptr, numVerts, attributes)\n"\
 	"\n"\
 	"Parameters\n"\
 	"----------\n"\
 	"    meshName : string\n"\
 	"        Registered mesh name to which you want to add vertex information\n"\
+	"    index : string\n"\
+	"        Registered mesh index to which you want to add vertex information\n"\
 	"    ptr : void* \n"\
 	"        Pointer of vertices\n"\
 	"    numVerts : long\n"\
@@ -149,12 +212,14 @@ PyDoc_STRVAR(setVertexPtr_doc,
 PyDoc_STRVAR(setTrianglePtr_doc,
 	"Set formatted triangle index list data to the mesh.\n"\
 	"\n"\
-	"editableFigure.setTrianglePtr(meshName, ptr, numTriangles, dataSize)\n"\
+	"editableFigure.setTrianglePtr(meshName or index, ptr, numTriangles, dataSize)\n"\
 	"\n"\
 	"Parameters\n"\
 	"----------\n"\
 	"    meshName : string\n"\
 	"        Registered mesh name to which you want to add triangle index\n"\
+	"    index : int\n"\
+	"        Registered mesh index to which you want to add triangle index\n"\
 	"    ptr\n"\
 	"        Pointer of indices\n"\
 	"    numTriangles long\n"\
@@ -166,12 +231,14 @@ PyDoc_STRVAR(setTrianglePtr_doc,
 PyDoc_STRVAR(addDrawSet_doc,
 	"Set drawSet to the mesh\n"\
 	"\n"\
-	"editableFigure.addDrawSet(meshName, offset, size)\n"\
+	"editableFigure.addDrawSet(meshName or index, offset, size)\n"\
 	"\n"\
 	"Parameters\n"\
 	"----------\n"\
 	"    meshName : string\n"\
 	"        Registered mesh name to which you want to add drawSet\n"\
+	"    index : int\n"\
+	"        Registered mesh index to which you want to add drawSet\n"\
 	"    offset : int\n"\
 	"        Offset of tryangle\n"\
 	"    size : int\n"\
@@ -182,12 +249,14 @@ PyDoc_STRVAR(addDrawSet_doc,
 PyDoc_STRVAR(setDrawSetRenderState_doc,
 	"Set render state for drawSet\n"\
 	"\n"\
-	"editableFigure.setDrawSetRenderState(meshName, drawSetNo, paramName, value1, value2, value3, value4)\n"\
+	"editableFigure.setDrawSetRenderState(meshName or index, drawSetNo, paramName, value1, value2, value3, value4)\n"\
 	"\n"\
 	"Parameters\n"\
 	"----------\n"\
 	"    meshName : string\n"\
 	"        Registered mesh name to which you want to add drawSet\n"\
+	"    index : int\n"\
+	"        Registered mesh index to which you want to add drawSet\n"\
 	"    drawSetNo : int\n"\
 	"        Order added by AddDrawSet()\n"\
 	"    paramName : string\n"\
@@ -396,4 +465,84 @@ PyDoc_STRVAR(clearMesh_doc,
 	"editableFigure.clearMesh()");
 
 
+//setParentJoint
+PyDoc_STRVAR(setParentJoint_doc,
+	"Set the joint of another figure \n"\
+	"(or EditableFigure) as the parent joint.\n"\
+	"\n"\
+	"editableFigure.setParentJoint(figure, jointName)\n"\
+	"\n"\
+	"Parameters\n"\
+	"----------\n"\
+	"    figure : figure\n"\
+	"        Parent figure or EditableFigure\n"\
+	"    jointName : string\n"\
+	"        Parent joint name\n");
 
+//getJoint
+PyDoc_STRVAR(getJoint_doc,
+	"Get the value of joint after animation calculation in world coordinate system\n"\
+	"\n"\
+	"position, rotation, scale = editableFigure.getJoint(jointName or jointIndex)\n"\
+	"\n"\
+	"Parameters\n"\
+	"----------\n"\
+	"    jointName : string\n"\
+	"        The name of the joint you want to get\n"\
+	"    jointIndex : int\n"\
+	"        The index of the joint you want to get\n"\
+	"Returns\n"\
+	"-------\n"\
+	"    position\n"\
+	"        position of joint\n"\
+	"    rotation\n"\
+	"        rotation of joint\n"\
+	"    scale\n"\
+	"        scale of joint");
+
+
+//setJoint
+PyDoc_STRVAR(setJoint_doc,
+	"Set the value of joint in world coordinate system\n"\
+	"\n"\
+	"editableFigure.setJoint(jointName or jointIndex, position, rotation, scale)\n"\
+	"\n"\
+	"Parameters\n"\
+	"----------\n"\
+	"    jointName : string\n"\
+	"        The name of the joint you want to get\n"\
+	"    jointIndex : int\n"\
+	"        The index of the joint you want to get\n"\
+	"    position\n"\
+	"        position of joint\n"\
+	"    rotation\n"\
+	"        rotation of joint\n"\
+	"    scale\n"\
+	"        scale of joint");
+
+//mergeMesh
+PyDoc_STRVAR(mergeMesh_doc,
+	"Merge multiple meshes into one to increase drawing efficiency.\n"\
+	"\n"\
+	"editableFigure.mergeMesh()\n"\
+	"\n");
+
+
+//getMeshAABB
+PyDoc_STRVAR(getMeshAABB_doc,
+	"Get axis aligned bounding box of mesh\n"\
+	"\n"\
+	"min, max, = editableFigure.getMeshAABB(name or index)\n"\
+	"\n"\
+	"Parameters\n"\
+	"----------\n"\
+	"    name : string\n"\
+	"        The name of the mesh\n"\
+	"    index : int\n"\
+	"        Index number of mesh\n"\
+	"Returns\n"\
+	"-------\n"\
+	"    min : vec3\n"\
+	"        minimum edge of bounding box\n"\
+	"    max : vec3\n"\
+	"        maximum edge of bounding box");

@@ -17,7 +17,7 @@ class ImgiPyxieRenderer(object):
         self._create_device_objects()
         self.refresh_font_texture()
 
-    def render(self, draw_data):
+    def render(self, draw_data, clearColor = True):
 
         io = self.io
         display_width, display_height = io.display_size
@@ -60,7 +60,7 @@ class ImgiPyxieRenderer(object):
                 drawset+=1
             idx+=1
 
-        self.camera.shoot(self.showcase)
+        self.camera.shoot(self.showcase, clearColor=clearColor)
 
     def refresh_font_texture(self):
 
@@ -84,6 +84,7 @@ class ImgiPyxieRenderer(object):
         self.editableFigure.addMaterial("mate01", gen)
         self.editableFigure.setMaterialParam("mate01", "DiffuseColor", (1.0, 1.0, 1.0, 1.0))
         self.editableFigure.setMaterialRenderState("mate01", "blend_enable", True)
+        self.editableFigure.addJoint('joint')
         self.showcase = pyxie.showcase('imgui')
         self.showcase.add(self.editableFigure)
 

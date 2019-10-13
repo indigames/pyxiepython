@@ -1,13 +1,19 @@
 ﻿#include "pyxie.h"
 #include "pythonResource.h"
 #include "pythonEnvironment_doc_en.h"
+#include "pyxieResourceCreator.h"
 
 namespace pyxie
 {
 
 	PyObject *environment_new(PyTypeObject *type, PyObject *args, PyObject *kw) {
-		environment_obj * self = NULL;
-		return (PyObject *)self;
+		char* name = "environment";
+		environment_obj* self = NULL;
+		if (PyArg_ParseTuple(args, "|s", &name)) {
+			self = (environment_obj*)type->tp_alloc(type, 0);
+			self->envSet = pyxieResourceCreator::Instance().NewEnvironmentSet(nullptr);
+		}
+		return (PyObject*)self;
 	}
 
 	void  environment_dealloc(environment_obj *self)

@@ -49,6 +49,7 @@ extern "C" {
 	int pyxieOpenW(const PATHCHAR* path, int flags, uint16_t mod);
 	int pyxieOpen(const char* path, int flags, uint16_t mod);
 	int pyxieRead(int fd, void* buff, uint32_t count);
+	int pyxieReadLine(int fd, void* buff, uint32_t count);
 	size_t pyxieSeek(int fd, size_t ofs, int orign);
 	int pyxieStat(int fd, struct stat* statbuf);
 	int pyxieStatFromPathW(const PATHCHAR* path, struct stat* statbuf);

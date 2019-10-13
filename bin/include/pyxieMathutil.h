@@ -348,6 +348,12 @@ namespace pyxie {
 			v[0] = v[1] = v[2] = 0.0f;
 			v[3] = 1.0f;
 		}
+		Quat(float x, float y, float z, float w) {
+			v[0] = x;
+			v[1] = y;
+			v[2] = z;
+			v[3] = w;
+		}
 		Quat(const Mat3& mat) {
 			vmath_quat(mat.P(), v);
 		}
