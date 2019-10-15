@@ -362,7 +362,7 @@ namespace pyxie
 			if (sizeof(void*) == 8)
 				vrts = (void*)PyLong_AsLongLong(ptr);
 			else
-				vrts = (void*)PyLong_AsLong(ptr);
+				vrts = (void*)PyLong_AsUnsignedLong(ptr);
 		}
 
 
@@ -373,6 +373,7 @@ namespace pyxie
 			PyErr_SetString(PyExc_TypeError, "faild to set vertex attributes.");
 			return NULL;
 		}
+
 		if (!self->editablefigure->SetMeshVertices(index, vrts, (uint32_t)numVerts)) {
 			PyErr_SetString(PyExc_TypeError, "faild to set vertex.");
 			return NULL;
@@ -396,7 +397,7 @@ namespace pyxie
 		if (sizeof(void*) == 8)
 			triangles = (void*)PyLong_AsLongLong(ptr);
 		else
-			triangles = (void*)PyLong_AsLong(ptr);
+			triangles = (void*)PyLong_AsUnsignedLong(ptr);
 
 		int index = GetMeshIndex(self, arg);
 		if (index == -1) return NULL;

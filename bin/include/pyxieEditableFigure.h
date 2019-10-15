@@ -357,7 +357,7 @@ protected:
 		bool BuildSimdHierarchy(std::vector<HierachyQuad>& hierachyQuads, const Skeleton* skeleton, const std::set<int>& boneSet);
 		void DrawMesh(EditableMesh* mesh, pyxieShader* shader);
 
-        void SaveMeshes(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
+    void SaveMeshes(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
 		void SaveInbindPoses(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
 		void SaveMaterials(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
 		void SaveNames(FigureHeader* figureHeader, pyxieBinaryFileHelper& fileHelper);
