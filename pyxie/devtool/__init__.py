@@ -232,6 +232,7 @@ def convertAssets(src,dst,platform, unit=1.0):
         outfile = os.path.normpath(data[0].replace(src, dst, 1))
         outfile = replaceExt(outfile, '.pyxf')
         apputil.makeDirectories(outfile)
+        tmpfig.mergeMesh()
         tmpfig.saveFigure(outfile)
 
     for img in allimages:
