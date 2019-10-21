@@ -207,6 +207,8 @@ namespace pyxie
 		vec_obj* scale = (vec_obj*)PyObject_New(vec_obj, _Vec3Type);
 		for (int i = 0; i < 4; i++) {
 			pos->v[i] = joint.translation[i];
+
+
 			rot->v[i] = joint.rotation[i];
 			scale->v[i] = joint.scale[i];
 		}
