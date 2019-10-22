@@ -131,7 +131,7 @@ def convertAssets(src,dst,platform, unit=1.0):
                 if img == root: break
         return imageDirectory
     def findFileFromDiorectoryTree(imageDirectory, file, dir):
-        files = imageDirectory[dir]
+        files = imageDirectory.get(dir)
         if files is None: return None
         if file in files:
             return os.path.join(dir, file)
