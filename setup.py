@@ -52,9 +52,7 @@ setup(name='pyxie', version='0.3.21',
 		author=u'Kiharu Shishikura',
 		author_email='shishi@indigames.net',
 		#packages=find_packages(),
-		
-		packages=['pyxie','devtool'],
-		package_dir={'pyxie':'.', "devtool":"devtool"},
+		packages=find_packages(include=['pyxie', 'pyxie.*']),
 		ext_modules=[pyxie_module, tools_module],
 		long_description=open('README.md').read(),
 		license='MIT',
@@ -71,7 +69,7 @@ setup(name='pyxie', version='0.3.21',
 			'Topic :: Games/Entertainment',
 		],
         package_data=[
-            ('pyxie' ,  [bindir+"/pyxcore.dll"]),
+            ('' ,  [bindir+"/pyxcore.dll"]),
             ('devtool',  [bindir+"/pyxtools.dll",bindir+"/PVRTexLib.dll"])
         ],
         include_package_data=True
