@@ -51,7 +51,8 @@ setup(name='pyxie', version='0.3.21',
 		description='pyxie game engine module',
 		author=u'Kiharu Shishikura',
 		author_email='shishi@indigames.net',
-        packages=find_packages(),
+		#packages=find_packages(),
+		packages=['','devtool']
 		ext_modules=[pyxie_module, tools_module],
 		long_description=open('README.md').read(),
 		license='MIT',
@@ -67,7 +68,7 @@ setup(name='pyxie', version='0.3.21',
 			'Operating System :: Microsoft :: Windows',
 			'Topic :: Games/Entertainment',
 		],
-        data_files=[
+        package_data=[
             ('' ,  [bindir+"/pyxcore.dll"]),
             ('devtool',  [bindir+"/pyxtools.dll",bindir+"/PVRTexLib.dll"])
         ],
