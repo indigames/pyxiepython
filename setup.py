@@ -52,7 +52,7 @@ setup(name='pyxie', version='0.3.21',
 		author=u'Kiharu Shishikura',
 		author_email='shishi@indigames.net',
 		#packages=find_packages(),
-		packages=['','devtool']
+		packages=['','devtool'],
 		ext_modules=[pyxie_module, tools_module],
 		long_description=open('README.md').read(),
 		license='MIT',
