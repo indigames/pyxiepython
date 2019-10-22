@@ -67,7 +67,7 @@ setup(name='pyxie', version='0.3.21',
 			'Operating System :: Microsoft :: Windows',
 			'Topic :: Games/Entertainment',
 		],
-        package_data=[
+        data_files=[
             ('' ,  [bindir+"/pyxcore.dll"]),
             ('devtool',  [bindir+"/pyxtools.dll",bindir+"/PVRTexLib.dll"])
         ],
