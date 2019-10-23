@@ -10,6 +10,7 @@ import setuptools
 import numpy
 import sys
 import os
+from os import path, listdir
 from functools import partial
 from distutils.sysconfig import get_python_lib
 from pip import __file__ as pip_loc
