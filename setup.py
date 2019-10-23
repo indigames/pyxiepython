@@ -14,11 +14,6 @@ from distutils.sysconfig import get_python_lib
 import shutil
 import glob
 
-list = glob.glob(os.getcwd(), recursive=True)
-with open('C:/Users/kiharushishikura/proj/test_w.txt', mode='w') as f:
-	for file in list:
-		f.write(file)
-
 is64Bit = sys.maxsize > 2 ** 32
 if is64Bit:
     bindir = 'bin/win64'
@@ -50,6 +45,14 @@ tools_module = Extension('pyxie.devtool._pyxietools',
                        include_dirs=['bin/include', numpy.get_include()],
 			           library_dirs=[bindir],
 			           libraries=['pyxtools','pyxcore'])
+
+
+list = glob.glob(os.getcwd(), recursive=True)
+with open('C:/Users/kiharushishikura/proj/test_w.txt', mode='w') as f:
+	for file in list:
+		f.write(file)
+
+
 
 setup(name='pyxie', version='0.3.21',
 		description='pyxie game engine module',
