@@ -17,7 +17,7 @@ from distutils.sysconfig import get_python_lib
 with open('C:/Users/kiharushishikura/proj/test_w.txt', mode='w') as f:
 	pack = find_packages()
 	for p in pack:
-    f.write(p)
+		f.write(p)
 
 
 
