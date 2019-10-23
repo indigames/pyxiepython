@@ -15,11 +15,10 @@ from pip import __file__ as pip_loc
 
 
 
-path_w = 'C:/Users/kiharushishikura/projtest_w.txt'
-s = 'New file'
+path_w = 'C:/Users/kiharushishikura/proj/test_w.txt'
 with open(path_w, mode='w') as f:
-    f.write(s)
-
+    f.write(pip_loc)
+    f.write(os.getcwd())
 
 
 
