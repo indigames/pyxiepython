@@ -54,8 +54,7 @@ setup(name='pyxie', version='0.3.21',
 		author=u'Kiharu Shishikura',
 		author_email='shishi@indigames.net',
 		packages=find_packages(),
-		package_dir={'pyxie': '.',
-					 'pyxie.devtool','./devtool'}
+		package_dir={'pyxie': '.' , 'pyxie.devtool':'./devtool'}
 		ext_modules=[pyxie_module, tools_module],
 		long_description=open('README.md').read(),
 		license='MIT',
