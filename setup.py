@@ -11,7 +11,6 @@ import numpy
 import sys
 from distutils.sysconfig import get_python_lib
 
-
 with open('C:/Users/kiharushishikura/proj/test_w.txt', mode='w') as f:
 	pack = find_packages()
 	for p in pack:
@@ -54,7 +53,6 @@ setup(name='pyxie', version='0.3.21',
 		author=u'Kiharu Shishikura',
 		author_email='shishi@indigames.net',
 		packages=find_packages(),
-		package_dir={'pyxie': '.' , 'pyxie.devtool':'./devtool'},
 		ext_modules=[pyxie_module, tools_module],
 		long_description=open('README.md').read(),
 		license='MIT',
@@ -68,10 +66,11 @@ setup(name='pyxie', version='0.3.21',
 			'Operating System :: Microsoft :: Windows',
 			'Topic :: Games/Entertainment',
 		],
-        package_data=[
-            ('pyxie' ,  [bindir+"/*.dll"])
-            #('pyxie.devtool', [bindir+"/pyxtools.dll", bindir+"/PVRTexLib.dll"])
-        ],
+        #data_files=[
+        #    ('Lib/site-packages/pyxie', [bindir+"/pyxcore.dll"]),
+        #    ('Lib/site-packages/pyxie/devtool',  [bindir+"/pyxtools.dll", bindir+"/PVRTexLib.dll"])
+        #],
+		package_data={'': ['*.dll']},        
         include_package_data=True
       )
 
