@@ -70,7 +70,7 @@ setup(name='pyxie', version='0.3.21',
         #    ('Lib/site-packages/pyxie', [bindir+"/pyxcore.dll"]),
         #    ('Lib/site-packages/pyxie/devtool',  [bindir+"/pyxtools.dll", bindir+"/PVRTexLib.dll"])
         #],
-		package_data={'pyxie': ['dlls/*.*']},        
+		package_data={'pyxie': ['dlls/win32/*.dll', 'dlls/win64/*.dll']},        
         include_package_data=True
       )
 
