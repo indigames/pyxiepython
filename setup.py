@@ -9,27 +9,15 @@ from setuptools import setup, Extension, find_packages
 import setuptools
 import numpy
 import sys
-import os
-from os import path, listdir
-from functools import partial
 from distutils.sysconfig import get_python_lib
-from pip import __file__ as pip_loc
-
-package_name = 'pyxie'
-f_for = partial(path.join, path.dirname(__file__), package_name)
-d_for = partial(path.join,path.dirname(path.dirname(pip_loc)), package_name)
-to_funcs = lambda name: (partial(path.join, f_for(name)),
-                            partial(path.join, d_for(name)))
-_data_join, _data_install_dir = to_funcs('data')
 
 
-path_w = 'C:/Users/kiharushishikura/proj/test_w.txt'
-with open(path_w, mode='w') as f:
-    f.write(_data_install_dir())
 
 
-package_name = 'pyxie'
-data_install_folder = os.path.join(os.path.dirname(os.path.dirname(pip_loc)), package_name)
+with open('C:/Users/kiharushishikura/proj/test_w.txt', mode='w') as f:
+    f.write(find_packages())
+
+
 
 is64Bit = sys.maxsize > 2 ** 32
 print('--------------------------')
@@ -87,7 +75,7 @@ setup(name='pyxie', version='0.3.21',
 			'Topic :: Games/Entertainment',
 		],
         data_files=[
-            (data_install_folder ,  [bindir+"/pyxcore.dll"]),
+            ('Lib/site-packages/pyxie' ,  [bindir+"/pyxcore.dll"]),
             ('Lib/site-packages/pyxie/devtool',  [bindir+"/pyxtools.dll",bindir+"/PVRTexLib.dll"])
         ],
         include_package_data=True
