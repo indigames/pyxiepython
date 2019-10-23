@@ -14,7 +14,7 @@ from distutils.sysconfig import get_python_lib
 from pip import __file__ as pip_loc
 
 package_name = 'pyxie'
-data_install_folder = os.path.join(os.path.dirname(path.dirname(pip_loc)), package_name)
+data_install_folder = os.path.join(os.path.dirname(os.path.dirname(pip_loc)), package_name)
 
 is64Bit = sys.maxsize > 2 ** 32
 print('--------------------------')
