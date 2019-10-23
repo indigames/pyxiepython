@@ -12,22 +12,15 @@ import sys
 from distutils.sysconfig import get_python_lib
 
 
-
-
 with open('C:/Users/kiharushishikura/proj/test_w.txt', mode='w') as f:
 	pack = find_packages()
 	for p in pack:
 		f.write(p)
 
-
-
 is64Bit = sys.maxsize > 2 ** 32
-print('--------------------------')
 if is64Bit:
-    print('windows 64bit')
     bindir = 'bin/win64'
 else:
-    print('windows 32bit')
     bindir = 'bin/win32'
 
 pyxie_module = Extension('pyxie._pyxie', 
@@ -60,13 +53,13 @@ setup(name='pyxie', version='0.3.21',
 		description='pyxie game engine module',
 		author=u'Kiharu Shishikura',
 		author_email='shishi@indigames.net',
-        packages=find_packages(),
+		packages=find_packages(),
+		package_dir={'pyxie': '.',
+					 'pyxie.devtool','./devtool'}
 		ext_modules=[pyxie_module, tools_module],
 		long_description=open('README.md').read(),
 		license='MIT',
-		install_requires=[
-			'pyvmath', 'requests', 'numpy'
-		],
+		install_requires=['pyvmath', 'requests', 'numpy'],
 		classifiers=[
 			'Intended Audience :: Developers',
 			'License :: OSI Approved :: MIT License',
@@ -76,12 +69,10 @@ setup(name='pyxie', version='0.3.21',
 			'Operating System :: Microsoft :: Windows',
 			'Topic :: Games/Entertainment',
 		],
-        package_data =[
+        package_data=[
             ('pyxie' ,  [bindir+"/pyxcore.dll"]),
             ('pyxie.devtool',  [bindir+"/pyxtools.dll",bindir+"/PVRTexLib.dll"])
         ],
         include_package_data=True
       )
-
-
 
