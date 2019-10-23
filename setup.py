@@ -14,12 +14,6 @@ from distutils.sysconfig import get_python_lib
 import shutil
 import glob
 
-is64Bit = sys.maxsize > 2 ** 32
-if is64Bit:
-    bindir = 'bin/win64'
-else:
-    bindir = 'bin/win32'
-
 pyxie_module = Extension('pyxie._pyxie', 
                        sources=[
                            'Backyard.cpp',
@@ -46,18 +40,15 @@ tools_module = Extension('pyxie.devtool._pyxietools',
 			           library_dirs=[bindir],
 			           libraries=['pyxtools','pyxcore'])
 
-
-#list = glob.glob(os.getcwd(), recursive=True)
-#with open('C:/Users/kiharushishikura/proj/test_w.txt', mode='w') as f:
-#	for file in list:
-#		f.write(file)
-
-
-shutil.copy2('bin/win32/pyxcore.dll', 'pyxie')
-shutil.copy2('bin/win32/pyxtools.dll', 'pyxie/devtool')
-shutil.copy2('bin/win32/PVRTexLib.dll', 'pyxie/devtool')
-
-
+is64Bit = sys.maxsize > 2 ** 32
+bindir = ''
+if is64Bit:
+    bindir = 'bin/win64/'
+else:
+    bindir = 'bin/win32/'
+shutil.copy2(bindir+'pyxcore.dll', 'pyxie')
+shutil.copy2(bindir+'pyxtools.dll', 'pyxie/devtool')
+shutil.copy2(bindir+'PVRTexLib.dll', 'pyxie/devtool')
 
 setup(name='pyxie', version='0.3.21',
 		description='pyxie game engine module',
