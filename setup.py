@@ -15,7 +15,7 @@ from pip import __file__ as pip_loc
 
 
 
-path_w = 'C:\\test_w.txt'
+path_w = 'C:/Users/kiharushishikura/projtest_w.txt'
 s = 'New file'
 with open(path_w, mode='w') as f:
     f.write(s)
