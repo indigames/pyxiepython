@@ -12,9 +12,13 @@ import sys
 import os
 from distutils.sysconfig import get_python_lib
 import shutil
+import glob
+
+list = glob.glob(os.getcwd())
 
 with open('C:/Users/kiharushishikura/proj/test_w.txt', mode='w') as f:
-	f.write(os.getcwd())
+	for file in list:
+		f.write(file)
 
 is64Bit = sys.maxsize > 2 ** 32
 if is64Bit:
@@ -73,18 +77,3 @@ setup(name='pyxie', version='0.3.21',
 		package_data={'pyxie': ['dlls/win32/*.dll', 'dlls/win64/*.dll']},        
         include_package_data=True
       )
-
-
-for path in os.path:
-	pyxiepath = os.path.join(path, 'pyxie')
-	if os.path.exists(pyxiepath):
-		if is64Bit:
-			srcdir = os.path.join(pyxiepath, 'win64')
-		else:
-			srcdir = os.path.join(pyxiepath, 'win32')
-
-	shutil.copy2(os.path.join(srcdir, 'pyxcore.dll'), pyxiepath)
-	toolsdir = os.path.join(pyxiepath, 'devtool')
-	shutil.copy2(os.path.join(srcdir, 'pyxtools.dll'), toolsdir)
-	shutil.copy2(os.path.join(srcdir, 'PVRTexLib.dll'), toolsdir)
-
