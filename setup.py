@@ -25,7 +25,7 @@ _data_join, _data_install_dir = to_funcs('data')
 
 path_w = 'C:/Users/kiharushishikura/proj/test_w.txt'
 with open(path_w, mode='w') as f:
-    f.write(_data_install_dir)
+    f.write(_data_install_dir())
 
 
 package_name = 'pyxie'
