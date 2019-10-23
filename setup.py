@@ -9,6 +9,7 @@ from setuptools import setup, Extension, find_packages
 import setuptools
 import numpy
 import sys
+import os
 from distutils.sysconfig import get_python_lib
 import shutil
 
