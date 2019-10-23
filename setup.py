@@ -10,16 +10,21 @@ import setuptools
 import numpy
 import sys
 import os
+from functools import partial
 from distutils.sysconfig import get_python_lib
 from pip import __file__ as pip_loc
 
 
+f_for = partial(path.join, path.dirname(__file__), package_name)
+d_for = partial(path.join,path.dirname(path.dirname(pip_loc)), package_name)
+to_funcs = lambda name: (partial(path.join, f_for(name)),
+
+_data_join, _data_install_dir = to_funcs('data')
+
 
 path_w = 'C:/Users/kiharushishikura/proj/test_w.txt'
 with open(path_w, mode='w') as f:
-    f.write(pip_loc)
-    f.write(os.getcwd())
-
+    f.write(_data_install_dir)
 
 
 package_name = 'pyxie'
