@@ -47,10 +47,15 @@ tools_module = Extension('pyxie.devtool._pyxietools',
 			           libraries=['pyxtools','pyxcore'])
 
 
-list = glob.glob(os.getcwd(), recursive=True)
-with open('C:/Users/kiharushishikura/proj/test_w.txt', mode='w') as f:
-	for file in list:
-		f.write(file)
+#list = glob.glob(os.getcwd(), recursive=True)
+#with open('C:/Users/kiharushishikura/proj/test_w.txt', mode='w') as f:
+#	for file in list:
+#		f.write(file)
+
+
+shutil.copy2('bin/win32/pyxcore.dll'), 'pyxie')
+shutil.copy2('bin/win32/pyxtools.dll'), 'pyxie/devtool')
+shutil.copy2('bin/win32/PVRTexLib.dll'), 'pyxie/devtool')
 
 
 
@@ -76,6 +81,6 @@ setup(name='pyxie', version='0.3.21',
         #    ('Lib/site-packages/pyxie', [bindir+"/pyxcore.dll"]),
         #    ('Lib/site-packages/pyxie/devtool',  [bindir+"/pyxtools.dll", bindir+"/PVRTexLib.dll"])
         #],
-		package_data={'pyxie': ['dlls/win32/*.dll', 'dlls/win64/*.dll']},        
+		package_data={'pyxie': ['*.dll', 'devtool/*.dll']},        
         include_package_data=True
       )
