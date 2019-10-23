@@ -53,9 +53,9 @@ tools_module = Extension('pyxie.devtool._pyxietools',
 #		f.write(file)
 
 
-shutil.copy2('bin/win32/pyxcore.dll'), 'pyxie')
-shutil.copy2('bin/win32/pyxtools.dll'), 'pyxie/devtool')
-shutil.copy2('bin/win32/PVRTexLib.dll'), 'pyxie/devtool')
+shutil.copy2('bin/win32/pyxcore.dll', 'pyxie')
+shutil.copy2('bin/win32/pyxtools.dll', 'pyxie/devtool')
+shutil.copy2('bin/win32/PVRTexLib.dll', 'pyxie/devtool')
 
 
 
