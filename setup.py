@@ -13,7 +13,7 @@ from distutils.sysconfig import get_python_lib
 from pip import __file__ as pip_loc
 
 package_name = 'pyxie'
-d_for = partial(path.join,path.dirname(path.dirname(pip_loc)), package_name)
+data_install_folder = os.path.join(os.path.dirname(path.dirname(pip_loc)), package_name)
 
 is64Bit = sys.maxsize > 2 ** 32
 print('--------------------------')
@@ -71,7 +71,7 @@ setup(name='pyxie', version='0.3.21',
 			'Topic :: Games/Entertainment',
 		],
         data_files=[
-            (d_for ,  [bindir+"/pyxcore.dll"]),
+            (data_install_folder ,  [bindir+"/pyxcore.dll"]),
             ('Lib/site-packages/pyxie/devtool',  [bindir+"/pyxtools.dll",bindir+"/PVRTexLib.dll"])
         ],
         include_package_data=True
