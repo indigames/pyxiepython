@@ -15,7 +15,7 @@ from functools import partial
 from distutils.sysconfig import get_python_lib
 from pip import __file__ as pip_loc
 
-
+package_name = 'pyxie'
 f_for = partial(path.join, path.dirname(__file__), package_name)
 d_for = partial(path.join,path.dirname(path.dirname(pip_loc)), package_name)
 to_funcs = lambda name: (partial(path.join, f_for(name)),
