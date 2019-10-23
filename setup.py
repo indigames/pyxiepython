@@ -12,7 +12,18 @@ import sys
 import os
 from distutils.sysconfig import get_python_lib
 import shutil
-import glob
+
+is64Bit = sys.maxsize > 2 ** 32
+bindir = ''
+if is64Bit:
+    bindir = 'bin/win64'
+else:
+    bindir = 'bin/win32'
+
+shutil.copy2(bindir+'/pyxcore.dll', 'pyxie')
+shutil.copy2(bindir+'/pyxtools.dll', 'pyxie/devtool')
+shutil.copy2(bindir+'/PVRTexLib.dll', 'pyxie/devtool')
+
 
 pyxie_module = Extension('pyxie._pyxie', 
                        sources=[
@@ -39,16 +50,6 @@ tools_module = Extension('pyxie.devtool._pyxietools',
                        include_dirs=['bin/include', numpy.get_include()],
 			           library_dirs=[bindir],
 			           libraries=['pyxtools','pyxcore'])
-
-is64Bit = sys.maxsize > 2 ** 32
-bindir = ''
-if is64Bit:
-    bindir = 'bin/win64/'
-else:
-    bindir = 'bin/win32/'
-shutil.copy2(bindir+'pyxcore.dll', 'pyxie')
-shutil.copy2(bindir+'pyxtools.dll', 'pyxie/devtool')
-shutil.copy2(bindir+'PVRTexLib.dll', 'pyxie/devtool')
 
 setup(name='pyxie', version='0.3.21',
 		description='pyxie game engine module',
