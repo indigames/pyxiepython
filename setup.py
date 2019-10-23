@@ -14,8 +14,7 @@ from distutils.sysconfig import get_python_lib
 import shutil
 import glob
 
-list = glob.glob(os.getcwd())
-
+list = glob.glob(os.getcwd(), recursive=True)
 with open('C:/Users/kiharushishikura/proj/test_w.txt', mode='w') as f:
 	for file in list:
 		f.write(file)
