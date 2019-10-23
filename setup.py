@@ -13,6 +13,16 @@ import os
 from distutils.sysconfig import get_python_lib
 from pip import __file__ as pip_loc
 
+
+
+path_w = 'C:\test_w.txt'
+s = 'New file'
+with open(path_w, mode='w') as f:
+    f.write(s)
+
+
+
+
 package_name = 'pyxie'
 data_install_folder = os.path.join(os.path.dirname(os.path.dirname(pip_loc)), package_name)
 
