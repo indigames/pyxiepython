@@ -228,6 +228,8 @@ namespace pyxie
 		//Py_INCREF(&SoundType);
 		//PyModule_AddObject(module, "sound", (PyObject*)&SoundType);
 
+		pyxie_logg_start();
+
 		return module;
 	}
 }

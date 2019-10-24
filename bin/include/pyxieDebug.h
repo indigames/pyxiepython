@@ -48,6 +48,7 @@ extern "C" {
 	void	PYXIE_EXPORT pyxie_printf(const char* format, ...);
 	const char PYXIE_EXPORT * pyxie_errstr(ErrorCode code);
 	const char* pyxie_gl_errstr(unsigned int err);
+	void PYXIE_EXPORT pyxie_logg_start();
 
 //pyxie_printf("error:%s/%d\n", __FILE__, __LINE__);
 
