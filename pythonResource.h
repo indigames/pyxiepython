@@ -10,7 +10,7 @@
 #include "pyxieShaderDescriptor.h"
 #include "pyxieRenderTarget.h"
 #include "pyxieParticle.h"
-#include "pyxieSound.h"
+//#include "pyxieSound.h"
 
 namespace pyxie {
 	typedef struct {
@@ -79,7 +79,7 @@ namespace pyxie {
 
 	typedef struct {
 		PyObject_HEAD
-			pyxieSound* sound;
+//			pyxieSound* sound;
 	} sound_obj;
 
 	extern PyTypeObject FigureType;
