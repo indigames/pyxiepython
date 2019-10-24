@@ -43,8 +43,9 @@ namespace pyxie
 		pyxieColladaLoader loader;
 		auto rv = loader.LoadCollada(path, efig->editablefigure);
 		if (!rv) {
-			PyErr_SetString(PyExc_TypeError, "Failer to load file.");
-			return NULL;
+			pyxie_printf("Failed to load %s", path);
+			//PyErr_SetString(PyExc_TypeError, "Failer to load file.");
+			//return NULL;
 		}
 
 		Py_INCREF(Py_None);
@@ -70,8 +71,9 @@ namespace pyxie
 		pyxieColladaLoader loader;
 		auto rv = loader.LoadColladaAnimation(path, efig->editablefigure);
 		if (!rv) {
-			PyErr_SetString(PyExc_TypeError, "Failer to load file.");
-			return NULL;
+			pyxie_printf("Failed to load %s", path);
+			//PyErr_SetString(PyExc_TypeError, "Failer to load file.");
+			//return NULL;
 		}
 
 		Py_INCREF(Py_None);

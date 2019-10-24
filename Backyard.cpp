@@ -14,7 +14,7 @@
 #include <vector>
 #include <iostream>
 #include <exception>
-#include <python.h>
+#include <Python.h>
 
 #include "pythonResource.h"
 #include "numpy/ndarrayobject.h"
