@@ -15,7 +15,7 @@ namespace pyxie
 	PyTypeObject* _EditableFigureType = nullptr;
 
 	bool ImportPyxie() {
-		PyObject* mod = PyImport_ImportModule("_pyxie");
+		PyObject* mod = PyImport_ImportModule("pyxie");
 		if (!mod) return false;
 		_EditableFigureType = (PyTypeObject*)PyObject_GetAttrString(mod, "editableFigure");
 		Py_DECREF(mod);
