@@ -196,7 +196,6 @@ namespace pyxie
 		if (PyType_Ready(&ShaderGeneratorType) < 0) return NULL;
 		if (PyType_Ready(&TextureType) < 0) return NULL;
 		if (PyType_Ready(&ParticleType) < 0) return NULL;
-		//if (PyType_Ready(&SoundType) < 0) return NULL;
 
 		Py_INCREF(&FigureType);
 		PyModule_AddObject(module, "figure", (PyObject*)& FigureType);
@@ -225,11 +224,8 @@ namespace pyxie
 		Py_INCREF(&ParticleType);
 		PyModule_AddObject(module, "particle", (PyObject *)&ParticleType);
 
-		//Py_INCREF(&SoundType);
-		//PyModule_AddObject(module, "sound", (PyObject*)&SoundType);
+        pyxie_logg_start();
 
-		pyxie_logg_start();
-
-		return module;
+        return module;
 	}
 }

@@ -10,7 +10,6 @@
 #include "pyxieShaderDescriptor.h"
 #include "pyxieRenderTarget.h"
 #include "pyxieParticle.h"
-//#include "pyxieSound.h"
 
 namespace pyxie {
 	typedef struct {
@@ -77,11 +76,6 @@ namespace pyxie {
 			pyxieParticle *figure;
 	} particle_obj;
 
-	typedef struct {
-		PyObject_HEAD
-//			pyxieSound* sound;
-	} sound_obj;
-
 	extern PyTypeObject FigureType;
 	extern PyTypeObject EditableFigureType;
 	extern PyTypeObject AnimatorType;
@@ -91,7 +85,6 @@ namespace pyxie {
 	extern PyTypeObject ShowcaseType;
 	extern PyTypeObject ShaderGeneratorType;
 	extern PyTypeObject ParticleType;
-	extern PyTypeObject SoundType;
 
 	float* pyObjToFloat(PyObject* obj, float* f, int& d);
 	int pyObjToFloatArray(PyObject* obj, float* f, int numElement);
