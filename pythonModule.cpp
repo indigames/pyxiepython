@@ -224,8 +224,6 @@ namespace pyxie
 		Py_INCREF(&ParticleType);
 		PyModule_AddObject(module, "particle", (PyObject *)&ParticleType);
 
-        pyxie_logg_start();
-
         return module;
 	}
 }
