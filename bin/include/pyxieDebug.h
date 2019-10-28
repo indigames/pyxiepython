@@ -33,6 +33,7 @@ extern "C" {
 #define	pyxie_assert_msg(exp, ...)	((void)0)
 #define	pyxie_ogl_assert			((void)0)
 #define	pyxie_shader_ogl_assert		((void)0)
+#define	pyxie_logg_start			((void)0)
 #else
 #include <assert.h>
 
@@ -45,6 +46,7 @@ extern "C" {
 #else
 #define PYXIE_EXPORT
 #endif
+	void PYXIE_EXPORT pyxie_logg_start();
 	void	PYXIE_EXPORT pyxie_printf(const char* format, ...);
 	const char PYXIE_EXPORT * pyxie_errstr(ErrorCode code);
 	const char* pyxie_gl_errstr(unsigned int err);
