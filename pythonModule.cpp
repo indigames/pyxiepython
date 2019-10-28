@@ -48,6 +48,15 @@ namespace pyxie
 		return Py_None;
 	}
 
+	static PyObject* pyxie_startPyxieLog(PyObject* self)
+	{
+		pyxie_logg_start();
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+
+
 	static PyObject* pyxie_window(PyObject* self, PyObject* args) {
 		int show = 0;
 		int x = 480;
@@ -168,7 +177,7 @@ namespace pyxie
 		{ "setRoot", (PyCFunction)pyxie_setRoot, METH_VARARGS,setRoot_doc },
 		{ "getRoot", (PyCFunction)pyxie_getRoot, METH_NOARGS, getRoot_doc },
 		{ "getPlatform", (PyCFunction)pyxie_getPlatform, METH_NOARGS, getPlatform_doc },
-
+		{ "startPyxieLog", (PyCFunction)pyxie_startPyxieLog, METH_NOARGS, NULL },
 	{ nullptr, nullptr, 0, nullptr }
 	};
 
@@ -224,7 +233,6 @@ namespace pyxie
 		Py_INCREF(&ParticleType);
 		PyModule_AddObject(module, "particle", (PyObject *)&ParticleType);
 
-		pyxie_logg_start();
         return module;
 	}
 }
