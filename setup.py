@@ -39,7 +39,8 @@ pyxie_module = Extension('pyxie._pyxie',
                            'pythonShaderGenerator.cpp',
                            'pythonFigure.cpp',
                            'pythonResource.cpp',
-                           'pythonTexture.cpp'
+                           'pythonTexture.cpp',
+                           'pythonParticle.cpp'
                        ],
                        include_dirs=['bin/include', numpy.get_include()],
 			           library_dirs=[bindir],
@@ -51,7 +52,7 @@ tools_module = Extension('pyxie.devtool._pyxietools',
 			           library_dirs=[bindir],
 			           libraries=['pyxtools','pyxcore'])
 
-setup(name='pyxie', version='0.3.21',
+setup(name='pyxie', version='0.3.24',
 		description='pyxie game engine module',
 		author=u'Kiharu Shishikura',
 		author_email='shishi@indigames.net',
