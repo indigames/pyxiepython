@@ -25,6 +25,8 @@ namespace pyxie
 
 	static PyObject* tools_loadCollada(pyxietools_obj* self, PyObject* args, PyObject* kwargs) {
 
+		pyxie_printf("kita01");
+
 		static char* kwlist[] = { "filePath", "editableFigure","baseScale", NULL };
 
 		const char* path;
@@ -39,14 +41,18 @@ namespace pyxie
 		}
 		else return NULL;
 
+		pyxie_printf("kita02");
+
 		pyxieFigureExportConfigManager::Instance().SetBaseScale(baseScale);
 		pyxieColladaLoader loader;
+		pyxie_printf("kita03");
 		auto rv = loader.LoadCollada(path, efig->editablefigure);
 		if (!rv) {
 			pyxie_printf("Failed to load %s", path);
 			//PyErr_SetString(PyExc_TypeError, "Failer to load file.");
 			//return NULL;
 		}
+		pyxie_printf("kita04");
 
 		Py_INCREF(Py_None);
 		return Py_None;
