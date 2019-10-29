@@ -626,7 +626,7 @@ namespace pyxie {
 
 
 
-	constexpr int SKINMATRIXSIZE = 12;
+	constexpr uint32_t SKINMATRIXSIZE = 12;
 
 	//! Enumeration for intersection relations of 3d objects
 	enum IntersectionRelation
