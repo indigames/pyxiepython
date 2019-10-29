@@ -29,10 +29,10 @@ FileBehavior = [
     ('.dds', 'image'),
     ('.tga', 'image'),
     ('.psd', 'image'),
-    ('.json', 'copy')
-    ('.pickle', 'copy')
-    ('.zip', 'copy')
-    ('.txt', 'copy')
+    ('.json', 'copy'),
+    ('.pickle', 'copy'),
+    ('.zip', 'copy'),
+    ('.txt', 'copy'),
     ('.db', 'copy')
 ]
 def getFileBehavior(file):
