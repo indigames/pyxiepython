@@ -52,7 +52,7 @@ tools_module = Extension('pyxie.devtool._pyxietools',
 			           library_dirs=[bindir],
 			           libraries=['pyxtools','pyxcore'])
 
-setup(name='pyxie', version='0.3.3',
+setup(name='pyxie', version='0.3.32',
 		description='pyxie game engine module',
 		author=u'Kiharu Shishikura',
 		author_email='shishi@indigames.net',
